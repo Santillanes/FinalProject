@@ -18,9 +18,9 @@ public class Compiler extends javax.swing.JFrame{
      */
     
     String op = "[]{}()";
-    String log = "+-*/";
-    String cond = "MENORMAYORMAIGUALMEIGUALDIF";
-    String tipoDato = "duvalinbocadinchiclerellerindocachetadamazapanSkwinkle";
+    String log = "+-*/%^";
+    String cond = "MENORMAYORMAIGUALMEIGUALDIFNOYYOOOE";
+    String tipoDato = "duvalinbocadinchiclerellerindocachetadamazapanSkwinklehersheys";
     String palRes = "abiertocerradobolsitapiñataticowinniSISINOTicket";
     String simbRes = "=:\"_";
     boolean band = false;
@@ -36,13 +36,13 @@ public class Compiler extends javax.swing.JFrame{
         String letras = "qwertyuiopñlkjhgfdsazxcvbnmQWERTYUIOPÑLKJHGFDSAZXCVBNM";
         if (ban) {
             if (cond.contains(aux)) {
-                System.out.println("Op condicional: "+aux);
+                System.out.println("Operador condicional: "+aux);
             }else if (tipoDato.contains(aux)) {
                 System.out.println("Tipo de dato: "+aux);
             }else if (palRes.contains(aux)) {
                 System.out.println("Palabra reservada: "+aux);
             }else if(letras.contains(inicio)){
-                System.out.println("Variable: "+aux);
+                System.out.println("Identificador: "+aux);
             }else{
                 int n = aux.length()+1;
                 for (int j = idx-n; j >= 0; j--) {
@@ -76,7 +76,25 @@ public class Compiler extends javax.swing.JFrame{
             //     []+MENOR-duvalin()
             if (op.contains(letra)) {
                 ifBan(band,i,linea);
-                System.out.println("Operador: "+letra);
+                
+                if (letra.equals("(") && arre[i+1].equals(":")) {
+                    System.out.println("Inicio comentario: (:");
+                    String txt = "";
+                    for (int j = i+2; j < arre.length; j++) {
+                        if (arre[j].equals(":") && arre[j+1].equals(")")) {
+                            i = j+1;
+                            break;
+                        }else{
+                            txt += arre[j];
+                        }
+                    }
+                    if (!txt.equals("")) {
+                        System.out.println("Texto: "+txt);
+                    }
+                    System.out.println("Fin comentario: :)");
+                }else{
+                    System.out.println("Operador: "+letra);
+                }
                 
             }else if (log.contains(letra)) {
                 ifBan(band,i,linea);
@@ -85,6 +103,23 @@ public class Compiler extends javax.swing.JFrame{
             }else if (simbRes.contains(letra)) {
                 ifBan(band,i,linea);
                 System.out.println("Simbolo reservado: "+letra);
+                
+                if (letra.equals("\"")) {
+                    String txt = "";
+                    for (int j = i+1; j < arre.length; j++) {
+                        if (arre[j].equals("\"")) {
+                            i = j;
+                            break;
+                        }else{
+                            txt += arre[j];
+                        }
+                    }
+                    if (!txt.equals("")) {
+                        System.out.println("Texto: "+txt);
+                    }
+                    System.out.println("Símbolo reservado: \"");
+                }
+                
             }else{
                 if (!letra.equals(" ") && !letra.equals("\n") && !letra.equals("	")) {
                     aux += letra;
