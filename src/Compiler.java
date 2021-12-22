@@ -17,52 +17,91 @@ public class Compiler extends javax.swing.JFrame{
      * Creates new form compiler
      */
     
+    String op = "[]{}()";
+    String log = "+-*/";
+    String cond = "MENORMAYORMAIGUALMEIGUALDIF";
+    String tipoDato = "duvalinbocadinchiclerellerindocachetadamazapanSkwinkle";
+    String palRes = "abiertocerradobolsitapiñataticowinniSISINOTicket";
+    String simbRes = "=:\"_";
+    boolean band = false;
+    String aux = "";
+    String inicio;
+    int cont, linea = 1;
+    String[] arre;
+    
+    private void ifBan(boolean ban, int idx, int lin){
+        if (!aux.isEmpty()) {
+            inicio = String.valueOf(aux.charAt(0));
+        }
+        String letras = "qwertyuiopñlkjhgfdsazxcvbnmQWERTYUIOPÑLKJHGFDSAZXCVBNM";
+        if (ban) {
+            if (cond.contains(aux)) {
+                System.out.println("Op condicional: "+aux);
+            }else if (tipoDato.contains(aux)) {
+                System.out.println("Tipo de dato: "+aux);
+            }else if (palRes.contains(aux)) {
+                System.out.println("Palabra reservada: "+aux);
+            }else if(letras.contains(inicio)){
+                System.out.println("Variable: "+aux);
+            }else{
+                int n = aux.length()+1;
+                for (int j = idx-n; j >= 0; j--) {
+                    if (!arre[j].isBlank()) {
+                        if (arre[j].equals("=")) {
+                            System.out.println("Valor de variable: "+aux);
+                        }else{
+                            System.out.println("Símbolo desconocido en la línea "+lin+": "+aux);
+                            cont++;
+                        }
+                        //System.out.println("arre[j] = " + arre[j]);
+                        break;
+                    }
+                }
+                
+            }
+            band = false;
+            aux = "";
+        }
+    }
+    
+    
     private boolean analizarLexico(String code){
         
-        int cont = 0;
-        
-        String[] arre = code.split("");
-        String aux = "";
-        boolean ban = false;
+        cont = 0;
+        arre = code.split("");
         
         for (int i = 0; i < arre.length; i++) {
             String letra = arre[i];
-            String op = "[]{}()";
-            String log = "+-*/";
-            String cond = "MENOR MAYOR MAIGUAL MEIGUAL DIF";
-            String tipoDato = "duvalin bocadin chicle rellerindo cachetada mazapan skwinkle";
             
             //     []+MENOR-duvalin()
             if (op.contains(letra)) {
-                if (ban) {
-                    if (cond.contains(aux)) {
-                        System.out.println("Op condicional: "+aux);
-                    }else if (tipoDato.contains(aux)) {
-                        System.out.println("Tipo de dato: "+aux);
-                    }
-                    ban = false;
-                    aux = "";
-                }
+                ifBan(band,i,linea);
                 System.out.println("Operador: "+letra);
                 
             }else if (log.contains(letra)) {
-                if (ban) {
-                    if (cond.contains(aux)) {
-                        System.out.println("Op condicional: "+aux);
-                    }else if (tipoDato.contains(aux)) {
-                        System.out.println("Tipo de dato: "+aux);
-                    }
-                    ban=false;
-                    aux = "";
-                }
+                ifBan(band,i,linea);
                 System.out.println("Op lógico: "+letra);
                 
+            }else if (simbRes.contains(letra)) {
+                ifBan(band,i,linea);
+                System.out.println("Simbolo reservado: "+letra);
             }else{
-                aux += letra;
-                ban = true;
+                if (!letra.equals(" ") && !letra.equals("\n") && !letra.equals("	")) {
+                    aux += letra;
+                    band = true;   
+                }else{
+                    ifBan(band,i,linea);
+                }
+                if (i == arre.length-1) {
+                    ifBan(band,i,linea);
+                }
+            }
+            if (letra.equals("\n")) {
+                System.out.println("================================================================ SALTO DE LÍNEA");
+                linea++;
             }
         }
-        
+        System.out.println("cont = " + cont);
         return cont == 0;
     }
     
