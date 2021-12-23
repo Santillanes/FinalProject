@@ -12,7 +12,7 @@ import java.util.StringTokenizer;
  */
 public class Compiler extends javax.swing.JFrame{
 
-    //Hello world
+    
     
     /**
      * Creates new form compiler
