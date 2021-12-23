@@ -1,5 +1,9 @@
 
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Insets;
 import java.util.StringTokenizer;
+import javax.swing.border.Border;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -56,6 +60,7 @@ public class Compiler extends javax.swing.JFrame{
                         }
                         //System.out.println("arre[j] = " + arre[j]);
                         break;
+                    } else {
                     }
                 }
                 
@@ -141,10 +146,47 @@ public class Compiler extends javax.swing.JFrame{
         return cont == 0;
     }
     
-    
+    class RoundedBorder implements Border {
+
+    private int radius;
+
+    RoundedBorder(int radius) {
+        this.radius = radius;
+    }
+
+    public Insets getBorderInsets(Component c) {
+        return new Insets(this.radius + 1, this.radius + 1, this.radius + 2, this.radius);
+    }
+
+    public boolean isBorderOpaque() {
+        return true;
+    }
+
+    public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
+        g.drawRoundRect(x, y, width - 1, height - 1, radius, radius);
+    }
+}
     
     public Compiler() {
         initComponents();
+        
+        this.setTitle("Net Candy Compiler");
+        
+        setSize(1280, 720);
+        this.setLocationRelativeTo(null);
+        
+        btnCompilar.setEnabled(false);
+        btnEliminar.setEnabled(false);
+        btnGuardar.setEnabled(false);
+        
+        txaCode.setBorder(new RoundedBorder(30));
+        
+        btnNuevo.setBorder(new RoundedBorder(30));
+        btnAbrir.setBorder(new RoundedBorder(30));
+        btnCompilar.setBorder(new RoundedBorder(30));
+        btnEliminar.setBorder(new RoundedBorder(30));
+        btnGuardar.setBorder(new RoundedBorder(30));
+        
     }
 
     /**
@@ -158,58 +200,91 @@ public class Compiler extends javax.swing.JFrame{
 
         jScrollPane1 = new javax.swing.JScrollPane();
         txaCode = new javax.swing.JTextArea();
-        jButton1 = new javax.swing.JButton();
+        btnNuevo = new javax.swing.JButton();
+        btnAbrir = new javax.swing.JButton();
+        btnGuardar = new javax.swing.JButton();
+        btnCompilar = new javax.swing.JButton();
+        btnEliminar = new javax.swing.JButton();
+        fondo = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
+        setEnabled(false);
+        setPreferredSize(new java.awt.Dimension(1280, 720));
+        getContentPane().setLayout(null);
 
         txaCode.setColumns(20);
+        txaCode.setFont(new java.awt.Font("Monospaced", 0, 18)); // NOI18N
         txaCode.setRows(5);
-        txaCode.setText("Hola");
+        txaCode.setText("INICIO\n\n\t(;Escriba su Código aquí:)\n\n\nFIN");
         jScrollPane1.setViewportView(txaCode);
 
-        jButton1.setText("jButton1");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        getContentPane().add(jScrollPane1);
+        jScrollPane1.setBounds(301, 24, 956, 678);
+
+        btnNuevo.setBackground(new java.awt.Color(255, 255, 255));
+        btnNuevo.setFont(new java.awt.Font("Segoe Print", 1, 18)); // NOI18N
+        btnNuevo.setText("Nuevo");
+        btnNuevo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnNuevoActionPerformed(evt);
             }
         });
+        getContentPane().add(btnNuevo);
+        btnNuevo.setBounds(38, 130, 220, 41);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(73, 73, 73)
-                .addComponent(jButton1)
-                .addGap(108, 108, 108)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 714, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(28, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(49, 49, 49)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 442, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(226, 226, 226)
-                        .addComponent(jButton1)))
-                .addContainerGap(43, Short.MAX_VALUE))
-        );
+        btnAbrir.setBackground(new java.awt.Color(255, 255, 255));
+        btnAbrir.setFont(new java.awt.Font("Segoe Print", 1, 18)); // NOI18N
+        btnAbrir.setText("Abrir");
+        getContentPane().add(btnAbrir);
+        btnAbrir.setBounds(38, 203, 220, 41);
+
+        btnGuardar.setBackground(new java.awt.Color(255, 255, 255));
+        btnGuardar.setFont(new java.awt.Font("Segoe Print", 1, 18)); // NOI18N
+        btnGuardar.setText("Guardar");
+        getContentPane().add(btnGuardar);
+        btnGuardar.setBounds(38, 276, 220, 41);
+
+        btnCompilar.setBackground(new java.awt.Color(255, 255, 255));
+        btnCompilar.setFont(new java.awt.Font("Segoe Print", 1, 18)); // NOI18N
+        btnCompilar.setText("Compilar");
+        btnCompilar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCompilarActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnCompilar);
+        btnCompilar.setBounds(38, 349, 220, 41);
+
+        btnEliminar.setBackground(new java.awt.Color(255, 255, 255));
+        btnEliminar.setFont(new java.awt.Font("Segoe Print", 1, 18)); // NOI18N
+        btnEliminar.setText("Eliminar");
+        getContentPane().add(btnEliminar);
+        btnEliminar.setBounds(38, 422, 220, 41);
+
+        fondo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Mesa de trabajo 1.png"))); // NOI18N
+        getContentPane().add(fondo);
+        fondo.setBounds(0, -190, 2020, 1090);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoActionPerformed
         // TODO add your handling code here:
         if (analizarLexico(txaCode.getText())) {
             System.out.println("Análisis léxico correcto");
         }else{
             System.out.println("Error en el análisis léxico");
         }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btnNuevoActionPerformed
+
+    private void btnCompilarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCompilarActionPerformed
+        // TODO add your handling code here:
+        Consola salida = new Consola();
+        
+        salida.setVisible(true);
+        
+    }//GEN-LAST:event_btnCompilarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -248,7 +323,12 @@ public class Compiler extends javax.swing.JFrame{
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton btnAbrir;
+    private javax.swing.JButton btnCompilar;
+    private javax.swing.JButton btnEliminar;
+    private javax.swing.JButton btnGuardar;
+    private javax.swing.JButton btnNuevo;
+    private javax.swing.JLabel fondo;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea txaCode;
     // End of variables declaration//GEN-END:variables
