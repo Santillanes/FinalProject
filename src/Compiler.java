@@ -182,17 +182,14 @@ public class Compiler extends javax.swing.JFrame{
         btnEliminar.setEnabled(false);
         btnGuardar.setEnabled(false);
         txaCode.setEnabled(false);
+      
+        btnNuevo.setBorder(new RoundedBorder (30));
         
-        txaCode.setBorder(new RoundedBorder(30));
+      
         
         
-        btnNuevo.setBorder(new RoundedBorder(30));
-        btnAbrir.setBorder(new RoundedBorder(30));
-        btnCompilar.setBorder(new RoundedBorder(30));
-        btnEliminar.setBorder(new RoundedBorder(30));
-        btnGuardar.setBorder(new RoundedBorder(30));
         
-        setIconImage(new ImageIcon(getClass().getResource("/images/logo.png")).getImage());
+        setIconImage(new ImageIcon(getClass().getResource("/images/logopng.png")).getImage());
         
     }
 
@@ -224,6 +221,7 @@ public class Compiler extends javax.swing.JFrame{
         txaCode.setFont(new java.awt.Font("Monospaced", 0, 18)); // NOI18N
         txaCode.setRows(5);
         txaCode.setText("INICIO\n\n\t(; Escriba su Código aquí :)\n\n\nFIN");
+        txaCode.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 3, true));
         jScrollPane1.setViewportView(txaCode);
 
         getContentPane().add(jScrollPane1);
@@ -231,7 +229,9 @@ public class Compiler extends javax.swing.JFrame{
 
         btnNuevo.setBackground(new java.awt.Color(255, 255, 255));
         btnNuevo.setFont(new java.awt.Font("Segoe Print", 1, 18)); // NOI18N
+        btnNuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/7183232.png"))); // NOI18N
         btnNuevo.setText("Nuevo");
+        btnNuevo.setBorder(null);
         btnNuevo.setContentAreaFilled(false);
         btnNuevo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -239,26 +239,23 @@ public class Compiler extends javax.swing.JFrame{
             }
         });
         getContentPane().add(btnNuevo);
-        btnNuevo.setBounds(38, 130, 220, 41);
+        btnNuevo.setBounds(50, 80, 190, 90);
 
         btnAbrir.setBackground(new java.awt.Color(255, 255, 255));
         btnAbrir.setFont(new java.awt.Font("Segoe Print", 1, 18)); // NOI18N
         btnAbrir.setText("Abrir");
-        btnAbrir.setContentAreaFilled(false);
         getContentPane().add(btnAbrir);
         btnAbrir.setBounds(38, 203, 220, 41);
 
         btnGuardar.setBackground(new java.awt.Color(255, 255, 255));
         btnGuardar.setFont(new java.awt.Font("Segoe Print", 1, 18)); // NOI18N
         btnGuardar.setText("Guardar");
-        btnGuardar.setContentAreaFilled(false);
         getContentPane().add(btnGuardar);
         btnGuardar.setBounds(38, 276, 220, 41);
 
         btnCompilar.setBackground(new java.awt.Color(255, 255, 255));
         btnCompilar.setFont(new java.awt.Font("Segoe Print", 1, 18)); // NOI18N
         btnCompilar.setText("Compilar");
-        btnCompilar.setContentAreaFilled(false);
         btnCompilar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCompilarActionPerformed(evt);
@@ -270,7 +267,6 @@ public class Compiler extends javax.swing.JFrame{
         btnEliminar.setBackground(new java.awt.Color(255, 255, 255));
         btnEliminar.setFont(new java.awt.Font("Segoe Print", 1, 18)); // NOI18N
         btnEliminar.setText("Eliminar");
-        btnEliminar.setContentAreaFilled(false);
         btnEliminar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnEliminarActionPerformed(evt);
@@ -283,6 +279,8 @@ public class Compiler extends javax.swing.JFrame{
         getContentPane().add(logo);
         logo.setBounds(53, 524, 190, 128);
 
+        fondo.setBackground(new java.awt.Color(255, 255, 255));
+        fondo.setForeground(new java.awt.Color(255, 255, 255));
         fondo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Mesa de trabajo 1.png"))); // NOI18N
         getContentPane().add(fondo);
         fondo.setBounds(0, -190, 2020, 1090);
