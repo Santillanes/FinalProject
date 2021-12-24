@@ -3,6 +3,7 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Insets;
 import java.util.StringTokenizer;
+import javax.swing.ImageIcon;
 import javax.swing.border.Border;
 
 /*
@@ -181,11 +182,14 @@ public class Compiler extends javax.swing.JFrame{
         
         txaCode.setBorder(new RoundedBorder(30));
         
+        
         btnNuevo.setBorder(new RoundedBorder(30));
         btnAbrir.setBorder(new RoundedBorder(30));
         btnCompilar.setBorder(new RoundedBorder(30));
         btnEliminar.setBorder(new RoundedBorder(30));
         btnGuardar.setBorder(new RoundedBorder(30));
+        
+        setIconImage(new ImageIcon(getClass().getResource("/image/logo.png")).getImage());
         
     }
 
@@ -205,6 +209,7 @@ public class Compiler extends javax.swing.JFrame{
         btnGuardar = new javax.swing.JButton();
         btnCompilar = new javax.swing.JButton();
         btnEliminar = new javax.swing.JButton();
+        logo = new javax.swing.JLabel();
         fondo = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -261,6 +266,10 @@ public class Compiler extends javax.swing.JFrame{
         btnEliminar.setText("Eliminar");
         getContentPane().add(btnEliminar);
         btnEliminar.setBounds(38, 422, 220, 41);
+
+        logo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/net candy compiler peque.png"))); // NOI18N
+        getContentPane().add(logo);
+        logo.setBounds(53, 524, 190, 128);
 
         fondo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Mesa de trabajo 1.png"))); // NOI18N
         getContentPane().add(fondo);
@@ -330,6 +339,7 @@ public class Compiler extends javax.swing.JFrame{
     private javax.swing.JButton btnNuevo;
     private javax.swing.JLabel fondo;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel logo;
     private javax.swing.JTextArea txaCode;
     // End of variables declaration//GEN-END:variables
 }
