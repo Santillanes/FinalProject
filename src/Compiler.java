@@ -17,8 +17,6 @@ import javax.swing.border.Border;
  */
 public class Compiler extends javax.swing.JFrame{
 
-    
-    
     /**
      * Creates new form compiler
      */
@@ -32,8 +30,9 @@ public class Compiler extends javax.swing.JFrame{
     boolean band = false;
     String aux = "";
     String inicio;
-    int cont, linea = 1;
+    int cont = 0, linea = 1;
     String[] arre;
+    
     
     private void ifBan(boolean ban, int idx, int lin){
         if (!aux.isEmpty()) {
@@ -71,10 +70,11 @@ public class Compiler extends javax.swing.JFrame{
         }
     }
     
-    
     private boolean analizarLexico(String code){
         
-        cont = 0;
+        if (cont != 0) {
+            cont = 0;
+        }
         arre = code.split("");
         
         for (int i = 0; i < arre.length; i++) {
@@ -147,38 +147,41 @@ public class Compiler extends javax.swing.JFrame{
         return cont == 0;
     }
     
+    
+    // ================================================= DISEÑO ==================================================
     class RoundedBorder implements Border {
 
-    private int radius;
+        private int radius;
 
-    RoundedBorder(int radius) {
-        this.radius = radius;
-    }
+        RoundedBorder(int radius) {
+            this.radius = radius;
+        }
 
-    public Insets getBorderInsets(Component c) {
-        return new Insets(this.radius + 1, this.radius + 1, this.radius + 2, this.radius);
-    }
+        public Insets getBorderInsets(Component c) {
+            return new Insets(this.radius + 1, this.radius + 1, this.radius + 2, this.radius);
+        }
 
-    public boolean isBorderOpaque() {
-        return true;
-    }
+        public boolean isBorderOpaque() {
+            return true;
+        }
 
-    public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
-        g.drawRoundRect(x, y, width - 1, height - 1, radius, radius);
+        public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
+            g.drawRoundRect(x, y, width - 1, height - 1, radius, radius);
+        }
     }
-}
-    
+    // ================================================= DISEÑO ==================================================
     public Compiler() {
         initComponents();
         
         this.setTitle("Net Candy Compiler");
         
-        setSize(1280, 720);
+        setSize(1295, 755);
         this.setLocationRelativeTo(null);
         
         btnCompilar.setEnabled(false);
         btnEliminar.setEnabled(false);
         btnGuardar.setEnabled(false);
+        txaCode.setEnabled(false);
         
         txaCode.setBorder(new RoundedBorder(30));
         
@@ -189,7 +192,7 @@ public class Compiler extends javax.swing.JFrame{
         btnEliminar.setBorder(new RoundedBorder(30));
         btnGuardar.setBorder(new RoundedBorder(30));
         
-        setIconImage(new ImageIcon(getClass().getResource("/image/logo.png")).getImage());
+        setIconImage(new ImageIcon(getClass().getResource("/images/logo.png")).getImage());
         
     }
 
@@ -214,22 +217,22 @@ public class Compiler extends javax.swing.JFrame{
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
-        setEnabled(false);
         setPreferredSize(new java.awt.Dimension(1280, 720));
         getContentPane().setLayout(null);
 
         txaCode.setColumns(20);
         txaCode.setFont(new java.awt.Font("Monospaced", 0, 18)); // NOI18N
         txaCode.setRows(5);
-        txaCode.setText("INICIO\n\n\t(;Escriba su Código aquí:)\n\n\nFIN");
+        txaCode.setText("INICIO\n\n\t(; Escriba su Código aquí :)\n\n\nFIN");
         jScrollPane1.setViewportView(txaCode);
 
         getContentPane().add(jScrollPane1);
-        jScrollPane1.setBounds(301, 24, 956, 678);
+        jScrollPane1.setBounds(327, 24, 930, 678);
 
         btnNuevo.setBackground(new java.awt.Color(255, 255, 255));
         btnNuevo.setFont(new java.awt.Font("Segoe Print", 1, 18)); // NOI18N
         btnNuevo.setText("Nuevo");
+        btnNuevo.setContentAreaFilled(false);
         btnNuevo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnNuevoActionPerformed(evt);
@@ -241,18 +244,21 @@ public class Compiler extends javax.swing.JFrame{
         btnAbrir.setBackground(new java.awt.Color(255, 255, 255));
         btnAbrir.setFont(new java.awt.Font("Segoe Print", 1, 18)); // NOI18N
         btnAbrir.setText("Abrir");
+        btnAbrir.setContentAreaFilled(false);
         getContentPane().add(btnAbrir);
         btnAbrir.setBounds(38, 203, 220, 41);
 
         btnGuardar.setBackground(new java.awt.Color(255, 255, 255));
         btnGuardar.setFont(new java.awt.Font("Segoe Print", 1, 18)); // NOI18N
         btnGuardar.setText("Guardar");
+        btnGuardar.setContentAreaFilled(false);
         getContentPane().add(btnGuardar);
         btnGuardar.setBounds(38, 276, 220, 41);
 
         btnCompilar.setBackground(new java.awt.Color(255, 255, 255));
         btnCompilar.setFont(new java.awt.Font("Segoe Print", 1, 18)); // NOI18N
         btnCompilar.setText("Compilar");
+        btnCompilar.setContentAreaFilled(false);
         btnCompilar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCompilarActionPerformed(evt);
@@ -264,6 +270,12 @@ public class Compiler extends javax.swing.JFrame{
         btnEliminar.setBackground(new java.awt.Color(255, 255, 255));
         btnEliminar.setFont(new java.awt.Font("Segoe Print", 1, 18)); // NOI18N
         btnEliminar.setText("Eliminar");
+        btnEliminar.setContentAreaFilled(false);
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
         getContentPane().add(btnEliminar);
         btnEliminar.setBounds(38, 422, 220, 41);
 
@@ -280,20 +292,32 @@ public class Compiler extends javax.swing.JFrame{
 
     private void btnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoActionPerformed
         // TODO add your handling code here:
-        if (analizarLexico(txaCode.getText())) {
-            System.out.println("Análisis léxico correcto");
-        }else{
-            System.out.println("Error en el análisis léxico");
-        }
+        btnCompilar.setEnabled(true);
+        btnEliminar.setEnabled(true);
+        btnGuardar.setEnabled(true);
+        txaCode.setEnabled(true); 
     }//GEN-LAST:event_btnNuevoActionPerformed
 
     private void btnCompilarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCompilarActionPerformed
         // TODO add your handling code here:
-        Consola salida = new Consola();
-        
-        salida.setVisible(true);
+        cont = 0; linea = 1; aux = ""; band = false;
+        if (analizarLexico(txaCode.getText())) {
+            System.out.println("Análisis léxico correcto");
+            Consola salida = new Consola();
+            salida.setVisible(true);
+        }else{
+            System.out.println("Error en el análisis léxico");
+        }
         
     }//GEN-LAST:event_btnCompilarActionPerformed
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        // TODO add your handling code here:
+        for (int i = 0; i < arre.length; i++) {
+            System.out.print(arre[i]+", ");
+        }
+        
+    }//GEN-LAST:event_btnEliminarActionPerformed
 
     /**
      * @param args the command line arguments

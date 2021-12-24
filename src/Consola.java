@@ -43,7 +43,7 @@ public class Consola extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTextArea1);
 
         getContentPane().add(jScrollPane1);
-        jScrollPane1.setBounds(0, 0, 1000, 400);
+        jScrollPane1.setBounds(10, 0, 1000, 400);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
