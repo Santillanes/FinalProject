@@ -1,28 +1,33 @@
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Insets;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.border.Border;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-
 /**
  *
  * @author Santillanes
  */
-public class Compiler extends javax.swing.JFrame{
+public class Compiler extends javax.swing.JFrame {
 
     /**
      * Creates new form compiler
      */
-    
     String op = "[]{}()";
     String log = "+-*/%^";
     String compara = "MENORMAYORMAIGUALMEIGUALDIFNOYYOOOE";
@@ -38,42 +43,43 @@ public class Compiler extends javax.swing.JFrame{
     String[] arre;
     List palabras = new ArrayList();
     List variables = new ArrayList();
-    
+
     // ================================================= LÉXICO ==================================================
-    private void ifBan(boolean ban, int idx, int lin){
+    private void ifBan(boolean ban, int idx, int lin) {
         if (!aux.isEmpty()) {
             inicio = String.valueOf(aux.charAt(0));
         }
         String letras = "qwertyuiopñlkjhgfdsazxcvbnmQWERTYUIOPÑLKJHGFDSAZXCVBNM";
         if (ban) {
             if (compara.contains(aux)) {
-                System.out.println("Operador comparativo: "+aux);
+                System.out.println("Operador comparativo: " + aux);
                 palabras.add(aux);
-            }else if (tipoDato.contains(aux)) {
-                System.out.println("Tipo de dato: "+aux);
+            } else if (tipoDato.contains(aux)) {
+                System.out.println("Tipo de dato: " + aux);
                 palabras.add(aux);
-            }else if (palRes.contains(aux)) {
-                System.out.println("Palabra reservada: "+aux);
+            } else if (palRes.contains(aux)) {
+                System.out.println("Palabra reservada: " + aux);
                 palabras.add(aux);
-            }else if(ciclos.contains(aux)){
-                System.out.println("Sentencia: "+aux);
+            } else if (ciclos.contains(aux)) {
+                System.out.println("Sentencia: " + aux);
                 palabras.add(aux);
-            }else if(condicion.contains(aux)){
-                System.out.println("Sentencia: "+aux);
+            } else if (condicion.contains(aux)) {
+                System.out.println("Sentencia: " + aux);
                 palabras.add(aux);
-            }else if(letras.contains(inicio)){
-                System.out.println("Identificador: "+aux);
+            } else if (letras.contains(inicio)) {
+                System.out.println("Identificador: " + aux);
+                txaConsola.setText("Identificador:"); // AQUI MANDA TEXTO A LA CONSOLA DEL COMPILADOR
                 palabras.add(aux);
                 variables.add(aux);
-            }else{
-                int n = aux.length()+1;
-                for (int j = idx-n; j >= 0; j--) {
+            } else {
+                int n = aux.length() + 1;
+                for (int j = idx - n; j >= 0; j--) {
                     if (!arre[j].isBlank()) {
                         if (arre[j].equals("=")) {
-                            System.out.println("Valor de variable: "+aux);
+                            System.out.println("Valor de variable: " + aux);
                             palabras.add(aux);
-                        }else{
-                            System.out.println("Símbolo desconocido en la línea "+lin+": "+aux);
+                        } else {
+                            System.out.println("Símbolo desconocido en la línea " + lin + ": " + aux);
                             cont++;
                         }
                         //System.out.println("arre[j] = " + arre[j]);
@@ -81,87 +87,88 @@ public class Compiler extends javax.swing.JFrame{
                     } else {
                     }
                 }
-                
+
             }
             band = false;
             aux = "";
         }
     }
-    
-    private boolean analizarLexico(String code){
-        
+
+    private boolean analizarLexico(String code) {
+
         if (cont != 0) {
             cont = 0;
         }
         arre = code.split("");
-        
+
         for (int i = 0; i < arre.length; i++) {
             String letra = arre[i];
-            
+
             //     []+MENOR-duvalin()
             if (op.contains(letra)) {
-                ifBan(band,i,linea);
-                
-                if (letra.equals("(") && arre[i+1].equals(":")) {
+                ifBan(band, i, linea);
+
+                if (letra.equals("(") && arre[i + 1].equals(":")) {
                     palabras.add("(:");
                     System.out.println("Inicio comentario: (:");
+
                     String txt = "";
-                    for (int j = i+2; j < arre.length; j++) {
-                        if (arre[j].equals(":") && arre[j+1].equals(")")) {
-                            i = j+1;
+                    for (int j = i + 2; j < arre.length; j++) {
+                        if (arre[j].equals(":") && arre[j + 1].equals(")")) {
+                            i = j + 1;
                             break;
-                        }else{
+                        } else {
                             txt += arre[j];
                         }
                     }
                     if (!txt.equals("")) {
                         palabras.add(txt);
-                        System.out.println("Texto: "+txt);
+                        System.out.println("Texto: " + txt);
                     }
                     palabras.add(":)");
                     System.out.println("Fin comentario: :)");
-                }else{
+                } else {
                     palabras.add(letra);
-                    System.out.println("Operador: "+letra);
+                    System.out.println("Operador: " + letra);
                 }
-                
-            }else if (log.contains(letra)) {
-                ifBan(band,i,linea);
+
+            } else if (log.contains(letra)) {
+                ifBan(band, i, linea);
                 palabras.add(letra);
-                System.out.println("Op lógico: "+letra);
-                
-            }else if (simbRes.contains(letra)) {
-                ifBan(band,i,linea);
+                System.out.println("Op lógico: " + letra);
+
+            } else if (simbRes.contains(letra)) {
+                ifBan(band, i, linea);
                 palabras.add(letra);
-                System.out.println("Simbolo reservado: "+letra);
-                
+                System.out.println("Simbolo reservado: " + letra);
+
                 if (letra.equals("\"")) {
                     String txt = "";
-                    for (int j = i+1; j < arre.length; j++) {
+                    for (int j = i + 1; j < arre.length; j++) {
                         if (arre[j].equals("\"")) {
                             i = j;
                             break;
-                        }else{
+                        } else {
                             txt += arre[j];
                         }
                     }
                     if (!txt.equals("")) {
                         palabras.add(txt);
-                        System.out.println("Texto: "+txt);
+                        System.out.println("Texto: " + txt);
                     }
                     palabras.add("\"");
                     System.out.println("Símbolo reservado: \"");
                 }
-                
-            }else{
+
+            } else {
                 if (!letra.equals(" ") && !letra.equals("\n") && !letra.equals("	")) {
                     aux += letra;
-                    band = true;   
-                }else{
-                    ifBan(band,i,linea);
+                    band = true;
+                } else {
+                    ifBan(band, i, linea);
                 }
-                if (i == arre.length-1) {
-                    ifBan(band,i,linea);
+                if (i == arre.length - 1) {
+                    ifBan(band, i, linea);
                 }
             }
             if (letra.equals("\n")) {
@@ -173,12 +180,10 @@ public class Compiler extends javax.swing.JFrame{
         return cont == 0;
     }
     // ================================================= LÉXICO ==================================================
-    
-    
-    
+
     // ================================================= SINTÁCTICO ==================================================
-    public boolean analizarSintactico(){
-       
+    public boolean analizarSintactico() {
+
         /*
                 DECLARACIÓN
                     tipoDato Var
@@ -207,95 +212,90 @@ public class Compiler extends javax.swing.JFrame{
                     JUICIO ( VAR ) { CASO num,cade : instrucciones ROMPER (repite) }
                     JUICIO ( VAR ) { CASO num,cade : instrucciones ROMPER (repite) DEFECTO : instrucciones }
         
-        */
-        
-        
+         */
         // De la lista, crear un arreglo de dos dimensiones, para la variable y su valor (tipo de variable?)
         System.out.println("======================================= Análisis sintáctico =====================================");
-        
+        //txaConsola.setText("======================================= Análisis sintáctico =====================================");
+
         for (int i = 0; i < palabras.size(); i++) {
             String pal = palabras.get(i).toString();
-            
-            while(pal.charAt(0) == ' '){
+
+            while (pal.charAt(0) == ' ') {
                 pal = pal.substring(1);
             }
-            while(pal.charAt(pal.length()-1) == ' '){
-                pal = pal.substring(0, pal.length()-1);
+            while (pal.charAt(pal.length() - 1) == ' ') {
+                pal = pal.substring(0, pal.length() - 1);
             }
-            
-            
-                        //DECLARACIÓN
-            if (i<palabras.size()-3 && tipoDato.contains(pal) && revisarVariable(palabras.get(i+1).toString()) && palabras.get(i+2).toString().equals("=") ) {
-                
+
+            //DECLARACIÓN
+            if (i < palabras.size() - 3 && tipoDato.contains(pal) && revisarVariable(palabras.get(i + 1).toString()) && palabras.get(i + 2).toString().equals("=")) {
+
                 String txt = "";
                 boolean band = false;
-                if (palabras.get(i+3).toString().equals("\"")) {
-                    txt = palabras.get(i+3).toString() + palabras.get(i+4).toString() + palabras.get(i+5).toString();
+                if (palabras.get(i + 3).toString().equals("\"")) {
+                    txt = palabras.get(i + 3).toString() + palabras.get(i + 4).toString() + palabras.get(i + 5).toString();
                     band = true;
-                }else{
-                    txt = palabras.get(i+3).toString();
+                } else {
+                    txt = palabras.get(i + 3).toString();
                 }
                 if (revisarValorVar(txt)) {
                     System.out.println("**** Declaración de variable con asignación ****");
                     if (band) {
-                        System.out.println(pal + " " + palabras.get(i+1).toString() + " " + palabras.get(i+2).toString() + " " + palabras.get(i+3).toString() + palabras.get(i+4).toString() + palabras.get(i+5).toString());
-                        i+=5;
-                    }else{
-                        System.out.println(pal + " " + palabras.get(i+1).toString() + " " + palabras.get(i+2).toString() + " " + palabras.get(i+3).toString());
-                        i+=3;
+                        System.out.println(pal + " " + palabras.get(i + 1).toString() + " " + palabras.get(i + 2).toString() + " " + palabras.get(i + 3).toString() + palabras.get(i + 4).toString() + palabras.get(i + 5).toString());
+                        i += 5;
+                    } else {
+                        System.out.println(pal + " " + palabras.get(i + 1).toString() + " " + palabras.get(i + 2).toString() + " " + palabras.get(i + 3).toString());
+                        i += 3;
                     }
                 }
-                        //DECLARACIÓN
-            }else if (i<palabras.size()-1 && tipoDato.contains(pal) && revisarVariable(palabras.get(i+1).toString())) {   
+                //DECLARACIÓN
+            } else if (i < palabras.size() - 1 && tipoDato.contains(pal) && revisarVariable(palabras.get(i + 1).toString())) {
                 System.out.println("**** Declaración de variable sin asignación ****");
-                System.out.println(pal + " " + palabras.get(i+1).toString());
+                System.out.println(pal + " " + palabras.get(i + 1).toString());
                 i++;
-                        //ASIGNACIÓN
-            }else if (i<palabras.size()-2 && revisarVariable(pal) && palabras.get(i+1).toString().equals("=")) {
+                //ASIGNACIÓN
+            } else if (i < palabras.size() - 2 && revisarVariable(pal) && palabras.get(i + 1).toString().equals("=")) {
                 String txt = "";
                 boolean band = false;
-                if (palabras.get(i+2).toString().equals("\"")) {
-                    txt = palabras.get(i+2).toString() + palabras.get(i+3).toString() + palabras.get(i+4).toString();
+                if (palabras.get(i + 2).toString().equals("\"")) {
+                    txt = palabras.get(i + 2).toString() + palabras.get(i + 3).toString() + palabras.get(i + 4).toString();
                     band = true;
-                }else{
-                    txt = palabras.get(i+2).toString();
+                } else {
+                    txt = palabras.get(i + 2).toString();
                 }
                 if (revisarValorVar(txt)) {
                     System.out.println("**** Asignación a variable ****");
                     if (band) {
-                        System.out.println(pal + " " + palabras.get(i+1).toString() + " " + palabras.get(i+2).toString()+ palabras.get(i+3).toString()+ palabras.get(i+4).toString());
-                    }else{
-                        System.out.println(pal + " " + palabras.get(i+1).toString() + " " + palabras.get(i+2).toString());
+                        System.out.println(pal + " " + palabras.get(i + 1).toString() + " " + palabras.get(i + 2).toString() + palabras.get(i + 3).toString() + palabras.get(i + 4).toString());
+                    } else {
+                        System.out.println(pal + " " + palabras.get(i + 1).toString() + " " + palabras.get(i + 2).toString());
                     }
                 }
-                        //SALIDA DE DATOS
-            }else if (i<palabras.size()-2 && "Ticket".equals(pal) && ":".equals(palabras.get(i+1).toString())) {
+                //SALIDA DE DATOS
+            } else if (i < palabras.size() - 2 && "Ticket".equals(pal) && ":".equals(palabras.get(i + 1).toString())) {
                 String txt = "";
                 boolean band = false;
-                if (palabras.get(i+2).toString().equals("\"")) {
-                    txt = palabras.get(i+2).toString() + palabras.get(i+3).toString() + palabras.get(i+4).toString();
+                if (palabras.get(i + 2).toString().equals("\"")) {
+                    txt = palabras.get(i + 2).toString() + palabras.get(i + 3).toString() + palabras.get(i + 4).toString();
                     band = true;
-                }else{
-                    txt = palabras.get(i+2).toString();
+                } else {
+                    txt = palabras.get(i + 2).toString();
                 }
                 if (revisarValorVar(txt)) {
                     System.out.println("**** Salida de datos ****");
                     if (band) {
-                        System.out.println(pal + palabras.get(i+1).toString() + " " + palabras.get(i+2).toString()+ palabras.get(i+3).toString()+ palabras.get(i+4).toString());
-                    }else{
-                        System.out.println(pal + palabras.get(i+1).toString() + " " + palabras.get(i+2).toString());
+                        System.out.println(pal + palabras.get(i + 1).toString() + " " + palabras.get(i + 2).toString() + palabras.get(i + 3).toString() + palabras.get(i + 4).toString());
+                    } else {
+                        System.out.println(pal + palabras.get(i + 1).toString() + " " + palabras.get(i + 2).toString());
                     }
                 }
             }
-            
-            
-            
-            
+
         }
         return false;
     }
-    
-    private boolean revisarVariable(String var){
+
+    private boolean revisarVariable(String var) {
         for (int i = 0; i < variables.size(); i++) {
             if (var.equals(variables.get(i))) {
                 return true;
@@ -303,18 +303,16 @@ public class Compiler extends javax.swing.JFrame{
         }
         return false;
     }
-    
-    private boolean revisarValorVar(String var){
-        if (compara.contains(var) || tipoDato.contains(var) || palRes.contains(var) || ciclos.contains(var) ||condicion.contains(var) 
-                || op.contains(var) || log.contains(var) || simbRes.contains(var) ) {
+
+    private boolean revisarValorVar(String var) {
+        if (compara.contains(var) || tipoDato.contains(var) || palRes.contains(var) || ciclos.contains(var) || condicion.contains(var)
+                || op.contains(var) || log.contains(var) || simbRes.contains(var)) {
             return false;
         }
         return true;
     }
     // ================================================= SINTÁCTICO ==================================================
-    
-    
-    
+
     // ================================================= DISEÑO ==================================================
     class RoundedBorder implements Border {
 
@@ -336,28 +334,24 @@ public class Compiler extends javax.swing.JFrame{
             g.drawRoundRect(x, y, width - 1, height - 1, radius, radius);
         }
     }
+
     // ================================================= DISEÑO ==================================================
     public Compiler() {
         initComponents();
-        
+
         this.setTitle("Net Candy Compiler");
-        
+
         setSize(1295, 755);
         this.setLocationRelativeTo(null);
-        
+
         btnCompilar.setEnabled(false);
         btnEliminar.setEnabled(false);
         btnGuardar.setEnabled(false);
         txaCode.setEnabled(false);
-      
-        btnNuevo.setBorder(new RoundedBorder (30));
-        
-      
-        
-        
-        
+
+        //btnNuevo.setBorder(new RoundedBorder (30));
         setIconImage(new ImageIcon(getClass().getResource("/images/logopng.png")).getImage());
-        
+
     }
 
     /**
@@ -371,11 +365,15 @@ public class Compiler extends javax.swing.JFrame{
 
         jScrollPane1 = new javax.swing.JScrollPane();
         txaCode = new javax.swing.JTextArea();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        txaConsola = new javax.swing.JTextArea();
         btnNuevo = new javax.swing.JButton();
         btnAbrir = new javax.swing.JButton();
         btnGuardar = new javax.swing.JButton();
         btnCompilar = new javax.swing.JButton();
         btnEliminar = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
         logo = new javax.swing.JLabel();
         fondo = new javax.swing.JLabel();
 
@@ -392,59 +390,137 @@ public class Compiler extends javax.swing.JFrame{
         jScrollPane1.setViewportView(txaCode);
 
         getContentPane().add(jScrollPane1);
-        jScrollPane1.setBounds(327, 24, 930, 678);
+        jScrollPane1.setBounds(290, 30, 930, 460);
+
+        txaConsola.setColumns(20);
+        txaConsola.setFont(new java.awt.Font("Monospaced", 0, 14)); // NOI18N
+        txaConsola.setRows(5);
+        txaConsola.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 3, true));
+        txaConsola.setMinimumSize(new java.awt.Dimension(403, 156));
+        txaConsola.setPreferredSize(new java.awt.Dimension(403, 156));
+        txaConsola.setSelectionEnd(43);
+        txaConsola.setSelectionStart(43);
+        jScrollPane2.setViewportView(txaConsola);
+
+        getContentPane().add(jScrollPane2);
+        jScrollPane2.setBounds(290, 510, 930, 190);
 
         btnNuevo.setBackground(new java.awt.Color(255, 255, 255));
         btnNuevo.setFont(new java.awt.Font("Segoe Print", 1, 18)); // NOI18N
-        btnNuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/7183232.png"))); // NOI18N
+        btnNuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/abrir.png"))); // NOI18N
         btnNuevo.setText("Nuevo");
         btnNuevo.setBorder(null);
-        btnNuevo.setContentAreaFilled(false);
+        btnNuevo.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnNuevoMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnNuevoMouseExited(evt);
+            }
+        });
         btnNuevo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnNuevoActionPerformed(evt);
             }
         });
         getContentPane().add(btnNuevo);
-        btnNuevo.setBounds(50, 80, 190, 90);
+        btnNuevo.setBounds(80, 110, 130, 50);
 
         btnAbrir.setBackground(new java.awt.Color(255, 255, 255));
         btnAbrir.setFont(new java.awt.Font("Segoe Print", 1, 18)); // NOI18N
-        btnAbrir.setText("Abrir");
+        btnAbrir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/abrir2.png"))); // NOI18N
+        btnAbrir.setText(" Abrir");
+        btnAbrir.setBorder(null);
+        btnAbrir.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnAbrirMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnAbrirMouseExited(evt);
+            }
+        });
+        btnAbrir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAbrirActionPerformed(evt);
+            }
+        });
         getContentPane().add(btnAbrir);
-        btnAbrir.setBounds(38, 203, 220, 41);
+        btnAbrir.setBounds(80, 180, 130, 50);
 
         btnGuardar.setBackground(new java.awt.Color(255, 255, 255));
-        btnGuardar.setFont(new java.awt.Font("Segoe Print", 1, 18)); // NOI18N
-        btnGuardar.setText("Guardar");
+        btnGuardar.setFont(new java.awt.Font("Segoe Print", 1, 16)); // NOI18N
+        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/gua.png"))); // NOI18N
+        btnGuardar.setText(" Guardar");
+        btnGuardar.setBorder(null);
+        btnGuardar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnGuardarMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnGuardarMouseExited(evt);
+            }
+        });
+        btnGuardar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGuardarActionPerformed(evt);
+            }
+        });
         getContentPane().add(btnGuardar);
-        btnGuardar.setBounds(38, 276, 220, 41);
+        btnGuardar.setBounds(80, 253, 130, 50);
 
         btnCompilar.setBackground(new java.awt.Color(255, 255, 255));
-        btnCompilar.setFont(new java.awt.Font("Segoe Print", 1, 18)); // NOI18N
+        btnCompilar.setFont(new java.awt.Font("Segoe Print", 1, 16)); // NOI18N
+        btnCompilar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/play.png"))); // NOI18N
         btnCompilar.setText("Compilar");
+        btnCompilar.setBorder(null);
+        btnCompilar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnCompilarMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnCompilarMouseExited(evt);
+            }
+        });
         btnCompilar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCompilarActionPerformed(evt);
             }
         });
         getContentPane().add(btnCompilar);
-        btnCompilar.setBounds(38, 349, 220, 41);
+        btnCompilar.setBounds(80, 326, 130, 50);
 
         btnEliminar.setBackground(new java.awt.Color(255, 255, 255));
         btnEliminar.setFont(new java.awt.Font("Segoe Print", 1, 18)); // NOI18N
+        btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/borrar.png"))); // NOI18N
         btnEliminar.setText("Eliminar");
+        btnEliminar.setBorder(null);
+        btnEliminar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnEliminarMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnEliminarMouseExited(evt);
+            }
+        });
         btnEliminar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnEliminarActionPerformed(evt);
             }
         });
         getContentPane().add(btnEliminar);
-        btnEliminar.setBounds(38, 422, 220, 41);
+        btnEliminar.setBounds(80, 400, 130, 50);
+
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/PALABRA 1.png"))); // NOI18N
+        getContentPane().add(jLabel3);
+        jLabel3.setBounds(1220, 110, 40, 290);
+
+        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/PALABRA 1.2.png"))); // NOI18N
+        getContentPane().add(jLabel4);
+        jLabel4.setBounds(1220, 490, 50, 240);
 
         logo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/net candy compiler peque.png"))); // NOI18N
         getContentPane().add(logo);
-        logo.setBounds(53, 524, 190, 128);
+        logo.setBounds(53, 562, 190, 90);
 
         fondo.setBackground(new java.awt.Color(255, 255, 255));
         fondo.setForeground(new java.awt.Color(255, 255, 255));
@@ -457,32 +533,152 @@ public class Compiler extends javax.swing.JFrame{
 
     private void btnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoActionPerformed
         // TODO add your handling code here:
+        
+        JFileChooser fc = new JFileChooser();
+
+        int seleccion = fc.showSaveDialog(this);
+
+        if (seleccion == JFileChooser.APPROVE_OPTION) {
+            File fichero = fc.getSelectedFile();
+            //this.txaCode.setText(fichero.getAbsolutePath());
+            
+            
+
+            try ( FileWriter fw = new FileWriter(fichero)) {
+                fw.write(this.txaCode.getText());
+                fc.setName(fc.getName() + ".candy");
+
+            } catch (IOException el) {
+                el.printStackTrace();
+            }
+        }
+        
         btnCompilar.setEnabled(true);
         btnEliminar.setEnabled(true);
         btnGuardar.setEnabled(true);
-        txaCode.setEnabled(true); 
+        txaCode.setEnabled(true);
     }//GEN-LAST:event_btnNuevoActionPerformed
 
     private void btnCompilarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCompilarActionPerformed
         // TODO add your handling code here:
-        cont = 0; linea = 1; aux = ""; band = false; variables.clear(); palabras.clear();
+        cont = 0;
+        linea = 1;
+        aux = "";
+        band = false;
+        variables.clear();
+        palabras.clear();
         if (analizarLexico(txaCode.getText())) {
             System.out.println("Análisis léxico correcto");
             System.out.println(palabras);
             analizarSintactico();
-        }else{
+        } else {
             System.out.println("Error en el análisis léxico");
         }
-        
+
     }//GEN-LAST:event_btnCompilarActionPerformed
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
         // TODO add your handling code here:
         for (int i = 0; i < arre.length; i++) {
-            System.out.print(arre[i]+", ");
+            System.out.print(arre[i] + ", ");
         }
-        
+
     }//GEN-LAST:event_btnEliminarActionPerformed
+
+    private void btnNuevoMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnNuevoMouseEntered
+        // TODO add your handling code here:
+        btnNuevo.setBackground(Color.GRAY);
+    }//GEN-LAST:event_btnNuevoMouseEntered
+
+    private void btnNuevoMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnNuevoMouseExited
+        // TODO add your handling code here:
+        btnNuevo.setBackground(Color.WHITE);
+    }//GEN-LAST:event_btnNuevoMouseExited
+
+    private void btnAbrirMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAbrirMouseEntered
+        // TODO add your handling code here:
+        btnAbrir.setBackground(Color.GRAY);
+    }//GEN-LAST:event_btnAbrirMouseEntered
+
+    private void btnAbrirMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAbrirMouseExited
+        // TODO add your handling code here:
+        btnAbrir.setBackground(Color.WHITE);
+    }//GEN-LAST:event_btnAbrirMouseExited
+
+    private void btnGuardarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnGuardarMouseEntered
+        // TODO add your handling code here:
+        btnGuardar.setBackground(Color.GRAY);
+    }//GEN-LAST:event_btnGuardarMouseEntered
+
+    private void btnGuardarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnGuardarMouseExited
+        // TODO add your handling code here:
+        btnGuardar.setBackground(Color.WHITE);
+    }//GEN-LAST:event_btnGuardarMouseExited
+
+    private void btnCompilarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCompilarMouseEntered
+        // TODO add your handling code here:
+        btnCompilar.setBackground(Color.GRAY);
+    }//GEN-LAST:event_btnCompilarMouseEntered
+
+    private void btnCompilarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCompilarMouseExited
+        // TODO add your handling code here:
+        btnCompilar.setBackground(Color.WHITE);
+    }//GEN-LAST:event_btnCompilarMouseExited
+
+    private void btnEliminarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEliminarMouseEntered
+        // TODO add your handling code here:
+        btnEliminar.setBackground(Color.GRAY);
+    }//GEN-LAST:event_btnEliminarMouseEntered
+
+    private void btnEliminarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEliminarMouseExited
+        // TODO add your handling code here:
+        btnEliminar.setBackground(Color.WHITE);
+    }//GEN-LAST:event_btnEliminarMouseExited
+
+    private void btnAbrirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAbrirActionPerformed
+        // TODO add your handling code here:
+
+        JFileChooser fc = new JFileChooser();
+
+        int seleccion = fc.showOpenDialog(this);
+
+        if (seleccion == JFileChooser.APPROVE_OPTION) {
+            File fichero = fc.getSelectedFile();
+            //this.txaCode.setText(fichero.getAbsolutePath());
+
+            try ( FileReader fr = new FileReader(fichero)) {
+                String cadena = "";
+                int valor = fr.read();
+                while (valor != -1) {
+                    cadena = cadena + (char) valor;
+                    valor = fr.read();
+                }
+                if (fichero.getName().substring(fichero.getName().length() - 6, fichero.getName().length()).equals(".candy")) {
+                    this.txaCode.setText(cadena);
+                    String title = fichero.getName().substring(0, fichero.getName().length() - 6);
+                    this.setTitle(title + " - Net Candy Compiler 1.0");
+                    btnCompilar.setEnabled(true);
+                    btnEliminar.setEnabled(true);
+                    btnGuardar.setEnabled(true);
+                    txaCode.setEnabled(true);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Archivo no compatible.");
+
+                }
+
+            } catch (IOException el) {
+                el.printStackTrace();
+            }
+        }
+
+
+    }//GEN-LAST:event_btnAbrirActionPerformed
+
+    private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
+        // TODO add your handling code here:
+        
+
+    }//GEN-LAST:event_btnGuardarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -527,8 +723,12 @@ public class Compiler extends javax.swing.JFrame{
     private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnNuevo;
     private javax.swing.JLabel fondo;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel logo;
     private javax.swing.JTextArea txaCode;
+    private javax.swing.JTextArea txaConsola;
     // End of variables declaration//GEN-END:variables
 }
