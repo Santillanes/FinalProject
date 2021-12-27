@@ -3,13 +3,20 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Insets;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -25,6 +32,7 @@ import javax.swing.border.Border;
  */
 public class Compiler extends javax.swing.JFrame {
 
+    String ruta;
     /**
      * Creates new form compiler
      */
@@ -43,7 +51,8 @@ public class Compiler extends javax.swing.JFrame {
     String[] arre;
     List palabras = new ArrayList();
     List variables = new ArrayList();
-
+    int conta = 0;
+    boolean bander = false;
     // ================================================= LÉXICO ==================================================
     private void ifBan(boolean ban, int idx, int lin) {
         if (!aux.isEmpty()) {
@@ -68,24 +77,98 @@ public class Compiler extends javax.swing.JFrame {
                 palabras.add(aux);
             } else if (letras.contains(inicio)) {
                 System.out.println("Identificador: " + aux);
-                txaConsola.setText("Identificador:"); // AQUI MANDA TEXTO A LA CONSOLA DEL COMPILADOR
+
+                if (palabras.size() > 0) {
+                    String anterior = palabras.get(palabras.size() - 1).toString();
+                    System.out.println("anterior = " + anterior);
+                    if (tipoDato.contains(anterior)) {
+                        variables.add(aux);
+                        System.out.println("Variable: " + aux);
+                    }
+                }
+                
                 palabras.add(aux);
-                variables.add(aux);
             } else {
+
+                /*
+                    rellerindo hola
+                    hola = 123
+                    hola = "adios"
+                    hola = 5 * 26     
+
+                 */
                 int n = aux.length() + 1;
+                String cadeAux = "";
+                String auxi = "_____";
+                conta = idx-1;
                 for (int j = idx - n; j >= 0; j--) {
                     if (!arre[j].isBlank()) {
                         if (arre[j].equals("=")) {
-                            System.out.println("Valor de variable: " + aux);
-                            palabras.add(aux);
+                            //hola = 1+23+ 3
+                            cadeAux = aux;
+                            for (int i = idx; i < arre.length; i++) {
+                                conta++;
+                                //System.out.println("************************");
+                                //System.out.println("arre[i] = " + arre[i]);
+                                
+                                boolean b = false;
+                                //System.out.println("auxi = " + auxi);
+                                for (int k = 0; k < auxi.length(); k++) {
+                                    String let = String.valueOf(auxi.charAt(k));
+                                    if (letras.contains(let)) {
+                                        b = true;
+                                    }
+                                }
+                                //System.out.println("b = " + b);
+                                
+                                if (!arre[i].equals(" ") && !arre[i].equals("\n") && !arre[i].equals("	")) {
+                                    if (log.contains(arre[i])) {
+                                        
+                                        if (!revisarValorVar(auxi) && b) {
+                                            //Es una palabra reservada
+                                            i = arre.length;
+                                            //System.out.println("ENTRA");
+                                        }else{
+                                            auxi = auxi.replace("_", "");
+                                            cadeAux += auxi;
+                                            auxi = "_____";
+                                            //System.out.println("Se debe añadir");
+                                        }
+                                        cadeAux += arre[i];
+                                    }else {
+                                        if (b) {
+                                            i = arre.length;
+                                            //System.out.println("ENTRA");
+                                        }else{
+                                            auxi += arre[i];
+                                        }
+                                    }
+                                }else{
+                                    if (!revisarValorVar(auxi) && b) {
+                                        //Es una palabra reservada
+                                        i = arre.length;
+                                        //System.out.println("ENTRA");
+                                    }else{
+                                        auxi = auxi.replace("_", "");
+                                        cadeAux += auxi;
+                                        auxi = "_____";
+                                        //System.out.println("Se debe añadir");
+                                    }
+                                }
+                                //System.out.println("auxi = " + auxi);
+                                //System.out.println("cadeAux = " + cadeAux);
+                            }
+                            System.out.println("Valor de variable: "+cadeAux);
+                            palabras.add(cadeAux);
+                            bander = true;
+                            
+
                         } else {
                             System.out.println("Símbolo desconocido en la línea " + lin + ": " + aux);
                             cont++;
                         }
-                        //System.out.println("arre[j] = " + arre[j]);
                         break;
-                    } else {
-                    }
+                    } 
                 }
 
             }
@@ -102,8 +185,12 @@ public class Compiler extends javax.swing.JFrame {
         arre = code.split("");
 
         for (int i = 0; i < arre.length; i++) {
+            if (bander) {
+                i = conta-1;
+                bander = false;
+            }
             String letra = arre[i];
-
+            System.out.println("letra = " + letra);
             //     []+MENOR-duvalin()
             if (op.contains(letra)) {
                 ifBan(band, i, linea);
@@ -134,9 +221,12 @@ public class Compiler extends javax.swing.JFrame {
 
             } else if (log.contains(letra)) {
                 ifBan(band, i, linea);
-                palabras.add(letra);
-                System.out.println("Op lógico: " + letra);
-
+                
+                if (!bander) {
+                    palabras.add(letra);
+                    System.out.println("Op lógico: " + letra);
+                }
+                
             } else if (simbRes.contains(letra)) {
                 ifBan(band, i, linea);
                 palabras.add(letra);
@@ -166,6 +256,7 @@ public class Compiler extends javax.swing.JFrame {
                     band = true;
                 } else {
                     ifBan(band, i, linea);
+                    band = false;
                 }
                 if (i == arre.length - 1) {
                     ifBan(band, i, linea);
@@ -289,8 +380,13 @@ public class Compiler extends javax.swing.JFrame {
                         System.out.println(pal + palabras.get(i + 1).toString() + " " + palabras.get(i + 2).toString());
                     }
                 }
-            }
+                // ENTRADA DE DATOS
+            } else if (i < palabras.size() - 2 && "Skittle".equals(pal) && ":".equals(palabras.get(i + 1).toString()) && revisarVariable(palabras.get(i + 2).toString())) {
 
+                System.out.println("**** Entrada de datos ****");
+                System.out.println(pal + palabras.get(i + 1).toString() + " " + palabras.get(i + 2).toString());
+
+            }
         }
         return false;
     }
@@ -533,30 +629,50 @@ public class Compiler extends javax.swing.JFrame {
 
     private void btnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoActionPerformed
         // TODO add your handling code here:
-        
+
         JFileChooser fc = new JFileChooser();
 
         int seleccion = fc.showSaveDialog(this);
 
         if (seleccion == JFileChooser.APPROVE_OPTION) {
             File fichero = fc.getSelectedFile();
-            //this.txaCode.setText(fichero.getAbsolutePath());
-            
-            
 
             try ( FileWriter fw = new FileWriter(fichero)) {
                 fw.write(this.txaCode.getText());
-                fc.setName(fc.getName() + ".candy");
 
+                File destino = new File(fichero.getPath() + ".candy");
+                System.out.println(destino.getPath());
+                //InputStream in = new FileInputStream(origen);
+                //OutputStream out = new FileOutputStream(destino);
+                destino.createNewFile();
+                try ( FileReader fr = new FileReader(fichero)) {
+                    String cadena = "";
+                    int valor = fr.read();
+                    while (valor != -1) {
+                        cadena = cadena + (char) valor;
+                        valor = fr.read();
+                    }
+                    System.out.println("cadena = " + txaCode.getText());
+                    FileWriter filew = new FileWriter(destino);
+                    BufferedWriter bw = new BufferedWriter(filew);
+                    ruta = destino.getPath();
+                    bw.write(txaCode.getText());
+                    bw.close();
+                }
+                fw.close();
+                fichero.delete();
+                //in.close();
+                //out.close();
             } catch (IOException el) {
                 el.printStackTrace();
             }
+            btnCompilar.setEnabled(true);
+            btnEliminar.setEnabled(true);
+            btnGuardar.setEnabled(true);
+            txaCode.setEnabled(true);
         }
-        
-        btnCompilar.setEnabled(true);
-        btnEliminar.setEnabled(true);
-        btnGuardar.setEnabled(true);
-        txaCode.setEnabled(true);
+
+
     }//GEN-LAST:event_btnNuevoActionPerformed
 
     private void btnCompilarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCompilarActionPerformed
@@ -565,6 +681,8 @@ public class Compiler extends javax.swing.JFrame {
         linea = 1;
         aux = "";
         band = false;
+        bander = false;
+        conta = 0;
         variables.clear();
         palabras.clear();
         if (analizarLexico(txaCode.getText())) {
@@ -579,8 +697,11 @@ public class Compiler extends javax.swing.JFrame {
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
         // TODO add your handling code here:
-        for (int i = 0; i < arre.length; i++) {
-            System.out.print(arre[i] + ", ");
+        int confirmar = JOptionPane.showConfirmDialog(rootPane, "¿Estás seguro?", "Eliminar", JOptionPane.WARNING_MESSAGE, 2);
+        if (confirmar == JOptionPane.OK_OPTION) {
+            txaCode.setText("");
+            File destino = new File(ruta);
+            destino.delete();
         }
 
     }//GEN-LAST:event_btnEliminarActionPerformed
@@ -661,6 +782,7 @@ public class Compiler extends javax.swing.JFrame {
                     btnEliminar.setEnabled(true);
                     btnGuardar.setEnabled(true);
                     txaCode.setEnabled(true);
+                    ruta = fichero.getPath();
                 } else {
                     JOptionPane.showMessageDialog(null, "Archivo no compatible.");
 
@@ -676,7 +798,14 @@ public class Compiler extends javax.swing.JFrame {
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         // TODO add your handling code here:
-        
+
+        try ( FileWriter fw = new FileWriter(ruta)) {
+            fw.write(this.txaCode.getText());
+
+        } catch (IOException el) {
+            el.printStackTrace();
+        }
+
 
     }//GEN-LAST:event_btnGuardarActionPerformed
 
