@@ -2,6 +2,8 @@
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Insets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 import javax.swing.ImageIcon;
 import javax.swing.border.Border;
@@ -23,37 +25,53 @@ public class Compiler extends javax.swing.JFrame{
     
     String op = "[]{}()";
     String log = "+-*/%^";
-    String cond = "MENORMAYORMAIGUALMEIGUALDIFNOYYOOOE";
-    String tipoDato = "duvalinbocadinchiclerellerindocachetadamazapanSkwinklehersheys";
-    String palRes = "abiertocerradobolsitapiñataticowinniSISINOTicket";
+    String compara = "MENORMAYORMAIGUALMEIGUALDIFNOYYOOOE";
+    String tipoDato = "duvalinbocadinchiclerellerindocachetadamazapanSkwinklehersheyswini";
+    String palRes = "abiertocerradobolsitapiñataticowinniTicketSkittleimportarextiendeimplementanuevolanzarintentacarameloROMPERDEFECTOverdadmentira";
+    String ciclos = "PARAMIENTRASHAZ";
+    String condicion = "SISINOJUICIOCASO";
     String simbRes = "=:\"_";
     boolean band = false;
     String aux = "";
     String inicio;
     int cont = 0, linea = 1;
     String[] arre;
+    List palabras = new ArrayList();
+    List variables = new ArrayList();
     
-    
+    // ================================================= LÉXICO ==================================================
     private void ifBan(boolean ban, int idx, int lin){
         if (!aux.isEmpty()) {
             inicio = String.valueOf(aux.charAt(0));
         }
         String letras = "qwertyuiopñlkjhgfdsazxcvbnmQWERTYUIOPÑLKJHGFDSAZXCVBNM";
         if (ban) {
-            if (cond.contains(aux)) {
-                System.out.println("Operador condicional: "+aux);
+            if (compara.contains(aux)) {
+                System.out.println("Operador comparativo: "+aux);
+                palabras.add(aux);
             }else if (tipoDato.contains(aux)) {
                 System.out.println("Tipo de dato: "+aux);
+                palabras.add(aux);
             }else if (palRes.contains(aux)) {
                 System.out.println("Palabra reservada: "+aux);
+                palabras.add(aux);
+            }else if(ciclos.contains(aux)){
+                System.out.println("Sentencia: "+aux);
+                palabras.add(aux);
+            }else if(condicion.contains(aux)){
+                System.out.println("Sentencia: "+aux);
+                palabras.add(aux);
             }else if(letras.contains(inicio)){
                 System.out.println("Identificador: "+aux);
+                palabras.add(aux);
+                variables.add(aux);
             }else{
                 int n = aux.length()+1;
                 for (int j = idx-n; j >= 0; j--) {
                     if (!arre[j].isBlank()) {
                         if (arre[j].equals("=")) {
                             System.out.println("Valor de variable: "+aux);
+                            palabras.add(aux);
                         }else{
                             System.out.println("Símbolo desconocido en la línea "+lin+": "+aux);
                             cont++;
@@ -85,6 +103,7 @@ public class Compiler extends javax.swing.JFrame{
                 ifBan(band,i,linea);
                 
                 if (letra.equals("(") && arre[i+1].equals(":")) {
+                    palabras.add("(:");
                     System.out.println("Inicio comentario: (:");
                     String txt = "";
                     for (int j = i+2; j < arre.length; j++) {
@@ -96,19 +115,24 @@ public class Compiler extends javax.swing.JFrame{
                         }
                     }
                     if (!txt.equals("")) {
+                        palabras.add(txt);
                         System.out.println("Texto: "+txt);
                     }
+                    palabras.add(":)");
                     System.out.println("Fin comentario: :)");
                 }else{
+                    palabras.add(letra);
                     System.out.println("Operador: "+letra);
                 }
                 
             }else if (log.contains(letra)) {
                 ifBan(band,i,linea);
+                palabras.add(letra);
                 System.out.println("Op lógico: "+letra);
                 
             }else if (simbRes.contains(letra)) {
                 ifBan(band,i,linea);
+                palabras.add(letra);
                 System.out.println("Simbolo reservado: "+letra);
                 
                 if (letra.equals("\"")) {
@@ -122,8 +146,10 @@ public class Compiler extends javax.swing.JFrame{
                         }
                     }
                     if (!txt.equals("")) {
+                        palabras.add(txt);
                         System.out.println("Texto: "+txt);
                     }
+                    palabras.add("\"");
                     System.out.println("Símbolo reservado: \"");
                 }
                 
@@ -146,6 +172,147 @@ public class Compiler extends javax.swing.JFrame{
         System.out.println("cont = " + cont);
         return cont == 0;
     }
+    // ================================================= LÉXICO ==================================================
+    
+    
+    
+    // ================================================= SINTÁCTICO ==================================================
+    public boolean analizarSintactico(){
+       
+        /*
+                DECLARACIÓN
+                    tipoDato Var
+                    tipoDato nomVar = valVar
+                ASIGNACIÖN
+                    Var = valVar
+        
+                SALIDA DE DATOS
+                    Ticket : Var,num,cade
+                ENTRADA DE DATOS
+                    Skittle : Var
+                    
+                IF
+                    SI ( Var,num,cade opCond Var,num,cade ) { instrucciones }
+                    SI ( Var,num,cade opCond Var,num,cade ) { instrucciones } SINO { instrucciones }
+                    SI ( Var,num,cade opCond Var,num,cade ) { instrucciones } SINO SI ( Var,num,cade opCond Var,num,cade ) { instrucciones } ...
+        
+                WHILE
+                    MIENTRAS ( Var,num,cade opCond Var,num,cade ) { instrucciones }
+        
+                DO WHILE
+                    HAZ { instucciones } MIENTRAS ( Var,num,cade opCond Var,num,cade )
+                FOR
+                    PARA ( tipoDato Var = valVar     Var opCond Var,num,cade    Var = Var opLogico num ) { instrucciones }
+                SWITCH
+                    JUICIO ( VAR ) { CASO num,cade : instrucciones ROMPER (repite) }
+                    JUICIO ( VAR ) { CASO num,cade : instrucciones ROMPER (repite) DEFECTO : instrucciones }
+        
+        */
+        
+        
+        // De la lista, crear un arreglo de dos dimensiones, para la variable y su valor (tipo de variable?)
+        System.out.println("======================================= Análisis sintáctico =====================================");
+        
+        for (int i = 0; i < palabras.size(); i++) {
+            String pal = palabras.get(i).toString();
+            
+            while(pal.charAt(0) == ' '){
+                pal = pal.substring(1);
+            }
+            while(pal.charAt(pal.length()-1) == ' '){
+                pal = pal.substring(0, pal.length()-1);
+            }
+            
+            
+                        //DECLARACIÓN
+            if (i<palabras.size()-3 && tipoDato.contains(pal) && revisarVariable(palabras.get(i+1).toString()) && palabras.get(i+2).toString().equals("=") ) {
+                
+                String txt = "";
+                boolean band = false;
+                if (palabras.get(i+3).toString().equals("\"")) {
+                    txt = palabras.get(i+3).toString() + palabras.get(i+4).toString() + palabras.get(i+5).toString();
+                    band = true;
+                }else{
+                    txt = palabras.get(i+3).toString();
+                }
+                if (revisarValorVar(txt)) {
+                    System.out.println("**** Declaración de variable con asignación ****");
+                    if (band) {
+                        System.out.println(pal + " " + palabras.get(i+1).toString() + " " + palabras.get(i+2).toString() + " " + palabras.get(i+3).toString() + palabras.get(i+4).toString() + palabras.get(i+5).toString());
+                        i+=5;
+                    }else{
+                        System.out.println(pal + " " + palabras.get(i+1).toString() + " " + palabras.get(i+2).toString() + " " + palabras.get(i+3).toString());
+                        i+=3;
+                    }
+                }
+                        //DECLARACIÓN
+            }else if (i<palabras.size()-1 && tipoDato.contains(pal) && revisarVariable(palabras.get(i+1).toString())) {   
+                System.out.println("**** Declaración de variable sin asignación ****");
+                System.out.println(pal + " " + palabras.get(i+1).toString());
+                i++;
+                        //ASIGNACIÓN
+            }else if (i<palabras.size()-2 && revisarVariable(pal) && palabras.get(i+1).toString().equals("=")) {
+                String txt = "";
+                boolean band = false;
+                if (palabras.get(i+2).toString().equals("\"")) {
+                    txt = palabras.get(i+2).toString() + palabras.get(i+3).toString() + palabras.get(i+4).toString();
+                    band = true;
+                }else{
+                    txt = palabras.get(i+2).toString();
+                }
+                if (revisarValorVar(txt)) {
+                    System.out.println("**** Asignación a variable ****");
+                    if (band) {
+                        System.out.println(pal + " " + palabras.get(i+1).toString() + " " + palabras.get(i+2).toString()+ palabras.get(i+3).toString()+ palabras.get(i+4).toString());
+                    }else{
+                        System.out.println(pal + " " + palabras.get(i+1).toString() + " " + palabras.get(i+2).toString());
+                    }
+                }
+                        //SALIDA DE DATOS
+            }else if (i<palabras.size()-2 && "Ticket".equals(pal) && ":".equals(palabras.get(i+1).toString())) {
+                String txt = "";
+                boolean band = false;
+                if (palabras.get(i+2).toString().equals("\"")) {
+                    txt = palabras.get(i+2).toString() + palabras.get(i+3).toString() + palabras.get(i+4).toString();
+                    band = true;
+                }else{
+                    txt = palabras.get(i+2).toString();
+                }
+                if (revisarValorVar(txt)) {
+                    System.out.println("**** Salida de datos ****");
+                    if (band) {
+                        System.out.println(pal + palabras.get(i+1).toString() + " " + palabras.get(i+2).toString()+ palabras.get(i+3).toString()+ palabras.get(i+4).toString());
+                    }else{
+                        System.out.println(pal + palabras.get(i+1).toString() + " " + palabras.get(i+2).toString());
+                    }
+                }
+            }
+            
+            
+            
+            
+        }
+        return false;
+    }
+    
+    private boolean revisarVariable(String var){
+        for (int i = 0; i < variables.size(); i++) {
+            if (var.equals(variables.get(i))) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    private boolean revisarValorVar(String var){
+        if (compara.contains(var) || tipoDato.contains(var) || palRes.contains(var) || ciclos.contains(var) ||condicion.contains(var) 
+                || op.contains(var) || log.contains(var) || simbRes.contains(var) ) {
+            return false;
+        }
+        return true;
+    }
+    // ================================================= SINTÁCTICO ==================================================
+    
     
     
     // ================================================= DISEÑO ==================================================
@@ -298,11 +465,11 @@ public class Compiler extends javax.swing.JFrame{
 
     private void btnCompilarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCompilarActionPerformed
         // TODO add your handling code here:
-        cont = 0; linea = 1; aux = ""; band = false;
+        cont = 0; linea = 1; aux = ""; band = false; variables.clear(); palabras.clear();
         if (analizarLexico(txaCode.getText())) {
             System.out.println("Análisis léxico correcto");
-            Consola salida = new Consola();
-            salida.setVisible(true);
+            System.out.println(palabras);
+            analizarSintactico();
         }else{
             System.out.println("Error en el análisis léxico");
         }
