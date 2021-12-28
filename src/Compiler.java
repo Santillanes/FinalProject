@@ -101,14 +101,14 @@ public class Compiler extends javax.swing.JFrame {
                 int n = aux.length() + 1;
                 String cadeAux = "";
                 String auxi = "_____";
-                conta = idx - 1;
+                conta = 0;
                 for (int j = idx - n; j >= 0; j--) {
                     if (!arre[j].isBlank()) {
                         if (arre[j].equals("=")) {
                             //hola = 1+23+ 3
                             cadeAux = aux;
                             for (int i = idx; i < arre.length; i++) {
-                                conta++;
+                                //conta++;
                                 //System.out.println("************************");
                                 //System.out.println("arre[i] = " + arre[i]);
 
@@ -172,6 +172,7 @@ public class Compiler extends javax.swing.JFrame {
                 }
 
             }
+            //System.out.println("Conta = " + conta);
             band = false;
             aux = "";
         }
@@ -185,86 +186,100 @@ public class Compiler extends javax.swing.JFrame {
         arre = code.split("");
 
         for (int i = 0; i < arre.length; i++) {
-            if (bander) {
-                i = conta - 1;
-                bander = false;
-            }
+            
             String letra = arre[i];
             System.out.println("letra = " + letra);
-            //     []+MENOR-duvalin()
-            if (op.contains(letra)) {
-                ifBan(band, i, linea);
-
-                if (letra.equals("(") && arre[i + 1].equals(":")) {
-                    palabras.add("(:");
-                    System.out.println("Inicio comentario: (:");
-
-                    String txt = "";
-                    for (int j = i + 2; j < arre.length; j++) {
-                        if (arre[j].equals(":") && arre[j + 1].equals(")")) {
-                            i = j + 1;
-                            break;
-                        } else {
-                            txt += arre[j];
-                        }
+            if (bander) {
+                //i += conta-1;
+                
+                if (!palabras.get(palabras.size()-1).toString().contains(letra)) {
+                    if (!letra.equals(" ")) {
+                        bander = false;
+                        System.out.println(palabras.get(palabras.size()-1).toString());
+                        System.out.println("ENTRA: "+letra);
                     }
-                    if (!txt.equals("")) {
-                        palabras.add(txt);
-                        System.out.println("Texto: " + txt);
-                    }
-                    palabras.add(":)");
-                    System.out.println("Fin comentario: :)");
-                } else {
-                    palabras.add(letra);
-                    System.out.println("Operador: " + letra);
                 }
-
-            } else if (log.contains(letra)) {
-                ifBan(band, i, linea);
-
-                if (!bander) {
-                    palabras.add(letra);
-                    System.out.println("Op lógico: " + letra);
-                }
-
-            } else if (simbRes.contains(letra)) {
-                ifBan(band, i, linea);
-                palabras.add(letra);
-                System.out.println("Simbolo reservado: " + letra);
-
-                if (letra.equals("\"")) {
-                    String txt = "";
-                    for (int j = i + 1; j < arre.length; j++) {
-                        if (arre[j].equals("\"")) {
-                            i = j;
-                            break;
-                        } else {
-                            txt += arre[j];
-                        }
-                    }
-                    if (!txt.equals("")) {
-                        palabras.add(txt);
-                        System.out.println("Texto: " + txt);
-                    }
-                    palabras.add("\"");
-                    System.out.println("Símbolo reservado: \"");
-                }
-
-            } else {
-                if (!letra.equals(" ") && !letra.equals("\n") && !letra.equals("	")) {
-                    aux += letra;
-                    band = true;
-                } else {
-                    ifBan(band, i, linea);
-                    band = false;
-                }
-                if (i == arre.length - 1) {
-                    ifBan(band, i, linea);
-                }
+                
+                System.out.println("i2 = " + i);
             }
-            if (letra.equals("\n")) {
-                System.out.println("================================================================ SALTO DE LÍNEA");
-                linea++;
+            //System.out.println("letra = " + letra);
+            //     []+MENOR-duvalin()
+            if (!bander) {
+                
+                if (op.contains(letra)) {
+                    ifBan(band, i, linea);
+
+                    if (letra.equals("(") && arre[i + 1].equals(":")) {
+                        palabras.add("(:");
+                        System.out.println("Inicio comentario: (:");
+
+                        String txt = "";
+                        for (int j = i + 2; j < arre.length; j++) {
+                            if (arre[j].equals(":") && arre[j + 1].equals(")")) {
+                                i = j + 1;
+                                break;
+                            } else {
+                                txt += arre[j];
+                            }
+                        }
+                        if (!txt.equals("")) {
+                            palabras.add(txt);
+                            System.out.println("Texto: " + txt);
+                        }
+                        palabras.add(":)");
+                        System.out.println("Fin comentario: :)");
+                    } else {
+                        palabras.add(letra);
+                        System.out.println("Operador: " + letra);
+                    }
+
+                } else if (log.contains(letra)) {
+                    ifBan(band, i, linea);
+
+                    if (!bander) {
+                        palabras.add(letra);
+                        System.out.println("Op lógico: " + letra);
+                    }
+
+                } else if (simbRes.contains(letra)) {
+                    ifBan(band, i, linea);
+                    palabras.add(letra);
+                    System.out.println("Simbolo reservado: " + letra);
+
+                    if (letra.equals("\"")) {
+                        String txt = "";
+                        for (int j = i + 1; j < arre.length; j++) {
+                            if (arre[j].equals("\"")) {
+                                i = j;
+                                break;
+                            } else {
+                                txt += arre[j];
+                            }
+                        }
+                        if (!txt.equals("")) {
+                            palabras.add(txt);
+                            System.out.println("Texto: " + txt);
+                        }
+                        palabras.add("\"");
+                        System.out.println("Símbolo reservado: \"");
+                    }
+
+                } else {
+                    if (!letra.equals(" ") && !letra.equals("\n") && !letra.equals("	")) {
+                        aux += letra;
+                        band = true;
+                    } else {
+                        ifBan(band, i, linea);
+                        band = false;
+                    }
+                    if (i == arre.length - 1) {
+                        ifBan(band, i, linea);
+                    }
+                }
+                if (letra.equals("\n")) {
+                    System.out.println("================================================================ SALTO DE LÍNEA");
+                    linea++;
+                }
             }
         }
         System.out.println("cont = " + cont);
