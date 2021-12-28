@@ -53,6 +53,7 @@ public class Compiler extends javax.swing.JFrame {
     List variables = new ArrayList();
     int conta = 0;
     boolean bander = false;
+
     // ================================================= LÉXICO ==================================================
     private void ifBan(boolean ban, int idx, int lin) {
         if (!aux.isEmpty()) {
@@ -86,7 +87,7 @@ public class Compiler extends javax.swing.JFrame {
                         System.out.println("Variable: " + aux);
                     }
                 }
-                
+
                 palabras.add(aux);
             } else {
 
@@ -100,7 +101,7 @@ public class Compiler extends javax.swing.JFrame {
                 int n = aux.length() + 1;
                 String cadeAux = "";
                 String auxi = "_____";
-                conta = idx-1;
+                conta = idx - 1;
                 for (int j = idx - n; j >= 0; j--) {
                     if (!arre[j].isBlank()) {
                         if (arre[j].equals("=")) {
@@ -110,7 +111,7 @@ public class Compiler extends javax.swing.JFrame {
                                 conta++;
                                 //System.out.println("************************");
                                 //System.out.println("arre[i] = " + arre[i]);
-                                
+
                                 boolean b = false;
                                 //System.out.println("auxi = " + auxi);
                                 for (int k = 0; k < auxi.length(); k++) {
@@ -120,35 +121,35 @@ public class Compiler extends javax.swing.JFrame {
                                     }
                                 }
                                 //System.out.println("b = " + b);
-                                
+
                                 if (!arre[i].equals(" ") && !arre[i].equals("\n") && !arre[i].equals("	")) {
                                     if (log.contains(arre[i])) {
-                                        
+
                                         if (!revisarValorVar(auxi) && b) {
                                             //Es una palabra reservada
                                             i = arre.length;
                                             //System.out.println("ENTRA");
-                                        }else{
+                                        } else {
                                             auxi = auxi.replace("_", "");
                                             cadeAux += auxi;
                                             auxi = "_____";
                                             //System.out.println("Se debe añadir");
                                         }
                                         cadeAux += arre[i];
-                                    }else {
+                                    } else {
                                         if (b) {
                                             i = arre.length;
                                             //System.out.println("ENTRA");
-                                        }else{
+                                        } else {
                                             auxi += arre[i];
                                         }
                                     }
-                                }else{
+                                } else {
                                     if (!revisarValorVar(auxi) && b) {
                                         //Es una palabra reservada
                                         i = arre.length;
                                         //System.out.println("ENTRA");
-                                    }else{
+                                    } else {
                                         auxi = auxi.replace("_", "");
                                         cadeAux += auxi;
                                         auxi = "_____";
@@ -158,17 +159,16 @@ public class Compiler extends javax.swing.JFrame {
                                 //System.out.println("auxi = " + auxi);
                                 //System.out.println("cadeAux = " + cadeAux);
                             }
-                            System.out.println("Valor de variable: "+cadeAux);
+                            System.out.println("Valor de variable: " + cadeAux);
                             palabras.add(cadeAux);
                             bander = true;
-                            
 
                         } else {
                             System.out.println("Símbolo desconocido en la línea " + lin + ": " + aux);
                             cont++;
                         }
                         break;
-                    } 
+                    }
                 }
 
             }
@@ -186,7 +186,7 @@ public class Compiler extends javax.swing.JFrame {
 
         for (int i = 0; i < arre.length; i++) {
             if (bander) {
-                i = conta-1;
+                i = conta - 1;
                 bander = false;
             }
             String letra = arre[i];
@@ -221,12 +221,12 @@ public class Compiler extends javax.swing.JFrame {
 
             } else if (log.contains(letra)) {
                 ifBan(band, i, linea);
-                
+
                 if (!bander) {
                     palabras.add(letra);
                     System.out.println("Op lógico: " + letra);
                 }
-                
+
             } else if (simbRes.contains(letra)) {
                 ifBan(band, i, linea);
                 palabras.add(letra);
@@ -443,6 +443,7 @@ public class Compiler extends javax.swing.JFrame {
         btnCompilar.setEnabled(false);
         btnEliminar.setEnabled(false);
         btnGuardar.setEnabled(false);
+        btnCerrar.setEnabled(false);
         txaCode.setEnabled(false);
 
         //btnNuevo.setBorder(new RoundedBorder (30));
@@ -468,6 +469,7 @@ public class Compiler extends javax.swing.JFrame {
         btnGuardar = new javax.swing.JButton();
         btnCompilar = new javax.swing.JButton();
         btnEliminar = new javax.swing.JButton();
+        btnCerrar = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         logo = new javax.swing.JLabel();
@@ -481,7 +483,7 @@ public class Compiler extends javax.swing.JFrame {
         txaCode.setColumns(20);
         txaCode.setFont(new java.awt.Font("Monospaced", 0, 18)); // NOI18N
         txaCode.setRows(5);
-        txaCode.setText("INICIO\n\n\t(; Escriba su Código aquí :)\n\n\nFIN");
+        txaCode.setText("INICIO\n\n\t(: Escriba su Código aquí :)\n\n\nFIN");
         txaCode.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 3, true));
         jScrollPane1.setViewportView(txaCode);
 
@@ -520,7 +522,7 @@ public class Compiler extends javax.swing.JFrame {
             }
         });
         getContentPane().add(btnNuevo);
-        btnNuevo.setBounds(80, 110, 130, 50);
+        btnNuevo.setBounds(80, 70, 130, 50);
 
         btnAbrir.setBackground(new java.awt.Color(255, 255, 255));
         btnAbrir.setFont(new java.awt.Font("Segoe Print", 1, 18)); // NOI18N
@@ -541,7 +543,7 @@ public class Compiler extends javax.swing.JFrame {
             }
         });
         getContentPane().add(btnAbrir);
-        btnAbrir.setBounds(80, 180, 130, 50);
+        btnAbrir.setBounds(80, 143, 130, 50);
 
         btnGuardar.setBackground(new java.awt.Color(255, 255, 255));
         btnGuardar.setFont(new java.awt.Font("Segoe Print", 1, 16)); // NOI18N
@@ -562,7 +564,7 @@ public class Compiler extends javax.swing.JFrame {
             }
         });
         getContentPane().add(btnGuardar);
-        btnGuardar.setBounds(80, 253, 130, 50);
+        btnGuardar.setBounds(80, 216, 130, 50);
 
         btnCompilar.setBackground(new java.awt.Color(255, 255, 255));
         btnCompilar.setFont(new java.awt.Font("Segoe Print", 1, 16)); // NOI18N
@@ -583,7 +585,7 @@ public class Compiler extends javax.swing.JFrame {
             }
         });
         getContentPane().add(btnCompilar);
-        btnCompilar.setBounds(80, 326, 130, 50);
+        btnCompilar.setBounds(80, 289, 130, 50);
 
         btnEliminar.setBackground(new java.awt.Color(255, 255, 255));
         btnEliminar.setFont(new java.awt.Font("Segoe Print", 1, 18)); // NOI18N
@@ -604,7 +606,28 @@ public class Compiler extends javax.swing.JFrame {
             }
         });
         getContentPane().add(btnEliminar);
-        btnEliminar.setBounds(80, 400, 130, 50);
+        btnEliminar.setBounds(80, 362, 130, 50);
+
+        btnCerrar.setBackground(new java.awt.Color(255, 255, 255));
+        btnCerrar.setFont(new java.awt.Font("Segoe Print", 1, 18)); // NOI18N
+        btnCerrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/cerrar.png"))); // NOI18N
+        btnCerrar.setText("Cerrar");
+        btnCerrar.setBorder(null);
+        btnCerrar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnCerrarMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnCerrarMouseExited(evt);
+            }
+        });
+        btnCerrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCerrarActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnCerrar);
+        btnCerrar.setBounds(80, 435, 130, 50);
 
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/PALABRA 1.png"))); // NOI18N
         getContentPane().add(jLabel3);
@@ -669,6 +692,7 @@ public class Compiler extends javax.swing.JFrame {
             btnCompilar.setEnabled(true);
             btnEliminar.setEnabled(true);
             btnGuardar.setEnabled(true);
+            btnCerrar.setEnabled(true);
             txaCode.setEnabled(true);
         }
 
@@ -781,6 +805,7 @@ public class Compiler extends javax.swing.JFrame {
                     btnCompilar.setEnabled(true);
                     btnEliminar.setEnabled(true);
                     btnGuardar.setEnabled(true);
+                    btnCerrar.setEnabled(true);
                     txaCode.setEnabled(true);
                     ruta = fichero.getPath();
                 } else {
@@ -806,8 +831,36 @@ public class Compiler extends javax.swing.JFrame {
             el.printStackTrace();
         }
 
+        if (rootPaneCheckingEnabled) { //Si le da clic en si
+
+        }
+
 
     }//GEN-LAST:event_btnGuardarActionPerformed
+
+    private void btnCerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarActionPerformed
+        // TODO add your handling code here:
+
+        int iOpcion = JOptionPane.showOptionDialog(null, "¿Desea guardar los cambios?",
+                "Selecciona una opcion...",
+                JOptionPane.YES_NO_CANCEL_OPTION,
+                JOptionPane.WARNING_MESSAGE,
+                null,
+                new Object[]{"Guardar", "No Guardar", "Cancelar"}, "Guardar");
+
+        System.out.println(iOpcion);
+        
+    }//GEN-LAST:event_btnCerrarActionPerformed
+
+    private void btnCerrarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCerrarMouseEntered
+        // TODO add your handling code here:
+        btnCerrar.setBackground(Color.GRAY);
+    }//GEN-LAST:event_btnCerrarMouseEntered
+
+    private void btnCerrarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCerrarMouseExited
+        // TODO add your handling code here:
+        btnCerrar.setBackground(Color.WHITE);
+    }//GEN-LAST:event_btnCerrarMouseExited
 
     /**
      * @param args the command line arguments
@@ -847,6 +900,7 @@ public class Compiler extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAbrir;
+    private javax.swing.JButton btnCerrar;
     private javax.swing.JButton btnCompilar;
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnGuardar;
