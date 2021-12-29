@@ -32,7 +32,7 @@ import javax.swing.border.Border;
  */
 public class Compiler extends javax.swing.JFrame {
 
-    String ruta;
+    String ruta = "";
     /**
      * Creates new form compiler
      */
@@ -61,9 +61,7 @@ public class Compiler extends javax.swing.JFrame {
             inicio = String.valueOf(aux.charAt(0));
         }
         String letras = "qwertyuiopñlkjhgfdsazxcvbnmQWERTYUIOPÑLKJHGFDSAZXCVBNM";
-        
-        
-        
+
         if (ban) {
             if (compara.contains(aux)) {
                 System.out.println("Operador comparativo: " + aux);
@@ -163,38 +161,37 @@ public class Compiler extends javax.swing.JFrame {
                                 //System.out.println("auxi = " + auxi);
                                 //System.out.println("cadeAux = " + cadeAux);
                             }
-                            
+
                             //System.out.println("PRUEBAAAAAAAAAA = " + arre[idx]);
                             //if (String.valueOf(cadeAux.charAt(cadeAux.length()-1)).equals(arre[idx+cadeAux.length()])) {  
                             //}
                             String fin = "";
                             for (int i = 0; i < cadeAux.length(); i++) {
                                 if (numeros.contains(String.valueOf(cadeAux.charAt(i)))) {
-                                    fin+=String.valueOf(cadeAux.charAt(i));
+                                    fin += String.valueOf(cadeAux.charAt(i));
                                 }
                             }
-                            
+
                             System.out.println("Valor de variable: " + fin);
                             palabras.add(fin);
                             bander = true;
-                        
-                            
-                            System.out.println("ULTIMA PALABRA = " + palabras.get(palabras.size()-1).toString());
-                        }else if(numeros.contains(String.valueOf(aux.charAt(0)))){
+
+                            System.out.println("ULTIMA PALABRA = " + palabras.get(palabras.size() - 1).toString());
+                        } else if (numeros.contains(String.valueOf(aux.charAt(0)))) {
                             boolean b = true;
                             for (int i = 0; i < aux.length(); i++) {
                                 if (!numeros.contains(String.valueOf(aux.charAt(i)))) {
-                                    b=false;
+                                    b = false;
                                 }
                             }
                             if (b) {
-                                System.out.println("Valor numérico: "+aux);
+                                System.out.println("Valor numérico: " + aux);
                                 palabras.add(aux);
-                            }else{
+                            } else {
                                 System.out.println("Símbolo desconocido en la línea " + lin + ": " + aux);
                                 cont++;
                             }
-                        /*
+                            /*
                         else if(condicion.contains(palabras.get(palabras.size()-2).toString())){ 
                             // si(34 MAYOR 45){
                             //System.out.println("ENTRA AL IF");
@@ -208,10 +205,10 @@ public class Compiler extends javax.swing.JFrame {
                             System.out.println("Valor numérico: "+aux);
                             palabras.add(aux);
                         }
-                        */
-                        
-                        }else {
-                            System.out.println("palabras.get(palabras.size()-2).toString() = " + palabras.get(palabras.size()-2).toString());
+                             */
+
+                        } else {
+                            System.out.println("palabras.get(palabras.size()-2).toString() = " + palabras.get(palabras.size() - 2).toString());
                             System.out.println("Símbolo desconocido en la línea " + lin + ": " + aux);
                             cont++;
                         }
@@ -234,26 +231,26 @@ public class Compiler extends javax.swing.JFrame {
         arre = code.split("");
 
         for (int i = 0; i < arre.length; i++) {
-            
+
             String letra = arre[i];
             System.out.println("letra = " + letra);
             if (bander) {
                 //i += conta-1;
-                
-                if (!palabras.get(palabras.size()-1).toString().contains(letra)) {
+
+                if (!palabras.get(palabras.size() - 1).toString().contains(letra)) {
                     if (!letra.equals(" ")) {
                         bander = false;
-                        System.out.println(palabras.get(palabras.size()-1).toString());
-                        System.out.println("ENTRA: "+letra);
+                        System.out.println(palabras.get(palabras.size() - 1).toString());
+                        System.out.println("ENTRA: " + letra);
                     }
                 }
-                
+
                 System.out.println("i2 = " + i);
             }
             //System.out.println("letra = " + letra);
             //     []+MENOR-duvalin()
             if (!bander) {
-                
+
                 if (op.contains(letra)) {
                     ifBan(band, i, linea);
 
@@ -415,9 +412,9 @@ public class Compiler extends javax.swing.JFrame {
                     txt = palabras.get(i + 2).toString() + palabras.get(i + 3).toString() + palabras.get(i + 4).toString();
                     band = true;
                 } else {
-                    
-                        txt = palabras.get(i + 2).toString();
-                    
+
+                    txt = palabras.get(i + 2).toString();
+
                 }
                 if (revisarValorVar(txt)) {
                     System.out.println("**** Asignación a variable ****");
@@ -452,16 +449,14 @@ public class Compiler extends javax.swing.JFrame {
                 System.out.println(pal + palabras.get(i + 1).toString() + " " + palabras.get(i + 2).toString());
 
             }
-            
-            
-            
-                /*
+
+            /*
                 IF
                     SI ( Var,num,cade opCond Var,num,cade ) { instrucciones }
                     SI ( Var,num,cade opCond Var,num,cade ) { instrucciones } SINO { instrucciones }
                     SI ( Var,num,cade opCond Var,num,cade ) { instrucciones } SINO SI ( Var,num,cade opCond Var,num,cade ) { instrucciones } ...
         
-                */
+             */
             if ("SI".equals(pal)) {
                 verificarCorchete = "SI";
                 if ("(".equals(palabras.get(i + 1).toString()) && ")".equals(palabras.get(i + 5).toString())) {
@@ -470,8 +465,8 @@ public class Compiler extends javax.swing.JFrame {
                     if (numOvar(parte1) && numOvar(parte2) && compara.contains(palabras.get(i + 3).toString()) && "{".equals(palabras.get(i + 6).toString())) {
                         boolean ba = false;
                         int j;
-                        for (j = i+7; j < palabras.size(); j++) {
-                            String palab = palabras.get(j).toString(); 
+                        for (j = i + 7; j < palabras.size(); j++) {
+                            String palab = palabras.get(j).toString();
                             if ("}".equals(palab)) {
                                 ba = true;
                                 break;
@@ -481,30 +476,28 @@ public class Compiler extends javax.swing.JFrame {
                             System.out.println("SENTENCIA IF ERRÓNEA");
                             System.out.println("NO SE ENCONTRÓ CIERRE DE CORCHETES");
                             verificarCorchete = "ERROR";
-                        }else{
+                        } else {
                             System.out.println("**** SENTENCIA SI ****");
-                            System.out.println(pal + palabras.get(i + 1).toString() + palabras.get(i + 2).toString() + " " + palabras.get(i + 3).toString() + " " + palabras.get(i + 4).toString() 
-                             + palabras.get(i + 5).toString()  + palabras.get(i + 6).toString()); // Se imprime hasta el "{"
-                            
+                            System.out.println(pal + palabras.get(i + 1).toString() + palabras.get(i + 2).toString() + " " + palabras.get(i + 3).toString() + " " + palabras.get(i + 4).toString()
+                                    + palabras.get(i + 5).toString() + palabras.get(i + 6).toString()); // Se imprime hasta el "{"
+
                         }
-                        
-                    }else{
+
+                    } else {
                         System.out.println("SENTENCIA IF ERRÓNEA");
                         System.out.println("REVISAR LA CONDICIÓN DEL IF");
                         verificarCorchete = "ERROR";
                     }
-                }else{
+                } else {
                     System.out.println("SENTENCIA IF ERRÓNEA");
                     System.out.println("ERROR EN PARÉNTESIS");
                     verificarCorchete = "ERROR";
                 }
-                
-            }
-            /*
+
+            } /*
                     WHILE
                     MIENTRAS ( Var,num,cade opCond Var,num,cade ) { instrucciones }
-            */
-            else if ("MIENTRAS".equals(pal)) {
+             */ else if ("MIENTRAS".equals(pal)) {
                 verificarCorchete = "MIENTRAS";
                 if ("(".equals(palabras.get(i + 1).toString()) && ")".equals(palabras.get(i + 5).toString())) {
                     String parte1 = palabras.get(i + 2).toString();
@@ -512,8 +505,8 @@ public class Compiler extends javax.swing.JFrame {
                     if (numOvar(parte1) && numOvar(parte2) && compara.contains(palabras.get(i + 3).toString()) && "{".equals(palabras.get(i + 6).toString())) {
                         boolean ba = false;
                         int j;
-                        for (j = i+7; j < palabras.size(); j++) {
-                            String palab = palabras.get(j).toString(); 
+                        for (j = i + 7; j < palabras.size(); j++) {
+                            String palab = palabras.get(j).toString();
                             if ("}".equals(palab)) {
                                 ba = true;
                                 break;
@@ -523,27 +516,26 @@ public class Compiler extends javax.swing.JFrame {
                             System.out.println("SENTENCIA MIENTRAS ERRÓNEA");
                             System.out.println("NO SE ENCONTRÓ CIERRE DE CORCHETES");
                             verificarCorchete = "ERROR";
-                        }else{
+                        } else {
                             System.out.println("**** SENTENCIA MIENTRAS ****");
-                            System.out.println(pal + palabras.get(i + 1).toString() + palabras.get(i + 2).toString() + " " + palabras.get(i + 3).toString() + " " + palabras.get(i + 4).toString() 
-                             + palabras.get(i + 5).toString()  + palabras.get(i + 6).toString()); // Se imprime hasta el "{"
-                            
+                            System.out.println(pal + palabras.get(i + 1).toString() + palabras.get(i + 2).toString() + " " + palabras.get(i + 3).toString() + " " + palabras.get(i + 4).toString()
+                                    + palabras.get(i + 5).toString() + palabras.get(i + 6).toString()); // Se imprime hasta el "{"
+
                         }
-                    }else{
+                    } else {
                         System.out.println("SENTENCIA MIENTRAS ERRÓNEA");
                         System.out.println("REVISAR LA CONDICIÓN DEL CICLO");
                         verificarCorchete = "ERROR";
                     }
-                }else{
+                } else {
                     System.out.println("SENTENCIA MIENTRAS ERRÓNEA");
                     System.out.println("ERROR EN PARÉNTESIS");
                     verificarCorchete = "ERROR";
                 }
             }
-            
-            
+
             if ("}".equals(pal)) {
-                switch(verificarCorchete){
+                switch (verificarCorchete) {
                     case "SI":
                         System.out.println("**** CIERRE DE CORCHETE DEL IF ****");
                         System.out.println("}");
@@ -557,22 +549,22 @@ public class Compiler extends javax.swing.JFrame {
                     case "ERROR":
                         break;
                     default:
-                        System.out.println("ERROR: CORCHETE SOBRANTE EN LA LÍNEA: "+linea);
+                        System.out.println("ERROR: CORCHETE SOBRANTE EN LA LÍNEA: " + linea);
                 }
             }
-            
+
         }
         return false;
     }
-    
-    private boolean numOvar(String var){
+
+    private boolean numOvar(String var) {
         boolean vari = revisarVariable(var);
         if (vari) {
             return true;
-        }else{
+        } else {
             for (int i = 0; i < var.length(); i++) {
                 if (!numeros.contains(String.valueOf(var.charAt(i)))) {
-                    System.out.println("ERROR: "+ var);
+                    System.out.println("ERROR: " + var);
                     return false;
                 }
             }
@@ -599,6 +591,43 @@ public class Compiler extends javax.swing.JFrame {
     // ================================================= SINTÁCTICO ==================================================
 
     // ================================================= DISEÑO ==================================================
+    //CONFRIMAR CERRAR PROGRAMA
+    private void Cerrar() {
+        if (!ruta.equals("")) {
+        int iOpcion = JOptionPane.showOptionDialog(null, "¿Desea guardar los cambios?",
+                "Selecciona una opcion...",
+                JOptionPane.YES_NO_CANCEL_OPTION,
+                JOptionPane.WARNING_MESSAGE,
+                null,
+                new Object[]{"Guardar", "No Guardar", "Cancelar"}, "Guardar");
+
+        System.out.println(iOpcion);
+
+        
+            if (iOpcion == JOptionPane.YES_OPTION) {
+                try ( FileWriter fw = new FileWriter(ruta)) {
+                    fw.write(this.txaCode.getText());
+
+                } catch (IOException el) {
+                    el.printStackTrace();
+                }
+
+                if (rootPaneCheckingEnabled) { //Si le da clic en si
+
+                }
+                System.exit(0);
+
+            } else if (iOpcion == JOptionPane.NO_OPTION) {
+                System.exit(0);
+            } else if (iOpcion == JOptionPane.CANCEL_OPTION) {
+                System.out.println("Se cancelo");
+            }
+        }else{
+            System.exit(0);
+        }
+    }
+
+    //BORDES REDONDOS
     class RoundedBorder implements Border {
 
         private int radius;
@@ -624,6 +653,8 @@ public class Compiler extends javax.swing.JFrame {
     public Compiler() {
         initComponents();
 
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+
         this.setTitle("Net Candy Compiler");
 
         setSize(1295, 755);
@@ -634,6 +665,7 @@ public class Compiler extends javax.swing.JFrame {
         btnGuardar.setEnabled(false);
         btnCerrar.setEnabled(false);
         txaCode.setEnabled(false);
+        txaConsola.setEditable(false);
 
         //btnNuevo.setBorder(new RoundedBorder (30));
         setIconImage(new ImageIcon(getClass().getResource("/images/logopng.png")).getImage());
@@ -667,6 +699,11 @@ public class Compiler extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
         setPreferredSize(new java.awt.Dimension(1280, 720));
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
         getContentPane().setLayout(null);
 
         txaCode.setColumns(20);
@@ -890,6 +927,7 @@ public class Compiler extends javax.swing.JFrame {
 
     private void btnCompilarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCompilarActionPerformed
         // TODO add your handling code here:
+
         System.out.println("::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::");
         cont = 0;
         linea = 1;
@@ -900,12 +938,13 @@ public class Compiler extends javax.swing.JFrame {
         variables.clear();
         palabras.clear();
         if (analizarLexico(txaCode.getText())) {
+            txaConsola.setEditable(true);
             System.out.println("Análisis léxico correcto");
             System.out.println("**** PALABRAS ****");
             System.out.println(palabras);
             System.out.println("**** VARIABLES ****");
             System.out.println(variables);
-            
+
             analizarSintactico();
         } else {
             System.out.println("Error en el análisis léxico");
@@ -917,10 +956,20 @@ public class Compiler extends javax.swing.JFrame {
         // TODO add your handling code here:
         int confirmar = JOptionPane.showConfirmDialog(rootPane, "¿Estás seguro?", "Eliminar", JOptionPane.WARNING_MESSAGE, 2);
         if (confirmar == JOptionPane.OK_OPTION) {
-            txaCode.setText("");
+            txaCode.setText("\"INICIO\\n\"\n"
+                    + "                        + \"\\n\"\n"
+                    + "                        + \"	(: Escriba su Código aquí :)\\n\"\n"
+                    + "                        + \"\\n\"\n"
+                    + "                        + \"\\n\"\n"
+                    + "                        + \"FIN\"");
             File destino = new File(ruta);
             destino.delete();
+            btnCerrar.setEnabled(false);
+            btnCompilar.setEnabled(false);
+            btnEliminar.setEnabled(false);
+            btnGuardar.setEnabled(false);
         }
+
 
     }//GEN-LAST:event_btnEliminarActionPerformed
 
@@ -977,6 +1026,71 @@ public class Compiler extends javax.swing.JFrame {
     private void btnAbrirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAbrirActionPerformed
         // TODO add your handling code here:
 
+        if (!ruta.equals("")) {
+            int iOpcion = JOptionPane.showOptionDialog(null, "¿Desea guardar los cambios?",
+                    "Selecciona una opcion...",
+                    JOptionPane.YES_NO_CANCEL_OPTION,
+                    JOptionPane.WARNING_MESSAGE,
+                    null,
+                    new Object[]{"Guardar", "No Guardar", "Cancelar"}, "Guardar");
+
+            System.out.println(iOpcion);
+
+            switch (iOpcion) {
+                case 0:
+                    //PRIMERO GUARDA
+                    System.out.println("Guardar");
+                    try ( FileWriter fw = new FileWriter(ruta)) {
+                        fw.write(this.txaCode.getText());
+
+                    } catch (IOException el) {
+                        el.printStackTrace();
+                    }
+
+                    if (rootPaneCheckingEnabled) { //Si le da clic en si
+
+                    }
+                    //LUEGO CIERRA EL ARCHIVO
+                    ruta = "";
+                    txaCode.setText("INICIO\n"
+                            + "\n"
+                            + "	(: Escriba su Código aquí :)\n"
+                            + "\n"
+                            + "\n"
+                            + "FIN");
+                    txaConsola.setText(null);
+                    txaConsola.setEditable(false);
+                    txaCode.setEnabled(false); //DESHABILITA LOS BOTONES Y EL PANEL DE TEXTO POR DEFECTO
+                    btnCerrar.setEnabled(false);
+                    btnCompilar.setEnabled(false);
+                    btnEliminar.setEnabled(false);
+                    btnGuardar.setEnabled(false);
+
+                    break;
+                case 1:
+                    System.out.println("No Guardar");
+                    //SOLO CIERRA EL ARCHIVO
+                    ruta = "";
+                    txaCode.setText("INICIO\n"
+                            + "\n"
+                            + "	(: Escriba su Código aquí :)\n"
+                            + "\n"
+                            + "\n"
+                            + "FIN");
+                    txaConsola.setText(null);
+                    txaConsola.setEditable(false);
+                    txaCode.setEnabled(false); //DESHABILITA LOS BOTONES Y EL PANEL DE TEXTO POR DEFECTO
+                    btnCerrar.setEnabled(false);
+                    btnCompilar.setEnabled(false);
+                    btnEliminar.setEnabled(false);
+                    btnGuardar.setEnabled(false);
+                    break;
+                case 2:
+                    System.out.println("Cancelar");
+                //SOLO CIERRA LA VENTANA DE CONFIRMACION
+            }
+
+        }
         JFileChooser fc = new JFileChooser();
 
         int seleccion = fc.showOpenDialog(this);
@@ -1028,8 +1142,6 @@ public class Compiler extends javax.swing.JFrame {
         if (rootPaneCheckingEnabled) { //Si le da clic en si
 
         }
-
-
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void btnCerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarActionPerformed
@@ -1043,7 +1155,60 @@ public class Compiler extends javax.swing.JFrame {
                 new Object[]{"Guardar", "No Guardar", "Cancelar"}, "Guardar");
 
         System.out.println(iOpcion);
-        
+
+        switch (iOpcion) {
+            case 0:
+                //PRIMERO GUARDA
+                System.out.println("Guardar");
+                try ( FileWriter fw = new FileWriter(ruta)) {
+                    fw.write(this.txaCode.getText());
+
+                } catch (IOException el) {
+                    el.printStackTrace();
+                }
+
+                if (rootPaneCheckingEnabled) { //Si le da clic en si
+
+                }
+                //LUEGO CIERRA EL ARCHIVO
+                ruta = "";
+                txaCode.setText("INICIO\n"
+                        + "\n"
+                        + "	(: Escriba su Código aquí :)\n"
+                        + "\n"
+                        + "\n"
+                        + "FIN");
+                txaConsola.setText(null);
+                txaCode.setEnabled(false); //DESHABILITA LOS BOTONES Y EL PANEL DE TEXTO POR DEFECTO
+                btnCerrar.setEnabled(false);
+                btnCompilar.setEnabled(false);
+                btnEliminar.setEnabled(false);
+                btnGuardar.setEnabled(false);
+
+                break;
+            case 1:
+                System.out.println("No Guardar");
+                //SOLO CIERRA EL ARCHIVO
+                ruta = "";
+                txaCode.setText("INICIO\n"
+                        + "\n"
+                        + "	(: Escriba su Código aquí :)\n"
+                        + "\n"
+                        + "\n"
+                        + "FIN");
+                txaConsola.setText(null);
+                txaCode.setEnabled(false); //DESHABILITA LOS BOTONES Y EL PANEL DE TEXTO POR DEFECTO
+                btnCerrar.setEnabled(false);
+                btnCompilar.setEnabled(false);
+                btnEliminar.setEnabled(false);
+                btnGuardar.setEnabled(false);
+                break;
+            case 2:
+                System.out.println("Cancelar");
+            //SOLO CIERRA LA VENTANA DE CONFIRMACION
+        }
+
+
     }//GEN-LAST:event_btnCerrarActionPerformed
 
     private void btnCerrarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCerrarMouseEntered
@@ -1055,6 +1220,11 @@ public class Compiler extends javax.swing.JFrame {
         // TODO add your handling code here:
         btnCerrar.setBackground(Color.WHITE);
     }//GEN-LAST:event_btnCerrarMouseExited
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        // TODO add your handling code here:
+        Cerrar();
+    }//GEN-LAST:event_formWindowClosing
 
     /**
      * @param args the command line arguments
