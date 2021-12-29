@@ -53,7 +53,7 @@ public class Compiler extends javax.swing.JFrame {
     List palabras = new ArrayList();
     List variables = new ArrayList();
     int conta = 0;
-    boolean bander = false, banNums = false;
+    boolean bander = false, banNums = false, bandeHAZ = false, bandeSINO = false;
 
     // ================================================= LÉXICO ==================================================
     private void ifBan(boolean ban, int idx, int lin) {
@@ -83,7 +83,7 @@ public class Compiler extends javax.swing.JFrame {
 
                 if (palabras.size() > 0) {
                     String anterior = palabras.get(palabras.size() - 1).toString();
-                    System.out.println("anterior = " + anterior);
+                    //System.out.println("anterior = " + anterior);
                     if (tipoDato.contains(anterior)) {
                         variables.add(aux);
                         System.out.println("Variable: " + aux);
@@ -176,7 +176,7 @@ public class Compiler extends javax.swing.JFrame {
                             palabras.add(fin);
                             bander = true;
 
-                            System.out.println("ULTIMA PALABRA = " + palabras.get(palabras.size() - 1).toString());
+                            //System.out.println("ULTIMA PALABRA = " + palabras.get(palabras.size() - 1).toString());
                         } else if (numeros.contains(String.valueOf(aux.charAt(0)))) {
                             boolean b = true;
                             for (int i = 0; i < aux.length(); i++) {
@@ -233,19 +233,19 @@ public class Compiler extends javax.swing.JFrame {
         for (int i = 0; i < arre.length; i++) {
 
             String letra = arre[i];
-            System.out.println("letra = " + letra);
+            //System.out.println("letra = " + letra);
             if (bander) {
                 //i += conta-1;
 
                 if (!palabras.get(palabras.size() - 1).toString().contains(letra)) {
                     if (!letra.equals(" ")) {
                         bander = false;
-                        System.out.println(palabras.get(palabras.size() - 1).toString());
-                        System.out.println("ENTRA: " + letra);
+                        //System.out.println(palabras.get(palabras.size() - 1).toString());
+                        //System.out.println("ENTRA: " + letra);
                     }
                 }
 
-                System.out.println("i2 = " + i);
+                //System.out.println("i2 = " + i);
             }
             //System.out.println("letra = " + letra);
             //     []+MENOR-duvalin()
@@ -327,7 +327,7 @@ public class Compiler extends javax.swing.JFrame {
                 }
             }
         }
-        System.out.println("cont = " + cont);
+        //System.out.println("cont = " + cont);
         return cont == 0;
     }
     // ================================================= LÉXICO ==================================================
@@ -459,45 +459,99 @@ public class Compiler extends javax.swing.JFrame {
              */
             if ("SI".equals(pal)) {
                 verificarCorchete = "SI";
-                if ("(".equals(palabras.get(i + 1).toString()) && ")".equals(palabras.get(i + 5).toString())) {
-                    String parte1 = palabras.get(i + 2).toString();
-                    String parte2 = palabras.get(i + 4).toString();
-                    if (numOvar(parte1) && numOvar(parte2) && compara.contains(palabras.get(i + 3).toString()) && "{".equals(palabras.get(i + 6).toString())) {
+                //if (palabras.get(i-1).equals("SINO")) {
+                    
+                //}else{
+                    if ("(".equals(palabras.get(i + 1).toString()) && ")".equals(palabras.get(i + 5).toString())) {
+                        String parte1 = palabras.get(i + 2).toString();
+                        String parte2 = palabras.get(i + 4).toString();
+                        if (numOvar(parte1) && numOvar(parte2) && compara.contains(palabras.get(i + 3).toString()) && "{".equals(palabras.get(i + 6).toString())) {
+                            boolean ba = false;
+                            int j;
+                            for (j = i + 7; j < palabras.size(); j++) {
+                                String palab = palabras.get(j).toString();
+                                if ("}".equals(palab)) {
+                                    ba = true;
+                                    break;
+                                }
+                            }
+                            if (!ba) {
+                                System.out.println("SENTENCIA IF ERRÓNEA");
+                                System.out.println("NO SE ENCONTRÓ CIERRE DE CORCHETES");
+                                verificarCorchete = "ERROR";
+                            } else {
+                                if (i-1 > 0) {
+                                    if (palabras.get(i-1).equals("SINO")) {
+                                        System.out.println("**** SENTENCIA SI DEL SINO ****");
+                                    }else{
+                                        System.out.println("**** SENTENCIA SI ****");
+                                    }
+                                }else{
+                                    System.out.println("**** SENTENCIA SI ****");
+                                }
+                                System.out.println(pal + palabras.get(i + 1).toString() + palabras.get(i + 2).toString() + " " + palabras.get(i + 3).toString() + " " + palabras.get(i + 4).toString()
+                                        + palabras.get(i + 5).toString() + palabras.get(i + 6).toString()); // Se imprime hasta el "{"
+                                if (j+1 < palabras.size()) {
+                                    if (palabras.get(j+1).equals("SINO")) {
+                                        bandeSINO = true;
+                                    }
+                                }
+                                
+                            }
+
+                        } else {
+                            System.out.println("SENTENCIA IF ERRÓNEA");
+                            System.out.println("REVISAR LA CONDICIÓN DEL IF");
+                            verificarCorchete = "ERROR";
+                        }
+                    } else {
+                        System.out.println("SENTENCIA IF ERRÓNEA");
+                        System.out.println("ERROR EN PARÉNTESIS");
+                        verificarCorchete = "ERROR";
+                    }
+                //}
+
+            }else if ("SINO".equals(pal)) {
+                if (!bandeSINO) {
+                    System.out.println("ERROR: SENTENCIA SINO SIN LA SENTENCIA SI. Líena: "+linea);
+                }else{
+                    if ("{".equals(palabras.get(i+1))) {
                         boolean ba = false;
                         int j;
-                        for (j = i + 7; j < palabras.size(); j++) {
+                        for (j = i + 1; j < palabras.size(); j++) {
                             String palab = palabras.get(j).toString();
                             if ("}".equals(palab)) {
                                 ba = true;
                                 break;
                             }
                         }
+                        bandeSINO = false;
                         if (!ba) {
-                            System.out.println("SENTENCIA IF ERRÓNEA");
+                            System.out.println("SENTENCIA SINO ERRÓNEA");
                             System.out.println("NO SE ENCONTRÓ CIERRE DE CORCHETES");
                             verificarCorchete = "ERROR";
-                        } else {
-                            System.out.println("**** SENTENCIA SI ****");
-                            System.out.println(pal + palabras.get(i + 1).toString() + palabras.get(i + 2).toString() + " " + palabras.get(i + 3).toString() + " " + palabras.get(i + 4).toString()
-                                    + palabras.get(i + 5).toString() + palabras.get(i + 6).toString()); // Se imprime hasta el "{"
-
+                        }else{
+                            System.out.println("**** SENTENCIA SINO ****");
+                            System.out.println(pal+palabras.get(i+1));
+                            verificarCorchete = "SINO";
                         }
-
-                    } else {
-                        System.out.println("SENTENCIA IF ERRÓNEA");
-                        System.out.println("REVISAR LA CONDICIÓN DEL IF");
+                    }else if (!"SI".equals(palabras.get(i+1))) {
+                        System.out.println("SENTENCIA SINO ERRÓNEA");
+                        System.out.println("ERROR: FALTAN LLAVES");
                         verificarCorchete = "ERROR";
+                    }else{
+                        System.out.println("**** SENTENCIA SINO SI ****");
+                        System.out.println(pal+" "+palabras.get(i+1));
+                        verificarCorchete = "SINO";
                     }
-                } else {
-                    System.out.println("SENTENCIA IF ERRÓNEA");
-                    System.out.println("ERROR EN PARÉNTESIS");
-                    verificarCorchete = "ERROR";
                 }
-
-            } /*
+            }
+            
+            
+            /*
                     WHILE
                     MIENTRAS ( Var,num,cade opCond Var,num,cade ) { instrucciones }
-             */ else if ("MIENTRAS".equals(pal)) {
+             */ else if ("MIENTRAS".equals(pal) && !bandeHAZ) {
                 verificarCorchete = "MIENTRAS";
                 if ("(".equals(palabras.get(i + 1).toString()) && ")".equals(palabras.get(i + 5).toString())) {
                     String parte1 = palabras.get(i + 2).toString();
@@ -532,17 +586,153 @@ public class Compiler extends javax.swing.JFrame {
                     System.out.println("ERROR EN PARÉNTESIS");
                     verificarCorchete = "ERROR";
                 }
+            }else if ("MIENTRAS".equals(pal) && bandeHAZ) {
+                bandeHAZ = false;
+                System.out.println("**** SENTENCIA HAZ MIENTRAS ****");
+                System.out.println(pal+palabras.get(i + 1).toString() + palabras.get(i + 2).toString() + " " + palabras.get(i + 3).toString() + " " + palabras.get(i + 4).toString() + palabras.get(i + 5).toString());
+            }
+                    /*
+                        DO WHILE
+                        HAZ { instucciones } MIENTRAS ( Var,num,cade opCond Var,num,cade )
+                    */
+            else if ("HAZ".equals(pal)) {
+                verificarCorchete = "HAZ";
+                bandeHAZ = true;
+                if ("{".equals(palabras.get(i + 1).toString())) {
+                    boolean ba = false;
+                    int j;
+                    for (j = i + 1; j < palabras.size(); j++) {
+                        String palab = palabras.get(j).toString();
+                        if ("}".equals(palab)) {
+                            ba = true;
+                            break;
+                        }
+                    }
+                    if (!ba) {
+                        System.out.println("SENTENCIA HAZ MIENTRAS ERRÓNEA");
+                        System.out.println("ERROR: LLAVE DE CIERRE");
+                        verificarCorchete = "ERROR";
+                    }else{
+                        if ("MIENTRAS".equals(palabras.get(j + 1).toString())) {
+                            if ("(".equals(palabras.get(j + 2).toString()) && ")".equals(palabras.get(j + 6).toString())) {
+                                String parte1 = palabras.get(j + 3).toString();
+                                String parte2 = palabras.get(j + 5).toString();
+                                if (numOvar(parte1) && numOvar(parte2) && compara.contains(palabras.get(j + 4).toString())) {
+                                    System.out.println("**** SENTENCIA HAZ MIENTRAS ****");
+                                    System.out.println(pal + palabras.get(i + 1).toString());
+                                }else{
+                                    System.out.println("SENTENCIA HAZ MIENTRAS ERRÓNEA");
+                                    System.out.println("REVISAR LA CONDICIÓN DEL CICLO");
+                                    verificarCorchete = "ERROR";
+                                }
+                            }else{
+                                System.out.println("SENTENCIA HAZ MIENTRAS ERRÓNEA");
+                                System.out.println("ERROR: FALTA PARENTESIS DE INCIO O CIERRE");
+                                verificarCorchete = "ERROR";
+                            }
+                        }else{
+                            System.out.println("SENTENCIA HAZ MIENTRAS ERRÓNEA");
+                            System.out.println("ERROR: FALTA PALABRA MIENTRAS");
+                            verificarCorchete = "ERROR";
+                        }
+                    }
+                }else{
+                    System.out.println("SENTENCIA HAZ MIENTRAS ERRÓNEA");
+                    System.out.println("ERROR: LLAVE DE INICIO");
+                    verificarCorchete = "ERROR";
+                }
+            }
+                /*
+                    FOR
+                    PARA ( tipoDato Var = valVar     Var opCond Var,num    Var  =  Var opLogico num,var )    { instrucciones }
+                         1    2      3  4   5         6    7         8      9  10   11    12    13      14   15    16        17
+                */
+            else if ("PARA".equals(pal)) {
+                verificarCorchete = "PARA";
+                if(i+14 <= palabras.size()){
+                    if ("(".equals(palabras.get(i+1)) && ")".equals(palabras.get(i+14))) {
+                        if (tipoDato.contains(palabras.get(i+2).toString()) && revisarVariable(palabras.get(i+3).toString()) && "=".equals(palabras.get(i+4)) && numOvar(palabras.get(i+5).toString())) {
+                            String variable = palabras.get(i+3).toString();
+                            if (variable.equals(palabras.get(i+6).toString()) && compara.contains(palabras.get(i+7).toString()) && numOvar(palabras.get(i+8).toString())) {
+                                if (variable.equals(palabras.get(i+9).toString()) && "=".equals(palabras.get(i+10).toString()) && variable.equals(palabras.get(i+11).toString()) && log.contains(palabras.get(i+12).toString()) && numOvar(palabras.get(i+13).toString())) {
+                                    if ("{".equals(palabras.get(i+15).toString())) {
+                                        boolean ba = false;
+                                        int j;
+                                        for (j = i + 1; j < palabras.size(); j++) {
+                                            String palab = palabras.get(j).toString();
+                                            if ("}".equals(palab)) {
+                                                ba = true;
+                                                break;
+                                            }
+                                        }
+                                        if (!ba) {
+                                            System.out.println("SENTENCIA PARA ERRÓNEA");
+                                            System.out.println("ERROR: LLAVE DE CIERRE");
+                                            verificarCorchete = "ERROR";
+                                        }else{
+                                            System.out.println("**** SENTENCIA PARA ****");
+                                            System.out.println(pal + palabras.get(i + 1).toString() + palabras.get(i + 2).toString() + " " + palabras.get(i + 3).toString() + " " + palabras.get(i + 4).toString() + " "
+                                                 + palabras.get(i + 5).toString() + " " + palabras.get(i + 6).toString() + " " + palabras.get(i + 7).toString() + " " + palabras.get(i + 8).toString() + " "
+                                                 + palabras.get(i + 9).toString() + " " + palabras.get(i + 10).toString() + " " + palabras.get(i + 11).toString() + " " + palabras.get(i + 12).toString() + " "
+                                                 + palabras.get(i + 13).toString() + palabras.get(i + 14).toString() + palabras.get(i + 15).toString());
+                                            i+=14;
+                                        }
+                                    }else{
+                                        System.out.println("SENTENCIA PARA ERRÓNEA");
+                                        System.out.println("ERROR: LLAVE DE INICIO");
+                                        verificarCorchete = "ERROR";
+                                    }
+                                }else{
+                                    System.out.println("SENTENCIA PARA ERRÓNEA");
+                                    System.out.println("ERROR: SECCION 3 DEL CICLO PARA");
+                                    verificarCorchete = "ERROR";
+                                }
+                            }else{
+                                System.out.println("SENTENCIA PARA ERRÓNEA");
+                                System.out.println("ERROR: SECCION 2 DEL CICLO PARA");
+                                verificarCorchete = "ERROR";
+                            }
+                        }else{
+                            System.out.println("SENTENCIA PARA ERRÓNEA");
+                            System.out.println("ERROR: SECCION 1 DEL CICLO PARA");
+                            verificarCorchete = "ERROR";
+                        }
+                    }else{
+                        System.out.println("SENTENCIA PARA ERRÓNEA");
+                        System.out.println("ERROR: FALTA PARENTESIS");
+                        verificarCorchete = "ERROR";
+                    }
+                }else{
+                    System.out.println("SENTENCIA PARA ERRÓNEA");
+                    System.out.println("ERROR: CICLO PARA");
+                    verificarCorchete = "ERROR";
+                }
             }
 
             if ("}".equals(pal)) {
                 switch (verificarCorchete) {
                     case "SI":
-                        System.out.println("**** CIERRE DE CORCHETE DEL IF ****");
+                        System.out.println("**** CIERRE DE CORCHETE DEL SI ****");
+                        System.out.println("}");
+                        verificarCorchete = "";
+                        break;
+                    case "SINO":
+                        System.out.println("**** CIERRE DE CORCHETE DEL SINO ****");
                         System.out.println("}");
                         verificarCorchete = "";
                         break;
                     case "MIENTRAS":
                         System.out.println("**** CIERRE DE CORCHETE DEL MIENTRAS ****");
+                        System.out.println("}");
+                        verificarCorchete = "";
+                        break;
+                    case "HAZ":
+                        System.out.println("**** CIERRE DE CORCHETE DEL HAZ MIENTRAS ****");
+                        System.out.println("}");
+                        verificarCorchete = "";
+                        break;
+                    case "PARA":
+                        System.out.println("**** CIERRE DE CORCHETE DEL PARA ****");
                         System.out.println("}");
                         verificarCorchete = "";
                         break;
@@ -556,7 +746,8 @@ public class Compiler extends javax.swing.JFrame {
         }
         return false;
     }
-
+    
+   
     private boolean numOvar(String var) {
         boolean vari = revisarVariable(var);
         if (vari) {
