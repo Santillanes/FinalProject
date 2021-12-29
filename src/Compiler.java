@@ -43,16 +43,17 @@ public class Compiler extends javax.swing.JFrame {
     String palRes = "abiertocerradobolsitapiñataticowinniTicketSkittleimportarextiendeimplementanuevolanzarintentacarameloROMPERDEFECTOverdadmentira";
     String ciclos = "PARAMIENTRASHAZ";
     String condicion = "SISINOJUICIOCASO";
+    String numeros = "1234567890";
     String simbRes = "=:\"_";
     boolean band = false;
-    String aux = "";
+    String aux = "", nums = "", verificarCorchete = "";
     String inicio;
     int cont = 0, linea = 1;
     String[] arre;
     List palabras = new ArrayList();
     List variables = new ArrayList();
     int conta = 0;
-    boolean bander = false;
+    boolean bander = false, banNums = false;
 
     // ================================================= LÉXICO ==================================================
     private void ifBan(boolean ban, int idx, int lin) {
@@ -60,6 +61,9 @@ public class Compiler extends javax.swing.JFrame {
             inicio = String.valueOf(aux.charAt(0));
         }
         String letras = "qwertyuiopñlkjhgfdsazxcvbnmQWERTYUIOPÑLKJHGFDSAZXCVBNM";
+        
+        
+        
         if (ban) {
             if (compara.contains(aux)) {
                 System.out.println("Operador comparativo: " + aux);
@@ -159,11 +163,55 @@ public class Compiler extends javax.swing.JFrame {
                                 //System.out.println("auxi = " + auxi);
                                 //System.out.println("cadeAux = " + cadeAux);
                             }
-                            System.out.println("Valor de variable: " + cadeAux);
-                            palabras.add(cadeAux);
+                            
+                            //System.out.println("PRUEBAAAAAAAAAA = " + arre[idx]);
+                            //if (String.valueOf(cadeAux.charAt(cadeAux.length()-1)).equals(arre[idx+cadeAux.length()])) {  
+                            //}
+                            String fin = "";
+                            for (int i = 0; i < cadeAux.length(); i++) {
+                                if (numeros.contains(String.valueOf(cadeAux.charAt(i)))) {
+                                    fin+=String.valueOf(cadeAux.charAt(i));
+                                }
+                            }
+                            
+                            System.out.println("Valor de variable: " + fin);
+                            palabras.add(fin);
                             bander = true;
-
-                        } else {
+                        
+                            
+                            System.out.println("ULTIMA PALABRA = " + palabras.get(palabras.size()-1).toString());
+                        }else if(numeros.contains(String.valueOf(aux.charAt(0)))){
+                            boolean b = true;
+                            for (int i = 0; i < aux.length(); i++) {
+                                if (!numeros.contains(String.valueOf(aux.charAt(i)))) {
+                                    b=false;
+                                }
+                            }
+                            if (b) {
+                                System.out.println("Valor numérico: "+aux);
+                                palabras.add(aux);
+                            }else{
+                                System.out.println("Símbolo desconocido en la línea " + lin + ": " + aux);
+                                cont++;
+                            }
+                        /*
+                        else if(condicion.contains(palabras.get(palabras.size()-2).toString())){ 
+                            // si(34 MAYOR 45){
+                            //System.out.println("ENTRA AL IF");
+                            
+                            System.out.println("Valor numérico: "+aux);
+                            palabras.add(aux);
+                            
+                        }else if(compara.contains(palabras.get(palabras.size()-1).toString())){
+                            //System.out.println("ENTRA AL IF2");
+                            
+                            System.out.println("Valor numérico: "+aux);
+                            palabras.add(aux);
+                        }
+                        */
+                        
+                        }else {
+                            System.out.println("palabras.get(palabras.size()-2).toString() = " + palabras.get(palabras.size()-2).toString());
                             System.out.println("Símbolo desconocido en la línea " + lin + ": " + aux);
                             cont++;
                         }
@@ -367,7 +415,9 @@ public class Compiler extends javax.swing.JFrame {
                     txt = palabras.get(i + 2).toString() + palabras.get(i + 3).toString() + palabras.get(i + 4).toString();
                     band = true;
                 } else {
-                    txt = palabras.get(i + 2).toString();
+                    
+                        txt = palabras.get(i + 2).toString();
+                    
                 }
                 if (revisarValorVar(txt)) {
                     System.out.println("**** Asignación a variable ****");
@@ -402,8 +452,132 @@ public class Compiler extends javax.swing.JFrame {
                 System.out.println(pal + palabras.get(i + 1).toString() + " " + palabras.get(i + 2).toString());
 
             }
+            
+            
+            
+                /*
+                IF
+                    SI ( Var,num,cade opCond Var,num,cade ) { instrucciones }
+                    SI ( Var,num,cade opCond Var,num,cade ) { instrucciones } SINO { instrucciones }
+                    SI ( Var,num,cade opCond Var,num,cade ) { instrucciones } SINO SI ( Var,num,cade opCond Var,num,cade ) { instrucciones } ...
+        
+                */
+            if ("SI".equals(pal)) {
+                verificarCorchete = "SI";
+                if ("(".equals(palabras.get(i + 1).toString()) && ")".equals(palabras.get(i + 5).toString())) {
+                    String parte1 = palabras.get(i + 2).toString();
+                    String parte2 = palabras.get(i + 4).toString();
+                    if (numOvar(parte1) && numOvar(parte2) && compara.contains(palabras.get(i + 3).toString()) && "{".equals(palabras.get(i + 6).toString())) {
+                        boolean ba = false;
+                        int j;
+                        for (j = i+7; j < palabras.size(); j++) {
+                            String palab = palabras.get(j).toString(); 
+                            if ("}".equals(palab)) {
+                                ba = true;
+                                break;
+                            }
+                        }
+                        if (!ba) {
+                            System.out.println("SENTENCIA IF ERRÓNEA");
+                            System.out.println("NO SE ENCONTRÓ CIERRE DE CORCHETES");
+                            verificarCorchete = "ERROR";
+                        }else{
+                            System.out.println("**** SENTENCIA SI ****");
+                            System.out.println(pal + palabras.get(i + 1).toString() + palabras.get(i + 2).toString() + " " + palabras.get(i + 3).toString() + " " + palabras.get(i + 4).toString() 
+                             + palabras.get(i + 5).toString()  + palabras.get(i + 6).toString()); // Se imprime hasta el "{"
+                            
+                        }
+                        
+                    }else{
+                        System.out.println("SENTENCIA IF ERRÓNEA");
+                        System.out.println("REVISAR LA CONDICIÓN DEL IF");
+                        verificarCorchete = "ERROR";
+                    }
+                }else{
+                    System.out.println("SENTENCIA IF ERRÓNEA");
+                    System.out.println("ERROR EN PARÉNTESIS");
+                    verificarCorchete = "ERROR";
+                }
+                
+            }
+            /*
+                    WHILE
+                    MIENTRAS ( Var,num,cade opCond Var,num,cade ) { instrucciones }
+            */
+            else if ("MIENTRAS".equals(pal)) {
+                verificarCorchete = "MIENTRAS";
+                if ("(".equals(palabras.get(i + 1).toString()) && ")".equals(palabras.get(i + 5).toString())) {
+                    String parte1 = palabras.get(i + 2).toString();
+                    String parte2 = palabras.get(i + 4).toString();
+                    if (numOvar(parte1) && numOvar(parte2) && compara.contains(palabras.get(i + 3).toString()) && "{".equals(palabras.get(i + 6).toString())) {
+                        boolean ba = false;
+                        int j;
+                        for (j = i+7; j < palabras.size(); j++) {
+                            String palab = palabras.get(j).toString(); 
+                            if ("}".equals(palab)) {
+                                ba = true;
+                                break;
+                            }
+                        }
+                        if (!ba) {
+                            System.out.println("SENTENCIA MIENTRAS ERRÓNEA");
+                            System.out.println("NO SE ENCONTRÓ CIERRE DE CORCHETES");
+                            verificarCorchete = "ERROR";
+                        }else{
+                            System.out.println("**** SENTENCIA MIENTRAS ****");
+                            System.out.println(pal + palabras.get(i + 1).toString() + palabras.get(i + 2).toString() + " " + palabras.get(i + 3).toString() + " " + palabras.get(i + 4).toString() 
+                             + palabras.get(i + 5).toString()  + palabras.get(i + 6).toString()); // Se imprime hasta el "{"
+                            
+                        }
+                    }else{
+                        System.out.println("SENTENCIA MIENTRAS ERRÓNEA");
+                        System.out.println("REVISAR LA CONDICIÓN DEL CICLO");
+                        verificarCorchete = "ERROR";
+                    }
+                }else{
+                    System.out.println("SENTENCIA MIENTRAS ERRÓNEA");
+                    System.out.println("ERROR EN PARÉNTESIS");
+                    verificarCorchete = "ERROR";
+                }
+            }
+            
+            
+            if ("}".equals(pal)) {
+                switch(verificarCorchete){
+                    case "SI":
+                        System.out.println("**** CIERRE DE CORCHETE DEL IF ****");
+                        System.out.println("}");
+                        verificarCorchete = "";
+                        break;
+                    case "MIENTRAS":
+                        System.out.println("**** CIERRE DE CORCHETE DEL MIENTRAS ****");
+                        System.out.println("}");
+                        verificarCorchete = "";
+                        break;
+                    case "ERROR":
+                        break;
+                    default:
+                        System.out.println("ERROR: CORCHETE SOBRANTE EN LA LÍNEA: "+linea);
+                }
+            }
+            
         }
         return false;
+    }
+    
+    private boolean numOvar(String var){
+        boolean vari = revisarVariable(var);
+        if (vari) {
+            return true;
+        }else{
+            for (int i = 0; i < var.length(); i++) {
+                if (!numeros.contains(String.valueOf(var.charAt(i)))) {
+                    System.out.println("ERROR: "+ var);
+                    return false;
+                }
+            }
+            return true;
+        }
     }
 
     private boolean revisarVariable(String var) {
@@ -716,6 +890,7 @@ public class Compiler extends javax.swing.JFrame {
 
     private void btnCompilarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCompilarActionPerformed
         // TODO add your handling code here:
+        System.out.println("::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::");
         cont = 0;
         linea = 1;
         aux = "";
@@ -726,7 +901,11 @@ public class Compiler extends javax.swing.JFrame {
         palabras.clear();
         if (analizarLexico(txaCode.getText())) {
             System.out.println("Análisis léxico correcto");
+            System.out.println("**** PALABRAS ****");
             System.out.println(palabras);
+            System.out.println("**** VARIABLES ****");
+            System.out.println(variables);
+            
             analizarSintactico();
         } else {
             System.out.println("Error en el análisis léxico");
