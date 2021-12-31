@@ -1202,11 +1202,11 @@ public class Compiler extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        txaCode = new javax.swing.JTextArea();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        txaConsola = new javax.swing.JTextArea();
         btnNuevo = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        txaConsola = new javax.swing.JTextPane();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        txaCode = new javax.swing.JTextPane();
         btnAbrir = new javax.swing.JButton();
         btnGuardar = new javax.swing.JButton();
         btnCompilar = new javax.swing.JButton();
@@ -1226,29 +1226,6 @@ public class Compiler extends javax.swing.JFrame {
             }
         });
         getContentPane().setLayout(null);
-
-        txaCode.setColumns(20);
-        txaCode.setFont(new java.awt.Font("SansSerif", 0, 18)); // NOI18N
-        txaCode.setRows(5);
-        txaCode.setText("INICIO\n\n\t(: Escriba su Código aquí :)\n\n\nFIN");
-        txaCode.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 3, true));
-        jScrollPane1.setViewportView(txaCode);
-
-        getContentPane().add(jScrollPane1);
-        jScrollPane1.setBounds(290, 30, 930, 460);
-
-        txaConsola.setColumns(20);
-        txaConsola.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
-        txaConsola.setRows(5);
-        txaConsola.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 3, true));
-        txaConsola.setMinimumSize(new java.awt.Dimension(403, 156));
-        txaConsola.setPreferredSize(new java.awt.Dimension(403, 156));
-        txaConsola.setSelectionEnd(43);
-        txaConsola.setSelectionStart(43);
-        jScrollPane2.setViewportView(txaConsola);
-
-        getContentPane().add(jScrollPane2);
-        jScrollPane2.setBounds(290, 510, 930, 190);
 
         btnNuevo.setBackground(new java.awt.Color(255, 255, 255));
         btnNuevo.setFont(new java.awt.Font("Segoe Print", 1, 18)); // NOI18N
@@ -1270,6 +1247,20 @@ public class Compiler extends javax.swing.JFrame {
         });
         getContentPane().add(btnNuevo);
         btnNuevo.setBounds(80, 70, 130, 50);
+
+        txaConsola.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 3, true));
+        txaConsola.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jScrollPane2.setViewportView(txaConsola);
+
+        getContentPane().add(jScrollPane2);
+        jScrollPane2.setBounds(290, 510, 930, 190);
+
+        txaCode.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 3, true));
+        txaCode.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jScrollPane1.setViewportView(txaCode);
+
+        getContentPane().add(jScrollPane1);
+        jScrollPane1.setBounds(290, 30, 930, 460);
 
         btnAbrir.setBackground(new java.awt.Color(255, 255, 255));
         btnAbrir.setFont(new java.awt.Font("Segoe Print", 1, 18)); // NOI18N
@@ -1806,7 +1797,7 @@ public class Compiler extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel logo;
-    private javax.swing.JTextArea txaCode;
-    private javax.swing.JTextArea txaConsola;
+    private javax.swing.JTextPane txaCode;
+    private javax.swing.JTextPane txaConsola;
     // End of variables declaration//GEN-END:variables
 }
