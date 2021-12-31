@@ -1159,10 +1159,20 @@ public class Compiler extends javax.swing.JFrame {
             g.drawRoundRect(x, y, width - 1, height - 1, radius, radius);
         }
     }
+    
+    NumeroLinea numeroLinea;
 
     // ================================================= DISEÑO ==================================================
     public Compiler() {
         initComponents();
+        int x = 1;
+        numeroLinea = new NumeroLinea(txaCode);
+        jScrollPane1.setRowHeaderView(numeroLinea);
+        
+        
+        
+        
+        
 
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 
@@ -1218,17 +1228,19 @@ public class Compiler extends javax.swing.JFrame {
         getContentPane().setLayout(null);
 
         txaCode.setColumns(20);
-        txaCode.setFont(new java.awt.Font("Monospaced", 0, 18)); // NOI18N
+        txaCode.setFont(new java.awt.Font("SansSerif", 0, 18)); // NOI18N
         txaCode.setRows(5);
         txaCode.setText("INICIO\n\n\t(: Escriba su Código aquí :)\n\n\nFIN");
+        txaCode.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 3, true));
         jScrollPane1.setViewportView(txaCode);
 
         getContentPane().add(jScrollPane1);
         jScrollPane1.setBounds(290, 30, 930, 460);
 
         txaConsola.setColumns(20);
-        txaConsola.setFont(new java.awt.Font("Monospaced", 0, 14)); // NOI18N
+        txaConsola.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
         txaConsola.setRows(5);
+        txaConsola.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 3, true));
         txaConsola.setMinimumSize(new java.awt.Dimension(403, 156));
         txaConsola.setPreferredSize(new java.awt.Dimension(403, 156));
         txaConsola.setSelectionEnd(43);
