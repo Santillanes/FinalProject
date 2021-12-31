@@ -86,7 +86,7 @@ public class Compiler extends javax.swing.JFrame {
                 System.out.println("Acceso: " + aux);
                 palabras.add(aux);
             } else if (letras.contains(inicio)) {
-                System.out.println("Identificador: " + aux);
+                
 
                 if (palabras.size() > 0) {
                     String anterior = palabras.get(palabras.size() - 1).toString();
@@ -97,12 +97,14 @@ public class Compiler extends javax.swing.JFrame {
                     } else if ("bolsita".equals(anterior)) {
                         clase.add(aux);
                         System.out.println("Nombre de clase: " + aux);
+                    }else{
+                        System.out.println("Variable: " + aux);
                     }
                 }
 
                 palabras.add(aux);
-            } else {
-
+            } else { //inicia con número
+                //System.out.println("aux = " + aux);
                 /*
                     rellerindo hola
                     hola = 123
@@ -118,8 +120,10 @@ public class Compiler extends javax.swing.JFrame {
                     if (!arre[j].isBlank()) {
                         if (arre[j].equals("=")) {
                             //hola = 1+23+ 3
-                            cadeAux = aux;
+                            cadeAux = aux; // =1
+                            //System.out.println("aux = " + aux);
                             for (int i = idx; i < arre.length; i++) {
+                                //System.out.println("cadeAux = " + cadeAux);
                                 //conta++;
                                 //System.out.println("************************");
                                 //System.out.println("arre[i] = " + arre[i]);
@@ -133,31 +137,38 @@ public class Compiler extends javax.swing.JFrame {
                                     }
                                 }
                                 //System.out.println("b = " + b);
-
+                                //System.out.println("arre[i] = " + arre[i]);
                                 if (!arre[i].equals(" ") && !arre[i].equals("\n") && !arre[i].equals("	")) {
-                                    if (log.contains(arre[i])) {
+                                    if (numeros.contains(arre[i]) || log.contains(arre[i]) || ".".equals(arre[i])) {
+                                        if (log.contains(arre[i])) {
 
-                                        if (!revisarValorVar(auxi) && b) {
-                                            //Es una palabra reservada
-                                            i = arre.length;
-                                            //System.out.println("ENTRA");
+                                            if (!revisarValorVar(auxi) || b) {
+                                                //Es una palabra reservada
+                                                i = arre.length;
+                                                //System.out.println("ENTRA");
+                                            } else {
+                                                auxi = auxi.replace("_", "");
+                                                cadeAux += auxi;
+                                                auxi = "_____";
+                                                //System.out.println("Se debe añadir");
+                                            }
+                                            cadeAux += arre[i];
                                         } else {
-                                            auxi = auxi.replace("_", "");
-                                            cadeAux += auxi;
-                                            auxi = "_____";
-                                            //System.out.println("Se debe añadir");
+                                            if (!revisarValorVar(auxi) || b) {
+                                                //System.out.println("auxi = " + auxi);
+                                                i = arre.length;
+                                                cont++;
+                                                System.out.println("ERROR DE VALOR DE VARIABLE EN LÍNEA: "+(linea+1));
+                                                //System.out.println("ENTRA");
+                                            } else {
+                                                cadeAux += arre[i];
+                                            }
                                         }
-                                        cadeAux += arre[i];
-                                    } else {
-                                        if (b) {
-                                            i = arre.length;
-                                            //System.out.println("ENTRA");
-                                        } else {
-                                            auxi += arre[i];
-                                        }
+                                    }else{
+                                        i = arre.length;
                                     }
                                 } else {
-                                    if (!revisarValorVar(auxi) && b) {
+                                    if (!revisarValorVar(auxi) || b) {
                                         //Es una palabra reservada
                                         i = arre.length;
                                         //System.out.println("ENTRA");
@@ -168,25 +179,30 @@ public class Compiler extends javax.swing.JFrame {
                                         //System.out.println("Se debe añadir");
                                     }
                                 }
-                                //System.out.println("auxi = " + auxi);
-                                //System.out.println("cadeAux = " + cadeAux);
                             }
-
-                            //System.out.println("PRUEBAAAAAAAAAA = " + arre[idx]);
-                            //if (String.valueOf(cadeAux.charAt(cadeAux.length()-1)).equals(arre[idx+cadeAux.length()])) {  
-                            //}
+                            /*
                             String fin = "";
+                            boolean punto = true;
                             for (int i = 0; i < cadeAux.length(); i++) {
                                 if (numeros.contains(String.valueOf(cadeAux.charAt(i)))) {
                                     fin += String.valueOf(cadeAux.charAt(i));
+                                }else if (".".equals(String.valueOf(cadeAux.charAt(i))) && punto) {
+                                    punto = false;
+                                    fin += String.valueOf(cadeAux.charAt(i));
+                                }
+                                
+                                if ("+".equals(cadeAux.charAt(cadeAux.length()-1))) {
+                                    cont++;
+                                    System.out.println("Símbolo desconocido en la línea " + lin + ": " + aux);
                                 }
                             }
-
-                            System.out.println("Valor de variable: " + fin);
-                            palabras.add(fin);
+*/
+                            System.out.println("Valor de variable: " + cadeAux);
+                            palabras.add(cadeAux);
                             bander = true;
 
-                            //System.out.println("ULTIMA PALABRA = " + palabras.get(palabras.size() - 1).toString());
+                            
+                            
                         } else if (numeros.contains(String.valueOf(aux.charAt(0)))) {
                             boolean b = true;
                             for (int i = 0; i < aux.length(); i++) {
@@ -201,22 +217,7 @@ public class Compiler extends javax.swing.JFrame {
                                 System.out.println("Símbolo desconocido en la línea " + lin + ": " + aux);
                                 cont++;
                             }
-                            /*
-                        else if(condicion.contains(palabras.get(palabras.size()-2).toString())){ 
-                            // si(34 MAYOR 45){
-                            //System.out.println("ENTRA AL IF");
                             
-                            System.out.println("Valor numérico: "+aux);
-                            palabras.add(aux);
-                            
-                        }else if(compara.contains(palabras.get(palabras.size()-1).toString())){
-                            //System.out.println("ENTRA AL IF2");
-                            
-                            System.out.println("Valor numérico: "+aux);
-                            palabras.add(aux);
-                        }
-                             */
-
                         } else {
                             System.out.println("palabras.get(palabras.size()-2).toString() = " + palabras.get(palabras.size() - 2).toString());
                             System.out.println("Símbolo desconocido en la línea " + lin + ": " + aux);
@@ -241,7 +242,11 @@ public class Compiler extends javax.swing.JFrame {
         arre = code.split("");
 
         for (int i = 0; i < arre.length; i++) {
-
+            
+            if (cont != 0) {
+                return false;
+            }
+            
             String letra = arre[i];
             //System.out.println("letra = " + letra);
             if (bander) {
@@ -1216,7 +1221,6 @@ public class Compiler extends javax.swing.JFrame {
         txaCode.setFont(new java.awt.Font("Monospaced", 0, 18)); // NOI18N
         txaCode.setRows(5);
         txaCode.setText("INICIO\n\n\t(: Escriba su Código aquí :)\n\n\nFIN");
-        txaCode.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 3, true));
         jScrollPane1.setViewportView(txaCode);
 
         getContentPane().add(jScrollPane1);
@@ -1225,7 +1229,6 @@ public class Compiler extends javax.swing.JFrame {
         txaConsola.setColumns(20);
         txaConsola.setFont(new java.awt.Font("Monospaced", 0, 14)); // NOI18N
         txaConsola.setRows(5);
-        txaConsola.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 3, true));
         txaConsola.setMinimumSize(new java.awt.Dimension(403, 156));
         txaConsola.setPreferredSize(new java.awt.Dimension(403, 156));
         txaConsola.setSelectionEnd(43);
