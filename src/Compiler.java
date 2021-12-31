@@ -17,10 +17,23 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 import javax.swing.border.Border;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultStyledDocument;
+import javax.swing.text.DocumentFilter;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyleContext;
+import javax.swing.text.StyledDocument;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -86,7 +99,6 @@ public class Compiler extends javax.swing.JFrame {
                 System.out.println("Acceso: " + aux);
                 palabras.add(aux);
             } else if (letras.contains(inicio)) {
-                
 
                 if (palabras.size() > 0) {
                     String anterior = palabras.get(palabras.size() - 1).toString();
@@ -97,7 +109,7 @@ public class Compiler extends javax.swing.JFrame {
                     } else if ("bolsita".equals(anterior)) {
                         clase.add(aux);
                         System.out.println("Nombre de clase: " + aux);
-                    }else{
+                    } else {
                         System.out.println("Variable: " + aux);
                     }
                 }
@@ -158,13 +170,13 @@ public class Compiler extends javax.swing.JFrame {
                                                 //System.out.println("auxi = " + auxi);
                                                 i = arre.length;
                                                 cont++;
-                                                System.out.println("ERROR DE VALOR DE VARIABLE EN LÍNEA: "+(linea+1));
+                                                System.out.println("ERROR DE VALOR DE VARIABLE EN LÍNEA: " + (linea + 1));
                                                 //System.out.println("ENTRA");
                                             } else {
                                                 cadeAux += arre[i];
                                             }
                                         }
-                                    }else{
+                                    } else {
                                         i = arre.length;
                                     }
                                 } else {
@@ -196,13 +208,11 @@ public class Compiler extends javax.swing.JFrame {
                                     System.out.println("Símbolo desconocido en la línea " + lin + ": " + aux);
                                 }
                             }
-*/
+                             */
                             System.out.println("Valor de variable: " + cadeAux);
                             palabras.add(cadeAux);
                             bander = true;
 
-                            
-                            
                         } else if (numeros.contains(String.valueOf(aux.charAt(0)))) {
                             boolean b = true;
                             for (int i = 0; i < aux.length(); i++) {
@@ -217,7 +227,7 @@ public class Compiler extends javax.swing.JFrame {
                                 System.out.println("Símbolo desconocido en la línea " + lin + ": " + aux);
                                 cont++;
                             }
-                            
+
                         } else {
                             System.out.println("palabras.get(palabras.size()-2).toString() = " + palabras.get(palabras.size() - 2).toString());
                             System.out.println("Símbolo desconocido en la línea " + lin + ": " + aux);
@@ -242,11 +252,11 @@ public class Compiler extends javax.swing.JFrame {
         arre = code.split("");
 
         for (int i = 0; i < arre.length; i++) {
-            
+
             if (cont != 0) {
                 return false;
             }
-            
+
             String letra = arre[i];
             //System.out.println("letra = " + letra);
             if (bander) {
@@ -305,7 +315,7 @@ public class Compiler extends javax.swing.JFrame {
                     ifBan(band, i, linea);
                     palabras.add(letra);
                     System.out.println("Simbolo reservado: " + letra);
-                    
+
                     boolean bandeComillas = false;
                     if (letra.equals("\"")) {
                         String txt = "";
@@ -321,20 +331,19 @@ public class Compiler extends javax.swing.JFrame {
                         if (!txt.equals("")) {
                             palabras.add(txt);
                             System.out.println("Texto: " + txt);
-                        }else{
+                        } else {
                             palabras.add(txt);
                             System.out.println("Texto: " + txt);
                         }
-                        
+
                         if (bandeComillas) {
                             palabras.add("\"");
                             System.out.println("Símbolo reservado: \"");
-                        }else{
+                        } else {
                             System.out.println("Faltan comillas en línea " + linea + ": " + aux);
                             cont++;
                         }
-                        
-                        
+
                     }
 
                 } else {
@@ -398,8 +407,7 @@ public class Compiler extends javax.swing.JFrame {
         // De la lista, crear un arreglo de dos dimensiones, para la variable y su valor (tipo de variable?)
         System.out.println("======================================= Análisis sintáctico =====================================");
         //txaConsola.setText("======================================= Análisis sintáctico =====================================");
-        
-        
+
         for (int i = 0; i < palabras.size(); i++) {
             String pal = palabras.get(i).toString();
 
@@ -409,19 +417,15 @@ public class Compiler extends javax.swing.JFrame {
             while (pal.charAt(pal.length() - 1) == ' ') {
                 pal = pal.substring(0, pal.length() - 1);
             }
-            
-            
-            
+
             if ("(:".equals(pal)) {
                 System.out.println("**** COMENTARIO ****");
-                System.out.println(pal + " " + palabras.get(i+1) + " " + palabras.get(i+2));
-            }
-            
-            //CLASES
+                System.out.println(pal + " " + palabras.get(i + 1) + " " + palabras.get(i + 2));
+            } //CLASES
             //      acceso Var { instrucciones }
             //              1  2
             else if (i < palabras.size() - 2 && "bolsita".equals(pal)) {
-                llaves.add(0,"CLASE");
+                llaves.add(0, "CLASE");
                 //verificarCorchete = "CLASE";
                 if (esClase(palabras.get(i + 1).toString())) {
                     if ("{".equals(palabras.get(i + 2).toString())) {
@@ -437,7 +441,7 @@ public class Compiler extends javax.swing.JFrame {
                         if (!ba) {
                             System.out.println("ERROR EN CLASE");
                             System.out.println("NO SE ENCONTRÓ CIERRE DE LLAVE");
-                            llaves.add(0,"ERROR");
+                            llaves.add(0, "ERROR");
                             return false;
                             //verificarCorchete = "ERROR";
                         } else {
@@ -448,14 +452,14 @@ public class Compiler extends javax.swing.JFrame {
                     } else {
                         System.out.println("ERROR EN CLASE");
                         System.out.println("NO SE ENCONTRÓ LLAVE DE INICIO");
-                        llaves.add(0,"ERROR");
+                        llaves.add(0, "ERROR");
                         return false;
                         //verificarCorchete = "ERROR";
                     }
                 } else {
                     System.out.println("ERROR EN CLASE");
                     System.out.println("NO SE ENCONTRÓ NOMBRE DE CLASE");
-                    llaves.add(0,"ERROR");
+                    llaves.add(0, "ERROR");
                     return false;
                     //verificarCorchete = "ERROR";
                 }
@@ -482,7 +486,7 @@ public class Compiler extends javax.swing.JFrame {
                         }
                     } else {
                         System.out.println("ERROR: INSTRUCCIÓN FUERA DE CLASE.");
-                        llaves.add(0,"ERROR");
+                        llaves.add(0, "ERROR");
                         return false;
                         //verificarCorchete = "ERROR";
                     }
@@ -495,7 +499,7 @@ public class Compiler extends javax.swing.JFrame {
                     i++;
                 } else {
                     System.out.println("ERROR: INSTRUCCIÓN FUERA DE CLASE.");
-                    llaves.add(0,"ERROR");
+                    llaves.add(0, "ERROR");
                     return false;
                     //verificarCorchete = "ERROR";
                 }
@@ -521,15 +525,15 @@ public class Compiler extends javax.swing.JFrame {
                         }
                     } else {
                         System.out.println("ERROR: INSTRUCCIÓN FUERA DE CLASE.");
-                        llaves.add(0,"ERROR");
+                        llaves.add(0, "ERROR");
                         return false;
                         //verificarCorchete = "ERROR";
                     }
                 }
                 //SALIDA DE DATOS
-            } else if (i < palabras.size() - 2  && "Ticket".equals(pal)) {
+            } else if (i < palabras.size() - 2 && "Ticket".equals(pal)) {
                 if (":".equals(palabras.get(i + 1).toString())) {
-                    
+
                     String txt = "";
                     boolean band = false;
                     if (palabras.get(i + 2).toString().equals("\"")) {
@@ -543,26 +547,26 @@ public class Compiler extends javax.swing.JFrame {
                             System.out.println("**** SALIDA DE DATOS ****");
                             if (band) {
                                 System.out.print(pal + palabras.get(i + 1).toString() + " " + palabras.get(i + 2).toString() + palabras.get(i + 3).toString() + palabras.get(i + 4).toString() + " ");
-                                int j = i+5;
-                                while(palabras.get(j).equals("_")){
+                                int j = i + 5;
+                                while (palabras.get(j).equals("_")) {
                                     System.out.print(palabras.get(j).toString() + " ");
-                                    if (revisarVariable(palabras.get(j+1).toString())) {
-                                        System.out.print(palabras.get(j+1).toString() + " ");
-                                        j+=2;
-                                    }else if("\"".equals(palabras.get(j+1).toString())){
-                                        if ("\"".equals(palabras.get(j+3).toString())) {
-                                            System.out.print(palabras.get(j+1).toString() + palabras.get(j+2).toString() + palabras.get(j+3).toString() + " ");
-                                        }else{
+                                    if (revisarVariable(palabras.get(j + 1).toString())) {
+                                        System.out.print(palabras.get(j + 1).toString() + " ");
+                                        j += 2;
+                                    } else if ("\"".equals(palabras.get(j + 1).toString())) {
+                                        if ("\"".equals(palabras.get(j + 3).toString())) {
+                                            System.out.print(palabras.get(j + 1).toString() + palabras.get(j + 2).toString() + palabras.get(j + 3).toString() + " ");
+                                        } else {
                                             System.out.println("ERROR EN TICKET");
                                             System.out.println("DATOS INCORRECTOS PARA SALIDA");
-                                            llaves.add(0,"ERROR");
+                                            llaves.add(0, "ERROR");
                                             return false;
                                         }
-                                        j+=4;
-                                    }else{
+                                        j += 4;
+                                    } else {
                                         System.out.println("ERROR EN TICKET");
                                         System.out.println("DATOS INCORRECTOS PARA SALIDA");
-                                        llaves.add(0,"ERROR");
+                                        llaves.add(0, "ERROR");
                                         return false;
                                     }
                                 }
@@ -572,48 +576,48 @@ public class Compiler extends javax.swing.JFrame {
                             }
                         } else {
                             System.out.println("ERROR: INSTRUCCIÓN FUERA DE CLASE.");
-                            llaves.add(0,"ERROR");
+                            llaves.add(0, "ERROR");
                             return false;
                             //verificarCorchete = "ERROR";
                         }
-                    }else{
+                    } else {
                         System.out.println("ERROR EN TICKET");
                         System.out.println("NO SE ENCONTRÓ DATOS PARA SALIDA");
-                        llaves.add(0,"ERROR");
+                        llaves.add(0, "ERROR");
                         return false;
                     }
-                    
-                }else{
+
+                } else {
                     System.out.println("ERROR EN TICKET");
                     System.out.println("NO SE ENCONTRÓ \":\"");
-                    llaves.add(0,"ERROR");
+                    llaves.add(0, "ERROR");
                     return false;
                 }
                 // ENTRADA DE DATOS
             } else if (i < palabras.size() - 2 && "Skittle".equals(pal)) {
 
                 if (":".equals(palabras.get(i + 1).toString())) {
-                    
-                    if(revisarVariable(palabras.get(i + 2).toString())){
+
+                    if (revisarVariable(palabras.get(i + 2).toString())) {
                         if (bandeClase) {
                             System.out.println("**** ENTRADA DE DATOS ****");
                             System.out.println(pal + palabras.get(i + 1).toString() + " " + palabras.get(i + 2).toString());
                         } else {
                             System.out.println("ERROR: INSTRUCCIÓN FUERA DE CLASE.");
-                            llaves.add(0,"ERROR");
+                            llaves.add(0, "ERROR");
                             return false;
                             //verificarCorchete = "ERROR";
                         }
-                    }else{
+                    } else {
                         System.out.println("ERROR EN SKITTLE");
                         System.out.println("NO SE ENCONTRÓ VARIABLE PARA ENTRADA DE DATOS");
-                        llaves.add(0,"ERROR");
+                        llaves.add(0, "ERROR");
                         return false;
                     }
-                }else{
+                } else {
                     System.out.println("ERROR EN SKITTLE");
                     System.out.println("NO SE ENCONTRÓ \":\"");
-                    llaves.add(0,"ERROR");
+                    llaves.add(0, "ERROR");
                     return false;
                 }
             }
@@ -626,7 +630,7 @@ public class Compiler extends javax.swing.JFrame {
         
              */
             if ("SI".equals(pal)) {
-                llaves.add(0,"SI");
+                llaves.add(0, "SI");
                 //verificarCorchete = "SI";
                 //if (palabras.get(i-1).equals("SINO")) {
 
@@ -647,7 +651,7 @@ public class Compiler extends javax.swing.JFrame {
                         if (!ba) {
                             System.out.println("SENTENCIA IF ERRÓNEA");
                             System.out.println("NO SE ENCONTRÓ CIERRE DE CORCHETES");
-                            llaves.add(0,"ERROR");
+                            llaves.add(0, "ERROR");
                             return false;
                             //verificarCorchete = "ERROR";
                         } else {
@@ -670,7 +674,7 @@ public class Compiler extends javax.swing.JFrame {
                                 }
                             } else {
                                 System.out.println("ERROR: INSTRUCCIÓN FUERA DE CLASE.");
-                                llaves.add(0,"ERROR");
+                                llaves.add(0, "ERROR");
                                 return false;
                                 //verificarCorchete = "ERROR";
                             }
@@ -680,14 +684,14 @@ public class Compiler extends javax.swing.JFrame {
                     } else {
                         System.out.println("SENTENCIA IF ERRÓNEA");
                         System.out.println("REVISAR LA CONDICIÓN DEL IF");
-                        llaves.add(0,"ERROR");
+                        llaves.add(0, "ERROR");
                         return false;
                         //verificarCorchete = "ERROR";
                     }
                 } else {
                     System.out.println("SENTENCIA IF ERRÓNEA");
                     System.out.println("ERROR EN PARÉNTESIS");
-                    llaves.add(0,"ERROR");
+                    llaves.add(0, "ERROR");
                     return false;
                     //verificarCorchete = "ERROR";
                 }
@@ -712,18 +716,18 @@ public class Compiler extends javax.swing.JFrame {
                         if (!ba) {
                             System.out.println("SENTENCIA SINO ERRÓNEA");
                             System.out.println("NO SE ENCONTRÓ CIERRE DE CORCHETES");
-                            llaves.add(0,"ERROR");
+                            llaves.add(0, "ERROR");
                             return false;
                             //verificarCorchete = "ERROR";
                         } else {
                             if (bandeClase) {
                                 System.out.println("**** SENTENCIA SINO ****");
                                 System.out.println(pal + palabras.get(i + 1));
-                                llaves.add(0,"SINO");
+                                llaves.add(0, "SINO");
                                 //verificarCorchete = "SINO";
                             } else {
                                 System.out.println("ERROR: INSTRUCCIÓN FUERA DE CLASE.");
-                                llaves.add(0,"ERROR");
+                                llaves.add(0, "ERROR");
                                 return false;
                                 //verificarCorchete = "ERROR";
                             }
@@ -731,13 +735,13 @@ public class Compiler extends javax.swing.JFrame {
                     } else if (!"SI".equals(palabras.get(i + 1))) {
                         System.out.println("SENTENCIA SINO ERRÓNEA");
                         System.out.println("ERROR: FALTAN LLAVES");
-                        llaves.add(0,"ERROR");
+                        llaves.add(0, "ERROR");
                         return false;
                         //verificarCorchete = "ERROR";
                     } else {
                         System.out.println("**** SENTENCIA SINO SI ****");
                         System.out.println(pal + " " + palabras.get(i + 1));
-                        llaves.add(0,"SINO");
+                        llaves.add(0, "SINO");
                         //verificarCorchete = "SINO";
                     }
                 }
@@ -745,8 +749,8 @@ public class Compiler extends javax.swing.JFrame {
                     WHILE
                     MIENTRAS ( Var,num,cade opCond Var,num,cade ) { instrucciones }
              */ else if ("MIENTRAS".equals(pal) && !bandeHAZ) {
-                llaves.add(0,"MIENTRAS");
-                 //verificarCorchete = "MIENTRAS";
+                llaves.add(0, "MIENTRAS");
+                //verificarCorchete = "MIENTRAS";
                 if ("(".equals(palabras.get(i + 1).toString()) && ")".equals(palabras.get(i + 5).toString())) {
                     String parte1 = palabras.get(i + 2).toString();
                     String parte2 = palabras.get(i + 4).toString();
@@ -763,7 +767,7 @@ public class Compiler extends javax.swing.JFrame {
                         if (!ba) {
                             System.out.println("SENTENCIA MIENTRAS ERRÓNEA");
                             System.out.println("NO SE ENCONTRÓ CIERRE DE CORCHETES");
-                            llaves.add(0,"ERROR");
+                            llaves.add(0, "ERROR");
                             return false;
                             //verificarCorchete = "ERROR";
                         } else {
@@ -773,7 +777,7 @@ public class Compiler extends javax.swing.JFrame {
                                         + palabras.get(i + 5).toString() + palabras.get(i + 6).toString()); // Se imprime hasta el "{"
                             } else {
                                 System.out.println("ERROR: INSTRUCCIÓN FUERA DE CLASE.");
-                                llaves.add(0,"ERROR");
+                                llaves.add(0, "ERROR");
                                 return false;
                                 //verificarCorchete = "ERROR";
                             }
@@ -782,14 +786,14 @@ public class Compiler extends javax.swing.JFrame {
                     } else {
                         System.out.println("SENTENCIA MIENTRAS ERRÓNEA");
                         System.out.println("REVISAR LA CONDICIÓN DEL CICLO");
-                        llaves.add(0,"ERROR");
+                        llaves.add(0, "ERROR");
                         return false;
                         //verificarCorchete = "ERROR";
                     }
                 } else {
                     System.out.println("SENTENCIA MIENTRAS ERRÓNEA");
                     System.out.println("ERROR EN PARÉNTESIS");
-                    llaves.add(0,"ERROR");
+                    llaves.add(0, "ERROR");
                     return false;
                     //verificarCorchete = "ERROR";
                 }
@@ -806,7 +810,7 @@ public class Compiler extends javax.swing.JFrame {
                         DO WHILE
                         HAZ { instucciones } MIENTRAS ( Var,num,cade opCond Var,num,cade )
              */ else if ("HAZ".equals(pal)) {
-                llaves.add(0,"HAZ");
+                llaves.add(0, "HAZ");
                 //verificarCorchete = "HAZ";
                 bandeHAZ = true;
                 if ("{".equals(palabras.get(i + 1).toString())) {
@@ -822,7 +826,7 @@ public class Compiler extends javax.swing.JFrame {
                     if (!ba) {
                         System.out.println("SENTENCIA HAZ MIENTRAS ERRÓNEA");
                         System.out.println("ERROR: LLAVE DE CIERRE");
-                        llaves.add(0,"ERROR");
+                        llaves.add(0, "ERROR");
                         return false;
                         //verificarCorchete = "ERROR";
                     } else {
@@ -843,21 +847,21 @@ public class Compiler extends javax.swing.JFrame {
                                 } else {
                                     System.out.println("SENTENCIA HAZ MIENTRAS ERRÓNEA");
                                     System.out.println("REVISAR LA CONDICIÓN DEL CICLO");
-                                    llaves.add(0,"ERROR");
+                                    llaves.add(0, "ERROR");
                                     return false;
                                     //verificarCorchete = "ERROR";
                                 }
                             } else {
                                 System.out.println("SENTENCIA HAZ MIENTRAS ERRÓNEA");
                                 System.out.println("ERROR: FALTA PARENTESIS DE INCIO O CIERRE");
-                                llaves.add(0,"ERROR");
+                                llaves.add(0, "ERROR");
                                 return false;
                                 //verificarCorchete = "ERROR";
                             }
                         } else {
                             System.out.println("SENTENCIA HAZ MIENTRAS ERRÓNEA");
                             System.out.println("ERROR: FALTA PALABRA MIENTRAS");
-                            llaves.add(0,"ERROR");
+                            llaves.add(0, "ERROR");
                             return false;
                             //verificarCorchete = "ERROR";
                         }
@@ -865,7 +869,7 @@ public class Compiler extends javax.swing.JFrame {
                 } else {
                     System.out.println("SENTENCIA HAZ MIENTRAS ERRÓNEA");
                     System.out.println("ERROR: LLAVE DE INICIO");
-                    llaves.add(0,"ERROR");
+                    llaves.add(0, "ERROR");
                     return false;
                     //verificarCorchete = "ERROR";
                 }
@@ -874,7 +878,7 @@ public class Compiler extends javax.swing.JFrame {
                     PARA ( tipoDato Var = valVar     Var opCond Var,num    Var  =  Var opLogico num,var )    { instrucciones }
                          1    2      3  4   5         6    7         8      9  10   11    12    13      14   15    16        17
              */ else if ("PARA".equals(pal)) {
-                llaves.add(0,"PARA");
+                llaves.add(0, "PARA");
                 //verificarCorchete = "PARA";
                 if (i + 14 <= palabras.size()) {
                     if ("(".equals(palabras.get(i + 1)) && ")".equals(palabras.get(i + 14))) {
@@ -895,7 +899,7 @@ public class Compiler extends javax.swing.JFrame {
                                         if (!ba) {
                                             System.out.println("SENTENCIA PARA ERRÓNEA");
                                             System.out.println("ERROR: LLAVE DE CIERRE");
-                                            llaves.add(0,"ERROR");
+                                            llaves.add(0, "ERROR");
                                             return false;
                                             //verificarCorchete = "ERROR";
                                         } else {
@@ -908,7 +912,7 @@ public class Compiler extends javax.swing.JFrame {
                                                 i += 14;
                                             } else {
                                                 System.out.println("ERROR: INSTRUCCIÓN FUERA DE CLASE.");
-                                                llaves.add(0,"ERROR");
+                                                llaves.add(0, "ERROR");
                                                 return false;
                                                 //verificarCorchete = "ERROR";
                                             }
@@ -916,42 +920,42 @@ public class Compiler extends javax.swing.JFrame {
                                     } else {
                                         System.out.println("SENTENCIA PARA ERRÓNEA");
                                         System.out.println("ERROR: LLAVE DE INICIO");
-                                        llaves.add(0,"ERROR");
+                                        llaves.add(0, "ERROR");
                                         return false;
                                         //verificarCorchete = "ERROR";
                                     }
                                 } else {
                                     System.out.println("SENTENCIA PARA ERRÓNEA");
                                     System.out.println("ERROR: SECCION 3 DEL CICLO PARA");
-                                    llaves.add(0,"ERROR");
+                                    llaves.add(0, "ERROR");
                                     return false;
                                     //verificarCorchete = "ERROR";
                                 }
                             } else {
                                 System.out.println("SENTENCIA PARA ERRÓNEA");
                                 System.out.println("ERROR: SECCION 2 DEL CICLO PARA");
-                                llaves.add(0,"ERROR");
+                                llaves.add(0, "ERROR");
                                 return false;
                                 //verificarCorchete = "ERROR";
                             }
                         } else {
                             System.out.println("SENTENCIA PARA ERRÓNEA");
                             System.out.println("ERROR: SECCION 1 DEL CICLO PARA");
-                            llaves.add(0,"ERROR");
+                            llaves.add(0, "ERROR");
                             return false;
                             //verificarCorchete = "ERROR";
                         }
                     } else {
                         System.out.println("SENTENCIA PARA ERRÓNEA");
                         System.out.println("ERROR: FALTA PARENTESIS");
-                        llaves.add(0,"ERROR");
+                        llaves.add(0, "ERROR");
                         return false;
                         //verificarCorchete = "ERROR";
                     }
                 } else {
                     System.out.println("SENTENCIA PARA ERRÓNEA");
                     System.out.println("ERROR: CICLO PARA");
-                    llaves.add(0,"ERROR");
+                    llaves.add(0, "ERROR");
                     return false;
                     //verificarCorchete = "ERROR";
                 }
@@ -960,7 +964,7 @@ public class Compiler extends javax.swing.JFrame {
             if ("}".equals(pal)) {
                 if (!llaves.isEmpty()) {
                     String llave = llaves.get(0).toString();
-                    switch (llave){
+                    switch (llave) {
                         case "SI":
                             System.out.println("**** CIERRE DE CORCHETE DEL SI ****");
                             System.out.println("}");
@@ -999,14 +1003,12 @@ public class Compiler extends javax.swing.JFrame {
                             System.out.println("ERROR: CORCHETE SOBRANTE.");
                             return false;
                     }
-                }else{
+                } else {
                     System.out.println("ERROR: CORCHETE SOBRANTE.");
                     return false;
                 }
             }
-            
-            
-            
+
             /*
             if ("}".equals(pal)) {
                 switch (verificarCorchete) {
@@ -1047,7 +1049,6 @@ public class Compiler extends javax.swing.JFrame {
                         System.out.println("ERROR: CORCHETE SOBRANTE EN LA LÍNEA: " + linea);
                 }
             } */
-
         }
         for (int i = 0; i < llaves.size(); i++) {
             System.out.println("");
@@ -1116,7 +1117,7 @@ public class Compiler extends javax.swing.JFrame {
             System.out.println(iOpcion);
 
             if (iOpcion == JOptionPane.YES_OPTION) {
-                try ( FileWriter fw = new FileWriter(ruta)) {
+                try (FileWriter fw = new FileWriter(ruta)) {
                     fw.write(this.txaCode.getText());
 
                 } catch (IOException el) {
@@ -1159,7 +1160,7 @@ public class Compiler extends javax.swing.JFrame {
             g.drawRoundRect(x, y, width - 1, height - 1, radius, radius);
         }
     }
-    
+
     NumeroLinea numeroLinea;
 
     // ================================================= DISEÑO ==================================================
@@ -1168,11 +1169,17 @@ public class Compiler extends javax.swing.JFrame {
         int x = 1;
         numeroLinea = new NumeroLinea(txaCode);
         jScrollPane1.setRowHeaderView(numeroLinea);
+
+        ((AbstractDocument) txaCode.getDocument()).setDocumentFilter(new CustomDocumentFilter());
         
         
-        
-        
-        
+
+        txaCode.setText("INICIO\n"
+                + "\n"
+                + "	(: Escriba su Código aquí :)\n"
+                + "\n"
+                + "\n"
+                + "FIN");
 
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 
@@ -1257,6 +1264,11 @@ public class Compiler extends javax.swing.JFrame {
 
         txaCode.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 3, true));
         txaCode.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        txaCode.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txaCodeKeyPressed(evt);
+            }
+        });
         jScrollPane1.setViewportView(txaCode);
 
         getContentPane().add(jScrollPane1);
@@ -1398,7 +1410,7 @@ public class Compiler extends javax.swing.JFrame {
         if (seleccion == JFileChooser.APPROVE_OPTION) {
             File fichero = fc.getSelectedFile();
 
-            try ( FileWriter fw = new FileWriter(fichero)) {
+            try (FileWriter fw = new FileWriter(fichero)) {
                 fw.write(this.txaCode.getText());
 
                 File destino = new File(fichero.getPath() + ".candy");
@@ -1406,7 +1418,7 @@ public class Compiler extends javax.swing.JFrame {
                 //InputStream in = new FileInputStream(origen);
                 //OutputStream out = new FileOutputStream(destino);
                 destino.createNewFile();
-                try ( FileReader fr = new FileReader(fichero)) {
+                try (FileReader fr = new FileReader(fichero)) {
                     String cadena = "";
                     int valor = fr.read();
                     while (valor != -1) {
@@ -1464,10 +1476,10 @@ public class Compiler extends javax.swing.JFrame {
             System.out.println(clase);
             if (analizarSintactico()) {
                 System.out.println("---------------------------------------Análisis sintáctico correcto.");
-            }else{
+            } else {
                 System.out.println("---------------------------------------Error en el análisis sintáctico.");
             }
-            
+
         } else {
             System.out.println("---------------------------------------Error en el análisis léxico.");
         }
@@ -1562,7 +1574,7 @@ public class Compiler extends javax.swing.JFrame {
                 case 0:
                     //PRIMERO GUARDA
                     System.out.println("Guardar");
-                    try ( FileWriter fw = new FileWriter(ruta)) {
+                    try (FileWriter fw = new FileWriter(ruta)) {
                         fw.write(this.txaCode.getText());
 
                     } catch (IOException el) {
@@ -1621,7 +1633,7 @@ public class Compiler extends javax.swing.JFrame {
             File fichero = fc.getSelectedFile();
             //this.txaCode.setText(fichero.getAbsolutePath());
 
-            try ( FileReader fr = new FileReader(fichero)) {
+            try (FileReader fr = new FileReader(fichero)) {
                 String cadena = "";
                 int valor = fr.read();
                 while (valor != -1) {
@@ -1654,7 +1666,7 @@ public class Compiler extends javax.swing.JFrame {
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         // TODO add your handling code here:
 
-        try ( FileWriter fw = new FileWriter(ruta)) {
+        try (FileWriter fw = new FileWriter(ruta)) {
             fw.write(this.txaCode.getText());
 
         } catch (IOException el) {
@@ -1682,7 +1694,7 @@ public class Compiler extends javax.swing.JFrame {
             case 0:
                 //PRIMERO GUARDA
                 System.out.println("Guardar");
-                try ( FileWriter fw = new FileWriter(ruta)) {
+                try (FileWriter fw = new FileWriter(ruta)) {
                     fw.write(this.txaCode.getText());
 
                 } catch (IOException el) {
@@ -1748,6 +1760,11 @@ public class Compiler extends javax.swing.JFrame {
         Cerrar();
     }//GEN-LAST:event_formWindowClosing
 
+    private void txaCodeKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txaCodeKeyPressed
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_txaCodeKeyPressed
+
     /**
      * @param args the command line arguments
      */
@@ -1800,4 +1817,150 @@ public class Compiler extends javax.swing.JFrame {
     private javax.swing.JTextPane txaCode;
     private javax.swing.JTextPane txaConsola;
     // End of variables declaration//GEN-END:variables
+
+    private final class CustomDocumentFilter extends DocumentFilter
+{
+        private final StyledDocument styledDocument = txaCode.getStyledDocument();
+
+        private final StyleContext styleContext = StyleContext.getDefaultStyleContext();
+        
+        Color tipoDato = new Color(25,185,89);
+        Color reservadas = new Color(250,134,81);
+        Color colorCiclos = new Color(104,42,142);
+        Color colorOutin = new Color(221,210,67);
+        //Color tipoDato = new Color(25,185,89);
+        //Color tipoDato = new Color(25,185,89);
+        
+        private final AttributeSet greenAttributeSet = styleContext.addAttribute(styleContext.getEmptySet(), StyleConstants.Foreground, tipoDato);
+        private final AttributeSet orangeAttributeSet = styleContext.addAttribute(styleContext.getEmptySet(), StyleConstants.Foreground, reservadas);
+        private final AttributeSet blackAttributeSet = styleContext.addAttribute(styleContext.getEmptySet(), StyleConstants.Foreground, Color.BLACK);
+        private final AttributeSet purpleAttributeSet = styleContext.addAttribute(styleContext.getEmptySet(), StyleConstants.Foreground, colorCiclos);
+        private final AttributeSet yellowAttributeSet = styleContext.addAttribute(styleContext.getEmptySet(), StyleConstants.Foreground, colorOutin);
+
+    // Use a regular expression to find the words you are looking for
+    Pattern pattern = buildPattern();
+
+    @Override
+    public void insertString(FilterBypass fb, int offset, String text, AttributeSet attributeSet) throws BadLocationException {
+        super.insertString(fb, offset, text, attributeSet);
+
+        handleTextChanged();
+    }
+
+    @Override
+    public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
+        super.remove(fb, offset, length);
+
+        handleTextChanged();
+    }
+
+    @Override
+    public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attributeSet) throws BadLocationException {
+        super.replace(fb, offset, length, text, attributeSet);
+
+        handleTextChanged();
+    }
+
+    /**
+     * Runs your updates later, not during the event notification.
+     */
+    private void handleTextChanged()
+    {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                updateTextStyles();
+            }
+        });
+    }
+
+    /**
+     * Build the regular expression that looks for the whole Word of each Word that you wish to find.  The "\\b" is the beginning or end of a Word boundary.  The "|" is a regex "or" operator.
+     * @return
+     */
+    
+    String[] tipoD = {"rellerindo","duvalin","mazapan","bocadin","chicle","cachetada","Skwinkle"};
+    String[] reserv = {"bolsita","piñata","abierto","cerrado","wini"};
+    String[] ciclos = {"PARA","MIENTRAS","HAZ","SI","SINO","JUICIO", "CASO","DEFECTO"};
+    String[] outIn = {"Skittle","Ticket"};
+    
+    private Pattern buildPattern()
+    {
+        StringBuilder sb = new StringBuilder();
+        String[] todas = {"Skittle","Ticket","PARA","MIENTRAS","HAZ","SI","SINO","JUICIO", "CASO","DEFECTO","rellerindo","duvalin","mazapan","bocadin","chicle","cachetada","Skwinkle","bolsita","piñata","abierto","cerrado","wini"};
+        for (String token : todas) {
+            sb.append("\\b"); // Start of Word boundary
+            sb.append(token);
+            sb.append("\\b|"); // End of Word boundary and an or for the next Word
+        }
+        
+        if (sb.length() > 0) {
+            sb.deleteCharAt(sb.length() - 1); // Remove the trailing "|"
+        }
+
+        Pattern p = Pattern.compile(sb.toString());
+
+        return p;
+    }
+
+
+    private void updateTextStyles()
+    {
+        // Clear existing styles
+        styledDocument.setCharacterAttributes(0, txaCode.getText().length(), blackAttributeSet, true);
+
+        // Look for tokens and highlight them
+        Matcher matcher = pattern.matcher(txaCode.getText());
+        while (matcher.find()) {
+            // Change the color of recognized tokens
+            String pal = txaCode.getText().substring(matcher.start(), matcher.end());
+            int b = 0;
+            for (int i = 0; i < tipoD.length; i++) {
+                if (pal.equals(tipoD[i])) {
+                    b = 1;
+                    break;
+                }
+            }
+            for (int i = 0; i < reserv.length; i++) {
+                if (pal.equals(reserv[i])) {
+                    b = 2;
+                    break;
+                }
+            }
+            for (int i = 0; i < ciclos.length; i++) {
+                if (pal.equals(ciclos[i])) {
+                    b = 3;
+                    break;
+                }
+            }
+            for (int i = 0; i < outIn.length; i++) {
+                if (pal.equals(outIn[i])) {
+                    b = 4;
+                    break;
+                }
+            }
+            
+            switch(b){
+                case 0:
+                    break;
+                case 1:
+                    styledDocument.setCharacterAttributes(matcher.start(), matcher.end() - matcher.start(), greenAttributeSet, false);
+                    break;
+                case 2:
+                    styledDocument.setCharacterAttributes(matcher.start(), matcher.end() - matcher.start(), orangeAttributeSet, false);
+                    break;
+                case 3:
+                    styledDocument.setCharacterAttributes(matcher.start(), matcher.end() - matcher.start(), purpleAttributeSet, false);
+                    break;
+                case 4:
+                    styledDocument.setCharacterAttributes(matcher.start(), matcher.end() - matcher.start(), yellowAttributeSet, false);
+                    break;
+            }
+            
+        }
+    }
+}
+    
+    
+    
 }
