@@ -12,6 +12,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -68,6 +69,8 @@ public class Compiler extends javax.swing.JFrame {
     List variables = new ArrayList();
     List clase = new ArrayList();
     List llaves = new ArrayList();
+    List instrucciones = new ArrayList();
+    List detalleVariables = new ArrayList();
     int conta = 0;
     boolean bander = false, banNums = false, bandeHAZ = false, bandeSINO = false, bandeClase = false;
 
@@ -104,13 +107,26 @@ public class Compiler extends javax.swing.JFrame {
                     String anterior = palabras.get(palabras.size() - 1).toString();
                     //System.out.println("anterior = " + anterior);
                     if (tipoDato.contains(anterior)) {
-                        variables.add(aux);
-                        System.out.println("Variable: " + aux);
+                        
+                            variables.add(aux);
+                            System.out.println("Variable: " + aux);
+                        
                     } else if ("bolsita".equals(anterior)) {
                         clase.add(aux);
                         System.out.println("Nombre de clase: " + aux);
                     } else {
-                        System.out.println("Variable: " + aux);
+                        boolean bName = false;
+                        for (int i = 0; i < variables.size(); i++) {
+                            if (variables.get(i).equals(aux)) {
+                                bName = true;
+                            }
+                        }
+                        if (bName) {
+                            System.out.println("Variable: " + aux);
+                        }else{
+                            cont++;
+                            txaConsola.setText(txaConsola.getText()+"Error. La variable \""+aux+"\" no existe.");
+                        }
                     }
                 }
 
@@ -448,6 +464,7 @@ public class Compiler extends javax.swing.JFrame {
                             System.out.println("**** DECLARACIÓN DE CLASE ****");
                             System.out.println(pal + " " + palabras.get(i + 1).toString() + " " + palabras.get(i + 2).toString()); //Hasta el {
                             bandeClase = true;
+                            instrucciones.add(pal + " " + palabras.get(i + 1).toString() + " " + palabras.get(i + 2).toString());
                         }
                     } else {
                         System.out.println("ERROR EN CLASE");
@@ -465,25 +482,35 @@ public class Compiler extends javax.swing.JFrame {
                 }
             } //DECLARACIÓN
             else if (i < palabras.size() - 3 && tipoDato.contains(pal) && revisarVariable(palabras.get(i + 1).toString()) && palabras.get(i + 2).toString().equals("=")) {
-
+                    // Skwinkle, skVar, =, rNum1, _, ", hola a todos, "
+                    //    i       1     2   3     4  5         6       7
                 String txt = "";
                 boolean band = false;
                 if (palabras.get(i + 3).toString().equals("\"")) {
                     txt = palabras.get(i + 3).toString() + palabras.get(i + 4).toString() + palabras.get(i + 5).toString();
                     band = true;
                 } else {
+                    System.out.println("PAÑABRA i:"+palabras.get(i));
+                    System.out.println("PAÑABRA i:"+palabras.get(i).toString());
                     txt = palabras.get(i + 3).toString();
                 }
                 if (revisarValorVar(txt)) {
                     if (bandeClase) {
                         System.out.println("**** DECLARACIÓN DE VARIABLE CON ASIGNACIÓN ****");
+                        
+                        //¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
+                        
+                        
                         if (band) {
                             System.out.println(pal + " " + palabras.get(i + 1).toString() + " " + palabras.get(i + 2).toString() + " " + palabras.get(i + 3).toString() + palabras.get(i + 4).toString() + palabras.get(i + 5).toString());
+                            instrucciones.add(pal + " " + palabras.get(i + 1).toString() + " " + palabras.get(i + 2).toString() + " " + palabras.get(i + 3).toString() + palabras.get(i + 4).toString() + palabras.get(i + 5).toString());
                             i += 5;
                         } else {
                             System.out.println(pal + " " + palabras.get(i + 1).toString() + " " + palabras.get(i + 2).toString() + " " + palabras.get(i + 3).toString());
+                            instrucciones.add(pal + " " + palabras.get(i + 1).toString() + " " + palabras.get(i + 2).toString() + " " + palabras.get(i + 3).toString());
                             i += 3;
                         }
+                        
                     } else {
                         System.out.println("ERROR: INSTRUCCIÓN FUERA DE CLASE.");
                         llaves.add(0, "ERROR");
@@ -496,6 +523,7 @@ public class Compiler extends javax.swing.JFrame {
                 if (bandeClase) {
                     System.out.println("**** DECLARACIÓN DE VARIABLE SIN ASIGNACIÓN ****");
                     System.out.println(pal + " " + palabras.get(i + 1).toString());
+                    instrucciones.add(pal + " " + palabras.get(i + 1).toString());
                     i++;
                 } else {
                     System.out.println("ERROR: INSTRUCCIÓN FUERA DE CLASE.");
@@ -519,9 +547,14 @@ public class Compiler extends javax.swing.JFrame {
                     if (bandeClase) {
                         System.out.println("**** ASIGNACIÓN A VARIABLE ****");
                         if (band) {
+                            
+                            
+                            
                             System.out.println(pal + " " + palabras.get(i + 1).toString() + " " + palabras.get(i + 2).toString() + palabras.get(i + 3).toString() + palabras.get(i + 4).toString());
+                            instrucciones.add(pal + " " + palabras.get(i + 1).toString() + " " + palabras.get(i + 2).toString() + palabras.get(i + 3).toString() + palabras.get(i + 4).toString());
                         } else {
                             System.out.println(pal + " " + palabras.get(i + 1).toString() + " " + palabras.get(i + 2).toString());
+                            instrucciones.add(pal + " " + palabras.get(i + 1).toString() + " " + palabras.get(i + 2).toString());
                         }
                     } else {
                         System.out.println("ERROR: INSTRUCCIÓN FUERA DE CLASE.");
@@ -545,17 +578,22 @@ public class Compiler extends javax.swing.JFrame {
                     if (revisarValorVar(txt)) {
                         if (bandeClase) {
                             System.out.println("**** SALIDA DE DATOS ****");
+                            String cad = "";
                             if (band) {
-                                System.out.print(pal + palabras.get(i + 1).toString() + " " + palabras.get(i + 2).toString() + palabras.get(i + 3).toString() + palabras.get(i + 4).toString() + " ");
+                                System.out.print(pal + palabras.get(i + 1).toString() + " " + palabras.get(i + 2).toString() + palabras.get(i + 3).toString() + palabras.get(i + 4).toString());
+                                cad = pal + palabras.get(i + 1).toString() + " " + palabras.get(i + 2).toString() + palabras.get(i + 3).toString() + palabras.get(i + 4).toString();
                                 int j = i + 5;
                                 while (palabras.get(j).equals("_")) {
-                                    System.out.print(palabras.get(j).toString() + " ");
+                                    System.out.print(palabras.get(j).toString());
+                                    cad += palabras.get(j).toString();
                                     if (revisarVariable(palabras.get(j + 1).toString())) {
-                                        System.out.print(palabras.get(j + 1).toString() + " ");
+                                        System.out.print(palabras.get(j + 1).toString());
+                                        cad += palabras.get(j + 1).toString();
                                         j += 2;
                                     } else if ("\"".equals(palabras.get(j + 1).toString())) {
                                         if ("\"".equals(palabras.get(j + 3).toString())) {
-                                            System.out.print(palabras.get(j + 1).toString() + palabras.get(j + 2).toString() + palabras.get(j + 3).toString() + " ");
+                                            System.out.print(palabras.get(j + 1).toString() + palabras.get(j + 2).toString() + palabras.get(j + 3).toString());
+                                            cad += palabras.get(j + 1).toString() + palabras.get(j + 2).toString() + palabras.get(j + 3).toString();
                                         } else {
                                             System.out.println("ERROR EN TICKET");
                                             System.out.println("DATOS INCORRECTOS PARA SALIDA");
@@ -570,10 +608,47 @@ public class Compiler extends javax.swing.JFrame {
                                         return false;
                                     }
                                 }
-                                System.out.println("");
                             } else {
-                                System.out.println(pal + palabras.get(i + 1).toString() + " " + palabras.get(i + 2).toString());
+                                if (revisarVariable(txt)) { // Ticket: rNum2_"hola a todos"
+                                                            // Ticket, :, rNum2, _, ", hola a todos, ",
+                                    System.out.println(pal+palabras.get(i + 1).toString() + " " +txt);
+                                    cad += pal+palabras.get(i + 1).toString() + " " +txt;
+                                    int j = i + 3;
+                                    while (palabras.get(j).equals("_")) {                                       
+                                        System.out.print(palabras.get(j).toString());
+                                        cad += palabras.get(j).toString();
+                                        if (revisarVariable(palabras.get(j + 1).toString())) {
+                                            System.out.print(palabras.get(j + 1).toString());
+                                            cad += palabras.get(j + 1).toString();
+                                            j += 2;
+                                        } else if ("\"".equals(palabras.get(j + 1).toString())) {
+                                            if ("\"".equals(palabras.get(j + 3).toString())) {
+                                                System.out.print(palabras.get(j + 1).toString() + palabras.get(j + 2).toString() + palabras.get(j + 3).toString());
+                                                cad += palabras.get(j + 1).toString() + palabras.get(j + 2).toString() + palabras.get(j + 3).toString();
+                                            } else {
+                                                System.out.println("ERROR EN TICKET");
+                                                System.out.println("DATOS INCORRECTOS PARA SALIDA");
+                                                llaves.add(0, "ERROR");
+                                                return false;
+                                            }
+                                            j += 4;
+                                        } else {
+                                            System.out.println("ERROR EN TICKET");
+                                            System.out.println("DATOS INCORRECTOS PARA SALIDA");
+                                            llaves.add(0, "ERROR");
+                                            return false;
+                                        }
+                                    }
+                                }else{
+                                    System.out.println("ERROR EN TICKET");
+                                    System.out.println("DATOS INCORRECTOS PARA SALIDA");
+                                    llaves.add(0, "ERROR");
+                                    return false;
+                                }
+                                
                             }
+                            instrucciones.add(cad);
+                            System.out.println("");
                         } else {
                             System.out.println("ERROR: INSTRUCCIÓN FUERA DE CLASE.");
                             llaves.add(0, "ERROR");
@@ -602,6 +677,7 @@ public class Compiler extends javax.swing.JFrame {
                         if (bandeClase) {
                             System.out.println("**** ENTRADA DE DATOS ****");
                             System.out.println(pal + palabras.get(i + 1).toString() + " " + palabras.get(i + 2).toString());
+                            instrucciones.add(pal + palabras.get(i + 1).toString() + " " + palabras.get(i + 2).toString());
                         } else {
                             System.out.println("ERROR: INSTRUCCIÓN FUERA DE CLASE.");
                             llaves.add(0, "ERROR");
@@ -667,6 +743,8 @@ public class Compiler extends javax.swing.JFrame {
                                 }
                                 System.out.println(pal + palabras.get(i + 1).toString() + palabras.get(i + 2).toString() + " " + palabras.get(i + 3).toString() + " " + palabras.get(i + 4).toString()
                                         + palabras.get(i + 5).toString() + palabras.get(i + 6).toString()); // Se imprime hasta el "{"
+                                instrucciones.add(pal + palabras.get(i + 1).toString() + palabras.get(i + 2).toString() + " " + palabras.get(i + 3).toString() + " " + palabras.get(i + 4).toString()
+                                        + palabras.get(i + 5).toString() + palabras.get(i + 6).toString());
                                 if (j + 1 < palabras.size()) {
                                     if (palabras.get(j + 1).equals("SINO")) {
                                         bandeSINO = true;
@@ -723,6 +801,7 @@ public class Compiler extends javax.swing.JFrame {
                             if (bandeClase) {
                                 System.out.println("**** SENTENCIA SINO ****");
                                 System.out.println(pal + palabras.get(i + 1));
+                                instrucciones.add(pal + palabras.get(i + 1));
                                 llaves.add(0, "SINO");
                                 //verificarCorchete = "SINO";
                             } else {
@@ -741,6 +820,7 @@ public class Compiler extends javax.swing.JFrame {
                     } else {
                         System.out.println("**** SENTENCIA SINO SI ****");
                         System.out.println(pal + " " + palabras.get(i + 1));
+                        instrucciones.add(pal + " " + palabras.get(i + 1));
                         llaves.add(0, "SINO");
                         //verificarCorchete = "SINO";
                     }
@@ -775,6 +855,8 @@ public class Compiler extends javax.swing.JFrame {
                                 System.out.println("**** SENTENCIA MIENTRAS ****");
                                 System.out.println(pal + palabras.get(i + 1).toString() + palabras.get(i + 2).toString() + " " + palabras.get(i + 3).toString() + " " + palabras.get(i + 4).toString()
                                         + palabras.get(i + 5).toString() + palabras.get(i + 6).toString()); // Se imprime hasta el "{"
+                                instrucciones.add(pal + palabras.get(i + 1).toString() + palabras.get(i + 2).toString() + " " + palabras.get(i + 3).toString() + " " + palabras.get(i + 4).toString()
+                                        + palabras.get(i + 5).toString() + palabras.get(i + 6).toString());
                             } else {
                                 System.out.println("ERROR: INSTRUCCIÓN FUERA DE CLASE.");
                                 llaves.add(0, "ERROR");
@@ -802,6 +884,7 @@ public class Compiler extends javax.swing.JFrame {
                     bandeHAZ = false;
                     System.out.println("**** SENTENCIA HAZ MIENTRAS ****");
                     System.out.println(pal + palabras.get(i + 1).toString() + palabras.get(i + 2).toString() + " " + palabras.get(i + 3).toString() + " " + palabras.get(i + 4).toString() + palabras.get(i + 5).toString());
+                    instrucciones.add(pal + palabras.get(i + 1).toString() + palabras.get(i + 2).toString() + " " + palabras.get(i + 3).toString() + " " + palabras.get(i + 4).toString() + palabras.get(i + 5).toString());
                 } else {
                     System.out.println("ERROR: INSTRUCCIÓN FUERA DE CLASE.");
                     return false;
@@ -838,6 +921,7 @@ public class Compiler extends javax.swing.JFrame {
                                     if (bandeClase) {
                                         System.out.println("**** SENTENCIA HAZ MIENTRAS ****");
                                         System.out.println(pal + palabras.get(i + 1).toString());
+                                        instrucciones.add(pal + palabras.get(i + 1).toString());
                                     } else {
                                         System.out.println("ERROR: INSTRUCCIÓN FUERA DE CLASE.");
                                         llaves.add("ERROR");
@@ -906,6 +990,10 @@ public class Compiler extends javax.swing.JFrame {
                                             if (bandeClase) {
                                                 System.out.println("**** SENTENCIA PARA ****");
                                                 System.out.println(pal + palabras.get(i + 1).toString() + palabras.get(i + 2).toString() + " " + palabras.get(i + 3).toString() + " " + palabras.get(i + 4).toString() + " "
+                                                        + palabras.get(i + 5).toString() + " " + palabras.get(i + 6).toString() + " " + palabras.get(i + 7).toString() + " " + palabras.get(i + 8).toString() + " "
+                                                        + palabras.get(i + 9).toString() + " " + palabras.get(i + 10).toString() + " " + palabras.get(i + 11).toString() + " " + palabras.get(i + 12).toString() + " "
+                                                        + palabras.get(i + 13).toString() + palabras.get(i + 14).toString() + palabras.get(i + 15).toString());
+                                                instrucciones.add(pal + palabras.get(i + 1).toString() + palabras.get(i + 2).toString() + " " + palabras.get(i + 3).toString() + " " + palabras.get(i + 4).toString() + " "
                                                         + palabras.get(i + 5).toString() + " " + palabras.get(i + 6).toString() + " " + palabras.get(i + 7).toString() + " " + palabras.get(i + 8).toString() + " "
                                                         + palabras.get(i + 9).toString() + " " + palabras.get(i + 10).toString() + " " + palabras.get(i + 11).toString() + " " + palabras.get(i + 12).toString() + " "
                                                         + palabras.get(i + 13).toString() + palabras.get(i + 14).toString() + palabras.get(i + 15).toString());
@@ -1009,46 +1097,6 @@ public class Compiler extends javax.swing.JFrame {
                 }
             }
 
-            /*
-            if ("}".equals(pal)) {
-                switch (verificarCorchete) {
-                    case "SI":
-                        System.out.println("**** CIERRE DE CORCHETE DEL SI ****");
-                        System.out.println("}");
-                        verificarCorchete = "";
-                        break;
-                    case "SINO":
-                        System.out.println("**** CIERRE DE CORCHETE DEL SINO ****");
-                        System.out.println("}");
-                        verificarCorchete = "";
-                        break;
-                    case "MIENTRAS":
-                        System.out.println("**** CIERRE DE CORCHETE DEL MIENTRAS ****");
-                        System.out.println("}");
-                        verificarCorchete = "";
-                        break;
-                    case "HAZ":
-                        System.out.println("**** CIERRE DE CORCHETE DEL HAZ MIENTRAS ****");
-                        System.out.println("}");
-                        verificarCorchete = "";
-                        break;
-                    case "PARA":
-                        System.out.println("**** CIERRE DE CORCHETE DEL PARA ****");
-                        System.out.println("}");
-                        verificarCorchete = "";
-                        break;
-                    case "CLASE":
-                        System.out.println("**** CIERRE DE CORCHETE DE LA CLASE ****");
-                        System.out.println("}");
-                        verificarCorchete = "";
-                        bandeClase = false;
-                        break;
-                    case "ERROR":
-                        break;
-                    default:
-                        System.out.println("ERROR: CORCHETE SOBRANTE EN LA LÍNEA: " + linea);
-                }
-            } */
         }
         for (int i = 0; i < llaves.size(); i++) {
             System.out.println("");
@@ -1102,7 +1150,248 @@ public class Compiler extends javax.swing.JFrame {
         return true;
     }
     // ================================================= SINTÁCTICO ==================================================
+    
+    // ================================================= SEMNÁNTICO ==================================================
+    
+    public boolean analizarSemantico(){
+//   [bolsita Ejemplo {, rellerindo rNum1 = 3, rellerindo rNum2 = 8, SI(rNum1 MAYOR rNum2){, Ticket: "Es mayor" _ rNum1 , SINO{, Ticket: "Es mayor" _ rNum2 ]
+        for (int i = 0; i < instrucciones.size(); i++) {
+            
+            // DECLARACIÖN CON O SIN ASINGACIÓN
+            String[] ins = instrucciones.get(i).toString().split(" ");
+            if (tipoDato.contains(ins[0])) {
+                //ES DECLARACIÓN
+                if (ins.length == 2) {
+                    //DECLARACIÓN SIN ASIGNACIÓN
+                    
+                    if (!detalleVariables.isEmpty()) {
+                        for (int j = 0; j < detalleVariables.size(); j++) {
+                            String nomb = detalleVariables.get(j).toString().split("¿")[1];
+                            if (ins[1].equals(nomb)) {
+                                System.out.println("ERROR. Ya existe una variable con el nombre: "+nomb);
+                                txaConsola.setText(txaConsola.getText()+"ERROR. Ya existe una variable con el nombre: "+nomb);
+                                return false;
+                            }
+                        }
+                    }
+                    System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;; DECLARACIÓN SIN ASIGNACIÓN CORRECTA ;;;;;;;;;;;;;;;;;;;;;;;;;;;");
+                    detalleVariables.add(ins[0]+"¿"+ins[1]);
+                    
+                }else{
+                    // boolean   char     int       double   String        Array 
+                    // duvalin  chicle rellerindo  mazapan Skwinkle       hersheys 
+                    String tipo = ins[0];
+                    switch(tipo){
+                        case "duvalin":
+                            // duvalin duvVar = FALSO
+                            if (ins.length != 4) {
+                                System.out.println("ERROR. Se esperaba un valor VERDADERO o FALSO");
+                                txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor VERDADERO o FALSO \n");
+                                return false;
+                            }else{
+                                
+                                if (!detalleVariables.isEmpty()) {
+                                    for (int j = 0; j < detalleVariables.size(); j++) {
+                                        String nomb = detalleVariables.get(j).toString().split("¿")[1];
+                                        if (ins[1].equals(nomb)) {
+                                            System.out.println("ERROR. Ya existe una variable con el nombre: "+nomb);
+                                            txaConsola.setText(txaConsola.getText()+"ERROR. Ya existe una variable con el nombre: "+nomb);
+                                            return false;
+                                        }
+                                    }
+                                }
+                                
+                                if (ins[3].equals("VERDADERO") || ins[3].equals("FALSO")) {
+                                    System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;; DECLARACIÓN DUVALIN CORRECTA ;;;;;;;;;;;;;;;;;;;;;;;;;;;");
+                                    detalleVariables.add(ins[0]+"¿"+ins[1]+"¿"+ins[3]);
+                                }else{
+                                    System.out.println("ERROR. Se esperaba un valor VERDADERO o FALSO");
+                                    txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor VERDADERO o FALSO \n");
+                                    return false;
+                                }
+                            }
+                            break;
+                        case "chicle":
+                            // chile chVar = "d"
+                            if (ins.length != 4) {
+                                System.out.println("ERROR. Se esperaba un valor tipo chicle");
+                                txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor tipo chicle \n");
+                                return false;
+                            }else{
+                                
+                                if (!detalleVariables.isEmpty()) {
+                                    for (int j = 0; j < detalleVariables.size(); j++) {
+                                        String nomb = detalleVariables.get(j).toString().split("¿")[1];
+                                        if (ins[1].equals(nomb)) {
+                                            System.out.println("ERROR. Ya existe una variable con el nombre: "+nomb);
+                                            txaConsola.setText(txaConsola.getText()+"ERROR. Ya existe una variable con el nombre: "+nomb);
+                                            return false;
+                                        }
+                                    }
+                                }
+                                
+                                String[] chicle = ins[3].split("");
+                                if (chicle.length == 3) {
+                                    if (chicle[0].equals("\"") && chicle[2].equals("\"")) {
+                                        System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;; DECLARACIÓN CHICLE CORRECTA ;;;;;;;;;;;;;;;;;;;;;;;;;;;");
+                                        detalleVariables.add(ins[0]+"¿"+ins[1]+"¿"+ins[3]);
+                                    }
+                                }else{
+                                    System.out.println("ERROR. Se esperaba un valor tipo chicle");
+                                    txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor tipo chicle \n");
+                                    return false;
+                                }
+                            }
+                            break;
+                        case "rellerindo":
+                            // rellerindo reVar = 23152151 + 134251
+                            if (ins.length != 4) {
+                                System.out.println("ERROR1. Se esperaba un valor tipo rellerindo");
+                                txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor tipo rellerindo \n");
+                                return false;
+                            }else{
+                                
+                                if (!detalleVariables.isEmpty()) {
+                                    for (int j = 0; j < detalleVariables.size(); j++) {
+                                        String nomb = detalleVariables.get(j).toString().split("¿")[1];
+                                        if (ins[1].equals(nomb)) {
+                                            System.out.println("ERROR. Ya existe una variable con el nombre: "+nomb);
+                                            txaConsola.setText(txaConsola.getText()+"ERROR. Ya existe una variable con el nombre: "+nomb);
+                                            return false;
+                                        }
+                                    }
+                                }
+                                
+                                for (int j = 0; j < ins[3].length()-1; j++) {
+                                    String num = String.valueOf(ins[3].charAt(j)); // 2
+                                    if (log.contains(num)) {
+                                        if (j==ins[3].length()-1) {
+                                            System.out.println("ERROR2. Se esperaba un valor tipo rellerindo");
+                                            txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor tipo rellerindo \n");
+                                            return false;
+                                        }
+                                    }else if (!numeros.contains(num)) {
+                                        System.out.println("ERROR4. Se esperaba un valor tipo rellerindo");
+                                        txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor tipo rellerindo \n");
+                                        return false;
+                                    }
+                                }
+                                System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;; DECLARACIÓN RELLERINDO CORRECTA ;;;;;;;;;;;;;;;;;;;;;;;;;;;");
+                                detalleVariables.add(ins[0]+"¿"+ins[1]+"¿"+ins[3]);
+                            }
+                            break;
+                        case "mazapan":
+                            // mazapan maVar = 14.324 + 243.1234
+                            if (ins.length != 4) {
+                                System.out.println("ERROR1. Se esperaba un valor tipo mazapan");
+                                txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor tipo mazapan \n");
+                                return false;
+                            }else{
+                                
+                                if (!detalleVariables.isEmpty()) {
+                                    for (int j = 0; j < detalleVariables.size(); j++) {
+                                        String nomb = detalleVariables.get(j).toString().split("¿")[1];
+                                        if (ins[1].equals(nomb)) {
+                                            System.out.println("ERROR. Ya existe una variable con el nombre: "+nomb);
+                                            txaConsola.setText(txaConsola.getText()+"ERROR. Ya existe una variable con el nombre: "+nomb);
+                                            return false;
+                                        }
+                                    }
+                                }
+                                
+                                if (log.contains(String.valueOf(ins[3].charAt(ins[3].length()-1)))) {
+                                    System.out.println("ERROR2. Se esperaba un valor tipo mazapan");
+                                    txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor tipo mazapan \n");
+                                    return false;
+                                }else{
+                                    String valor = ins[3]; // 14.324+243.1234-43.234 --- [14.324,243.1234,43.234]
+                                    // "+-*/%^";
+                                    valor = valor.replace("+"," ");valor = valor.replace("-"," ");valor = valor.replace("+"," ");
+                                    valor = valor.replace("/"," ");valor = valor.replace("%"," ");valor = valor.replace("^"," ");
 
+                                    String[] separados = valor.split(" "); // [14.324,243.1234,43.234]
+                                    
+                                    for (int j = 0; j < separados.length; j++) {
+                                        boolean bandePunto = true;
+                                        String actual = separados[j]; // 14.324
+                                        String[] caracter = actual.split("");
+                                        for (int k = 0; k < caracter.length; k++) {
+                                            String carAct = caracter[k];
+                                            if (".".equals(carAct)) {
+                                                if (bandePunto) {
+                                                    bandePunto = false;
+                                                }else{
+                                                    System.out.println("ERROR3. Se esperaba un valor tipo mazapan");
+                                                    txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor tipo mazapan \n");
+                                                    return false;
+                                                }
+                                            }else if (!numeros.contains(carAct)) {
+                                                System.out.println("ERROR4. Se esperaba un valor tipo mazapan");
+                                                txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor tipo mazapan \n");
+                                                return false;
+                                            }
+                                        }
+                                    }
+                                    System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;; DECLARACIÓN MAZAPAN CORRECTA ;;;;;;;;;;;;;;;;;;;;;;;;;;;");
+                                    detalleVariables.add(ins[0]+"¿"+ins[1]+"¿"+ins[3]);
+
+                                }
+                                
+                            }
+                        case "Skwinkle": /*
+                                            Skwinkle skVar = rNum1
+                                            Skwinkle skVar = "hola mundo!"
+                                        */
+                            
+                            if (!detalleVariables.isEmpty()) {
+                                for (int j = 0; j < detalleVariables.size(); j++) {
+                                    String nomb = detalleVariables.get(j).toString().split("¿")[1];
+                                    if (ins[1].equals(nomb)) {
+                                        System.out.println("ERROR. Ya existe una variable con el nombre: "+nomb);
+                                        txaConsola.setText(txaConsola.getText()+"ERROR. Ya existe una variable con el nombre: "+nomb);
+                                        return false;
+                                    }
+                                }
+                            }
+                            
+                            String inst = instrucciones.get(i).toString();
+                            String[] partes = instrucciones.get(i).toString().split(" ");
+                            inst = inst.substring(12+partes[1].length());
+                            if (!"\"".equals(String.valueOf(inst.charAt(0)))) {
+                                if (revisarVariable(inst)) {
+                                    System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;; DECLARACIÓN SKWINKLE CORRECTA ;;;;;;;;;;;;;;;;;;;;;;;;;;;");
+                                    detalleVariables.add(ins[0]+"¿"+ins[1]+"¿"+inst);
+                                }else{
+                                    System.out.println("ERROR1. Se esperaba un valor tipo Skwinkle");
+                                    txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor tipo Skwinkle \n");
+                                    return false;
+                                }
+                            }else{
+                                System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;; DECLARACIÓN SKWINKLE CORRECTA ;;;;;;;;;;;;;;;;;;;;;;;;;;;");
+                                detalleVariables.add(ins[0]+"¿"+ins[1]+"¿"+inst);
+                            }
+                            break;
+                        case "hersheys":
+                    }
+                }
+            }
+            // ASIGNACIÓN
+            
+            
+            
+            
+            System.out.println("instrucción "+i+"--->  "+ instrucciones.get(i));
+        }
+        System.out.println("DETALLE DE VARIABLES:");
+        for (int i = 0; i < detalleVariables.size(); i++) {
+            System.out.println(detalleVariables.get(i));
+        }
+        return true;
+        
+    }
+    // ================================================= SEMNÁNTICO ==================================================
+    
+    
     // ================================================= DISEÑO ==================================================
     //CONFRIMAR CERRAR PROGRAMA
     private void Cerrar() {
@@ -1465,17 +1754,28 @@ public class Compiler extends javax.swing.JFrame {
         variables.clear();
         palabras.clear();
         clase.clear();
+        instrucciones.clear();
+        txaConsola.setText("");
+        detalleVariables.clear();
         if (analizarLexico(txaCode.getText())) {
-            txaConsola.setEditable(true);
-            System.out.println("---------------------------------------Análisis léxico correcto.");
+            
             System.out.println("**** PALABRAS ****");
             System.out.println(palabras);
             System.out.println("**** VARIABLES ****");
             System.out.println(variables);
             System.out.println("**** CLASES ****");
             System.out.println(clase);
+            System.out.println("---------------------------------------Análisis léxico correcto.");
             if (analizarSintactico()) {
                 System.out.println("---------------------------------------Análisis sintáctico correcto.");
+                System.out.println("LISTA DE INSTRUCCIONES");
+                System.out.println(instrucciones);
+                if (analizarSemantico()) {
+                    txaConsola.setEditable(true);
+                    System.out.println("---------------------------------------Análisis semántico correcto.");
+                }else{
+                    System.out.println("---------------------------------------Error en el análisis semántico.");
+                }
             } else {
                 System.out.println("---------------------------------------Error en el análisis sintáctico.");
             }
