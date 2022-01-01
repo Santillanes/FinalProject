@@ -124,8 +124,13 @@ public class Compiler extends javax.swing.JFrame {
                         if (bName) {
                             System.out.println("Variable: " + aux);
                         }else{
-                            cont++;
-                            txaConsola.setText(txaConsola.getText()+"Error. La variable \""+aux+"\" no existe.");
+                            if ("FALSO".equals(aux) || "VERDADERO".equals(aux)) {
+                                System.out.println("Valor de variable: "+aux);
+                                palabras.add(aux);
+                            }else{
+                                cont++;
+                                txaConsola.setText(txaConsola.getText()+"Error. La variable \""+aux+"\" no existe.");
+                            }
                         }
                     }
                 }
@@ -1185,7 +1190,7 @@ public class Compiler extends javax.swing.JFrame {
                         case "duvalin":
                             // duvalin duvVar = FALSO
                             if (ins.length != 4) {
-                                System.out.println("ERROR. Se esperaba un valor VERDADERO o FALSO");
+                                System.out.println("ERROR3. Se esperaba un valor VERDADERO o FALSO");
                                 txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor VERDADERO o FALSO \n");
                                 return false;
                             }else{
@@ -1204,8 +1209,32 @@ public class Compiler extends javax.swing.JFrame {
                                 if (ins[3].equals("VERDADERO") || ins[3].equals("FALSO")) {
                                     System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;; DECLARACIÓN DUVALIN CORRECTA ;;;;;;;;;;;;;;;;;;;;;;;;;;;");
                                     detalleVariables.add(ins[0]+"¿"+ins[1]+"¿"+ins[3]);
+                                    System.out.println("ins[3] = " + ins[3]);
+                                }else if (revisarVariable(ins[3])) {
+                                    boolean encontrado = false;
+                                    for (int j = 0; j < detalleVariables.size(); j++) {
+                                        String[] datos = detalleVariables.get(j).toString().split("¿");
+                                        //String valor = detalleVariables.get(j).toString().split("¿")[2];
+                                        
+                                        if (datos[0].equals("duvalin") && datos[1].equals(ins[3])) {
+                                            if (datos.length == 2 || datos[1].equals(datos[2])) {
+                                                System.out.println("ERROR. La variable "+datos[1]+" no ha sido inicializada.");
+                                                txaConsola.setText(txaConsola.getText()+"ERROR. La variable "+datos[1]+" no ha sido inicializada. \n");
+                                                return false;
+                                            }else{
+                                                System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;; DECLARACIÓN DUVALIN CORRECTA ;;;;;;;;;;;;;;;;;;;;;;;;;;;");
+                                                detalleVariables.add(ins[0]+"¿"+ins[1]+"¿"+datos[2]);
+                                                encontrado = true;
+                                            }
+                                        }
+                                    }
+                                    if (!encontrado) {
+                                        System.out.println("ERROR2. Se esperaba un valor VERDADERO o FALSO");
+                                        txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor VERDADERO o FALSO \n");
+                                        return false;
+                                    }
                                 }else{
-                                    System.out.println("ERROR. Se esperaba un valor VERDADERO o FALSO");
+                                    System.out.println("ERROR2. Se esperaba un valor VERDADERO o FALSO");
                                     txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor VERDADERO o FALSO \n");
                                     return false;
                                 }
@@ -1230,17 +1259,51 @@ public class Compiler extends javax.swing.JFrame {
                                     }
                                 }
                                 
-                                String[] chicle = ins[3].split("");
-                                if (chicle.length == 3) {
-                                    if (chicle[0].equals("\"") && chicle[2].equals("\"")) {
-                                        System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;; DECLARACIÓN CHICLE CORRECTA ;;;;;;;;;;;;;;;;;;;;;;;;;;;");
-                                        detalleVariables.add(ins[0]+"¿"+ins[1]+"¿"+ins[3]);
+                                
+                                
+                                    
+                                    if (revisarVariable(ins[3])) {
+                                        boolean encontrado = false;
+                                        for (int j = 0; j < detalleVariables.size(); j++) {
+                                            String[] datos = detalleVariables.get(j).toString().split("¿");
+                                            //String valor = detalleVariables.get(j).toString().split("¿")[2];
+
+                                            if (datos[0].equals("chicle") && datos[1].equals(ins[3])) {
+                                                if (datos.length == 2 || datos[1].equals(datos[2])) {
+                                                    System.out.println("ERROR. La variable "+datos[1]+" no ha sido inicializada.");
+                                                    txaConsola.setText(txaConsola.getText()+"ERROR. La variable "+datos[1]+" no ha sido inicializada. \n");
+                                                    return false;
+                                                }else{
+                                                    System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;; DECLARACIÓN CHICLE CORRECTA ;;;;;;;;;;;;;;;;;;;;;;;;;;;");
+                                                    detalleVariables.add(ins[0]+"¿"+ins[1]+"¿"+datos[2]);
+                                                    encontrado = true;
+                                                }
+                                            }
+                                        }
+                                        if (!encontrado) {
+                                            System.out.println("ERROR. Se esperaba un valor tipo chicle");
+                                            txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor tipo chicle \n");
+                                            return false;
+                                        }
+                                    }else{
+                                        String[] chicle = ins[3].split("");
+                                        if (chicle.length == 3) {
+                                            if (chicle[0].equals("\"") && chicle[2].equals("\"")) {
+                                                System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;; DECLARACIÓN CHICLE CORRECTA ;;;;;;;;;;;;;;;;;;;;;;;;;;;");
+                                                detalleVariables.add(ins[0]+"¿"+ins[1]+"¿"+ins[3]);
+                                            }else{
+                                                System.out.println("ERROR. Se esperaba un valor tipo chicle");
+                                                txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor tipo chicle \n");
+                                                return false;
+                                            }
+                                        }else{
+                                            System.out.println("ERROR. Se esperaba un valor tipo chicle");
+                                            txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor tipo chicle \n");
+                                            return false;
+                                        }
+                                        
                                     }
-                                }else{
-                                    System.out.println("ERROR. Se esperaba un valor tipo chicle");
-                                    txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor tipo chicle \n");
-                                    return false;
-                                }
+                                
                             }
                             break;
                         case "rellerindo":
@@ -1262,22 +1325,49 @@ public class Compiler extends javax.swing.JFrame {
                                     }
                                 }
                                 
-                                for (int j = 0; j < ins[3].length()-1; j++) {
-                                    String num = String.valueOf(ins[3].charAt(j)); // 2
-                                    if (log.contains(num)) {
-                                        if (j==ins[3].length()-1) {
-                                            System.out.println("ERROR2. Se esperaba un valor tipo rellerindo");
-                                            txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor tipo rellerindo \n");
-                                            return false;
+                                
+                                if (revisarVariable(ins[3])) {
+                                    boolean encontrado = false;
+                                    for (int j = 0; j < detalleVariables.size(); j++) {
+                                        String[] datos = detalleVariables.get(j).toString().split("¿");
+                                        //String valor = detalleVariables.get(j).toString().split("¿")[2];
+
+                                        if (datos[0].equals("rellerindo") && datos[1].equals(ins[3])) {
+                                            if (datos.length == 2 || datos[1].equals(datos[2])) {
+                                                System.out.println("ERROR. La variable "+datos[1]+" no ha sido inicializada.");
+                                                txaConsola.setText(txaConsola.getText()+"ERROR. La variable "+datos[1]+" no ha sido inicializada. \n");
+                                                return false;
+                                            }else{
+                                                System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;; DECLARACIÓN RELLERINDO CORRECTA ;;;;;;;;;;;;;;;;;;;;;;;;;;;");
+                                                detalleVariables.add(ins[0]+"¿"+ins[1]+"¿"+datos[2]);
+                                                encontrado = true;
+                                            }
                                         }
-                                    }else if (!numeros.contains(num)) {
-                                        System.out.println("ERROR4. Se esperaba un valor tipo rellerindo");
+                                    }
+                                    if (!encontrado) {
+                                        System.out.println("ERROR. Se esperaba un valor tipo rellerindo");
                                         txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor tipo rellerindo \n");
                                         return false;
                                     }
+                                }else{
+                                    for (int j = 0; j < ins[3].length()-1; j++) {
+                                        String num = String.valueOf(ins[3].charAt(j)); // 2
+                                        if (log.contains(num)) {
+                                            if (j==ins[3].length()-1) {
+                                                System.out.println("ERROR2. Se esperaba un valor tipo rellerindo");
+                                                txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor tipo rellerindo \n");
+                                                return false;
+                                            }
+                                        }else if (!numeros.contains(num)) {
+                                            System.out.println("ERROR4. Se esperaba un valor tipo rellerindo");
+                                            txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor tipo rellerindo \n");
+                                            return false;
+                                        }
+                                    }
+                                    System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;; DECLARACIÓN RELLERINDO CORRECTA ;;;;;;;;;;;;;;;;;;;;;;;;;;;");
+                                    detalleVariables.add(ins[0]+"¿"+ins[1]+"¿"+ins[3]);
                                 }
-                                System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;; DECLARACIÓN RELLERINDO CORRECTA ;;;;;;;;;;;;;;;;;;;;;;;;;;;");
-                                detalleVariables.add(ins[0]+"¿"+ins[1]+"¿"+ins[3]);
+                                
                             }
                             break;
                         case "mazapan":
@@ -1292,8 +1382,8 @@ public class Compiler extends javax.swing.JFrame {
                                     for (int j = 0; j < detalleVariables.size(); j++) {
                                         String nomb = detalleVariables.get(j).toString().split("¿")[1];
                                         if (ins[1].equals(nomb)) {
-                                            System.out.println("ERROR. Ya existe una variable con el nombre: "+nomb);
-                                            txaConsola.setText(txaConsola.getText()+"ERROR. Ya existe una variable con el nombre: "+nomb);
+                                            System.out.println("ERROR123. Ya existe una variable con el nombre: "+nomb);
+                                            txaConsola.setText(txaConsola.getText()+"ERROR123. Ya existe una variable con el nombre: "+nomb);
                                             return false;
                                         }
                                     }
@@ -1304,40 +1394,66 @@ public class Compiler extends javax.swing.JFrame {
                                     txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor tipo mazapan \n");
                                     return false;
                                 }else{
-                                    String valor = ins[3]; // 14.324+243.1234-43.234 --- [14.324,243.1234,43.234]
-                                    // "+-*/%^";
-                                    valor = valor.replace("+"," ");valor = valor.replace("-"," ");valor = valor.replace("+"," ");
-                                    valor = valor.replace("/"," ");valor = valor.replace("%"," ");valor = valor.replace("^"," ");
-
-                                    String[] separados = valor.split(" "); // [14.324,243.1234,43.234]
                                     
-                                    for (int j = 0; j < separados.length; j++) {
-                                        boolean bandePunto = true;
-                                        String actual = separados[j]; // 14.324
-                                        String[] caracter = actual.split("");
-                                        for (int k = 0; k < caracter.length; k++) {
-                                            String carAct = caracter[k];
-                                            if (".".equals(carAct)) {
-                                                if (bandePunto) {
-                                                    bandePunto = false;
+                                    if (revisarVariable(ins[3])) {
+                                        boolean encontrado = false;
+                                        for (int j = 0; j < detalleVariables.size(); j++) {
+                                            String[] datos = detalleVariables.get(j).toString().split("¿");
+                                            //String valor = detalleVariables.get(j).toString().split("¿")[2];
+
+                                            if (datos[0].equals("mazapan") && datos[1].equals(ins[3])) {
+                                                if (datos.length == 2 || datos[1].equals(datos[2])) {
+                                                    System.out.println("ERROR. La variable "+datos[1]+" no ha sido inicializada.");
+                                                    txaConsola.setText(txaConsola.getText()+"ERROR. La variable "+datos[1]+" no ha sido inicializada. \n");
+                                                    return false;
                                                 }else{
-                                                    System.out.println("ERROR3. Se esperaba un valor tipo mazapan");
+                                                    System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;; DECLARACIÓN MAZAPAN CORRECTA ;;;;;;;;;;;;;;;;;;;;;;;;;;;");
+                                                    detalleVariables.add(ins[0]+"¿"+ins[1]+"¿"+datos[2]);
+                                                    encontrado = true;
+                                                }
+                                            }
+                                        }
+                                        if (!encontrado) {
+                                            System.out.println("ERROR. Se esperaba un valor tipo mazapan");
+                                            txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor tipo mazapan \n");
+                                            return false;
+                                        }
+                                    }else{
+                                        String valor = ins[3]; // 14.324+243.1234-43.234 --- [14.324,243.1234,43.234]
+                                        // "+-*/%^";
+                                        valor = valor.replace("+"," ");valor = valor.replace("-"," ");valor = valor.replace("+"," ");
+                                        valor = valor.replace("/"," ");valor = valor.replace("%"," ");valor = valor.replace("^"," ");
+
+                                        String[] separados = valor.split(" "); // [14.324,243.1234,43.234]
+
+                                        for (int j = 0; j < separados.length; j++) {
+                                            boolean bandePunto = true;
+                                            String actual = separados[j]; // 14.324
+                                            String[] caracter = actual.split("");
+                                            for (int k = 0; k < caracter.length; k++) {
+                                                String carAct = caracter[k];
+                                                if (".".equals(carAct)) {
+                                                    if (bandePunto) {
+                                                        bandePunto = false;
+                                                    }else{
+                                                        System.out.println("ERROR3. Se esperaba un valor tipo mazapan");
+                                                        txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor tipo mazapan \n");
+                                                        return false;
+                                                    }
+                                                }else if (!numeros.contains(carAct)) {
+                                                    System.out.println("ERROR4. Se esperaba un valor tipo mazapan");
                                                     txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor tipo mazapan \n");
                                                     return false;
                                                 }
-                                            }else if (!numeros.contains(carAct)) {
-                                                System.out.println("ERROR4. Se esperaba un valor tipo mazapan");
-                                                txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor tipo mazapan \n");
-                                                return false;
                                             }
                                         }
+                                        System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;; DECLARACIÓN MAZAPAN CORRECTA ;;;;;;;;;;;;;;;;;;;;;;;;;;;");
+                                        detalleVariables.add(ins[0]+"¿"+ins[1]+"¿"+ins[3]);
                                     }
-                                    System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;; DECLARACIÓN MAZAPAN CORRECTA ;;;;;;;;;;;;;;;;;;;;;;;;;;;");
-                                    detalleVariables.add(ins[0]+"¿"+ins[1]+"¿"+ins[3]);
-
                                 }
                                 
                             }
+                            break;
                         case "Skwinkle": /*
                                             Skwinkle skVar = rNum1
                                             Skwinkle skVar = "hola mundo!"
@@ -1357,10 +1473,33 @@ public class Compiler extends javax.swing.JFrame {
                             String inst = instrucciones.get(i).toString();
                             String[] partes = instrucciones.get(i).toString().split(" ");
                             inst = inst.substring(12+partes[1].length());
+                            
                             if (!"\"".equals(String.valueOf(inst.charAt(0)))) {
                                 if (revisarVariable(inst)) {
-                                    System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;; DECLARACIÓN SKWINKLE CORRECTA ;;;;;;;;;;;;;;;;;;;;;;;;;;;");
-                                    detalleVariables.add(ins[0]+"¿"+ins[1]+"¿"+inst);
+                                    
+                                    boolean encontrado = false;
+                                    for (int j = 0; j < detalleVariables.size(); j++) {
+                                        String[] datos = detalleVariables.get(j).toString().split("¿");
+                                        //String valor = detalleVariables.get(j).toString().split("¿")[2];
+
+                                        if (datos[0].equals("Skwinkle") && datos[1].equals(ins[3])) {
+                                            if (datos.length == 2 || datos[1].equals(datos[2])) {
+                                                System.out.println("ERROR. La variable "+datos[1]+" no ha sido inicializada.");
+                                                txaConsola.setText(txaConsola.getText()+"ERROR. La variable "+datos[1]+" no ha sido inicializada. \n");
+                                                return false;
+                                            }else{
+                                                System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;; DECLARACIÓN SKWINKLE CORRECTA ;;;;;;;;;;;;;;;;;;;;;;;;;;;");
+                                                detalleVariables.add(ins[0]+"¿"+ins[1]+"¿"+datos[2]);
+                                                encontrado = true;
+                                            }
+                                        }
+                                    }
+                                    if (!encontrado) {
+                                        System.out.println("ERROR. Se esperaba un valor tipo Skwinkle");
+                                        txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor tipo Skwinkle \n");
+                                        return false;
+                                    }
+                                    
                                 }else{
                                     System.out.println("ERROR1. Se esperaba un valor tipo Skwinkle");
                                     txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor tipo Skwinkle \n");
@@ -1375,8 +1514,286 @@ public class Compiler extends javax.swing.JFrame {
                     }
                 }
             }
-            // ASIGNACIÓN
-            
+            // ASIGNACIÓN      rNum1 = 34+23.342
+            //                 ins0  1     2
+            else if (revisarVariable(ins[0])) {
+                //saber el tipo de variable que se trata
+                boolean encontrado = false;
+                String tipo = "";
+                for (int j = 0; j < detalleVariables.size(); j++) {
+                    String[] datos = detalleVariables.get(j).toString().split("¿");
+                    if (ins[0].equals(datos[1])) {
+                        encontrado = true;
+                        tipo = datos[0];
+                    }
+                }
+                if (!encontrado) {
+                    System.out.println("ERROR1. No se encontró la variable: "+ins[0]);
+                    txaConsola.setText(txaConsola.getText()+"ERROR. No se encontró la variable: "+ins[0] +"\n");
+                    return false;
+                }else{
+                    // boolean   char     int       double   String        Array 
+                    // duvalin  chicle rellerindo  mazapan Skwinkle       hersheys }
+                    
+                    //    duvalin duVar = FALSO   - datos
+                    //    duVar = VERDADERO       - instruccion
+                    switch(tipo){
+                        case "duvalin":
+                            if (ins[2].equals("FALSO") || ins[2].equals("VERDADERO")) {
+                                for (int j = 0; j < detalleVariables.size(); j++) {
+                                    String[] datos = detalleVariables.get(j).toString().split("¿");
+                                    if (ins[0].equals(datos[1])) {
+                                        
+                                        for (int k = 0; k < detalleVariables.size(); k++) {//Eliminar el anterior de la tabla
+                                            String[] aEliminar = detalleVariables.get(k).toString().split("¿");
+                                            if (aEliminar[0].equals("duvalin") && aEliminar[1].equals(ins[0])) {
+                                                detalleVariables.remove(k);
+                                            }
+                                        }
+                                        
+                                        detalleVariables.add(datos[0]+"¿"+datos[1]+"¿"+ins[2]);
+                                    }
+                                }
+                            }else if(revisarVariable(ins[2])){
+                                for (int j = 0; j < detalleVariables.size(); j++) {
+                                    String[] datos = detalleVariables.get(j).toString().split("¿");
+                                    if (ins[2].equals(datos[1])) {
+                                        if (datos[0].equals("duvalin") && datos.length > 2 ) {
+                                            for (int k = 0; k < detalleVariables.size(); k++) {//Eliminar el anterior de la tabla
+                                                String[] aEliminar = detalleVariables.get(k).toString().split("¿");
+                                                if (aEliminar[0].equals("duvalin") && aEliminar[1].equals(ins[0])) {
+                                                    detalleVariables.remove(k);
+                                                }
+                                            }
+                                            detalleVariables.add(datos[0]+"¿"+ins[0]+"¿"+datos[2]);
+                                        }else{
+                                            System.out.println("ERROR1. Se esperaba un valor VERDADERO o FALSO.");
+                                            txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor VERDADERO o FALSO. \n");
+                                            return false;
+                                        }
+                                    }
+                                }
+                            }else{
+                                System.out.println("ERROR1. Se esperaba un valor VERDADERO o FALSO.");
+                                txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor VERDADERO o FALSO. \n");
+                                return false;
+                            }
+                            break;
+                        case "chicle":
+                            // chVar = "9"
+                            // chVar = chVar2
+                            if(revisarVariable(ins[2])){
+                                for (int j = 0; j < detalleVariables.size(); j++) {
+                                    String[] datos = detalleVariables.get(j).toString().split("¿");
+                                    if (ins[2].equals(datos[1])) {
+                                        if (datos[0].equals("chicle") && datos.length > 2 ) {
+                                            for (int k = 0; k < detalleVariables.size(); k++) {//Eliminar el anterior de la tabla
+                                                String[] aEliminar = detalleVariables.get(k).toString().split("¿");
+                                                if (aEliminar[0].equals("chicle") && aEliminar[1].equals(ins[0])) {
+                                                    detalleVariables.remove(k);
+                                                }
+                                            }
+                                            detalleVariables.add(datos[0]+"¿"+ins[0]+"¿"+datos[2]);
+                                        }else{
+                                            System.out.println("ERROR1. Se esperaba un valor de tipo chicle.");
+                                            txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor de tipo chicle. \n");
+                                            return false;
+                                        }
+                                    }
+                                }
+                            }else if(ins[2].length() == 3){
+                                
+                                if ("\"".equals(String.valueOf(ins[2].charAt(0))) && "\"".equals(String.valueOf(ins[2].charAt(2)))) {
+                                    for (int j = 0; j < detalleVariables.size(); j++) {
+                                        String[] aEliminar = detalleVariables.get(j).toString().split("¿");
+                                        if (aEliminar[0].equals("chicle") && aEliminar[1].equals(ins[0])) {
+                                            detalleVariables.remove(j);
+                                            detalleVariables.add(aEliminar[0]+"¿"+ins[0]+"¿"+ins[2]);
+                                        }
+                                    }
+                                }else{
+                                    System.out.println("ERROR2. Se esperaba un valor de tipo chicle.");
+                                    txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor de tipo chicle. \n");
+                                    return false;
+                                }
+                            }else{
+                                System.out.println("ERROR3. Se esperaba un valor de tipo chicle.");
+                                txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor de tipo chicle. \n");
+                                return false;
+                            }
+                            
+                            break;
+                        case "rellerindo":
+                            // reVar = 123
+                            // reVar = reVar2
+                            
+                            if (revisarVariable(ins[2])) {
+                                for (int j = 0; j < detalleVariables.size(); j++) {
+                                    String[] datos = detalleVariables.get(j).toString().split("¿");
+                                    if (ins[2].equals(datos[1])) {
+                                        if (datos[0].equals("rellerindo") && datos.length > 2 ) {
+                                            for (int k = 0; k < detalleVariables.size(); k++) {//Eliminar el anterior de la tabla
+                                                String[] aEliminar = detalleVariables.get(k).toString().split("¿");
+                                                if (aEliminar[0].equals("rellerindo") && aEliminar[1].equals(ins[0])) {
+                                                    detalleVariables.remove(k);
+                                                }
+                                            }
+                                            detalleVariables.add(datos[0]+"¿"+ins[0]+"¿"+datos[2]);
+                                        }else{
+                                            System.out.println("ERROR1. Se esperaba un valor de tipo rellerindo.");
+                                            txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor de tipo rellerindo. \n");
+                                            return false;
+                                        }
+                                    }
+                                }
+                            }else{  // reVar = 123
+                                    // reVar = reVar2
+                                
+                                for (int j = 0; j < ins[2].length(); j++) { //235
+                                    String num = String.valueOf(ins[2].charAt(j)); // 2
+                                    if (log.contains(num)) {
+                                        if (j==ins[2].length()-1) {
+                                            System.out.println("ERROR2. Se esperaba un valor tipo rellerindo");
+                                            txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor tipo rellerindo \n");
+                                            return false;
+                                        }
+                                    }else if (!numeros.contains(num)) {
+                                        System.out.println("ERROR4. Se esperaba un valor tipo rellerindo");
+                                        txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor tipo rellerindo \n");
+                                        return false;
+                                    }
+                                }
+                                
+                                for (int j = 0; j < detalleVariables.size(); j++) {
+                                    String[] aEliminar = detalleVariables.get(j).toString().split("¿");
+                                    if (aEliminar[0].equals("rellerindo") && aEliminar[1].equals(ins[0])) {
+                                        detalleVariables.remove(j);
+                                        detalleVariables.add(aEliminar[0]+"¿"+ins[0]+"¿"+ins[2]);
+                                    }
+                                }
+                                
+                                
+                            }
+                            
+                            break;
+                        case "mazapan":
+                            // maVar = 123.123
+                            // maVar = maVar2
+                            
+                            if (revisarVariable(ins[2])) {
+                                for (int j = 0; j < detalleVariables.size(); j++) {
+                                    String[] datos = detalleVariables.get(j).toString().split("¿");
+                                    if (ins[2].equals(datos[1])) {
+                                        if (datos[0].equals("mazapan") && datos.length > 2 ) {
+                                            for (int k = 0; k < detalleVariables.size(); k++) {//Eliminar el anterior de la tabla
+                                                String[] aEliminar = detalleVariables.get(k).toString().split("¿");
+                                                if (aEliminar[0].equals("mazapan") && aEliminar[1].equals(ins[0])) {
+                                                    detalleVariables.remove(k);
+                                                }
+                                            }
+                                            detalleVariables.add(datos[0]+"¿"+ins[0]+"¿"+datos[2]);
+                                        }else{
+                                            System.out.println("ERROR1. Se esperaba un valor de tipo mazapan.");
+                                            txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor de tipo mazapan. \n");
+                                            return false;
+                                        }
+                                    }
+                                }
+                            }else{
+                                
+                                String valor = ins[2]; // 14.324+243.1234-43.234 --- [14.324,243.1234,43.234]
+                                        // "+-*/%^";
+                                valor = valor.replace("+"," ");valor = valor.replace("-"," ");valor = valor.replace("+"," ");
+                                valor = valor.replace("/"," ");valor = valor.replace("%"," ");valor = valor.replace("^"," ");
+
+                                String[] separados = valor.split(" "); // [14.324,243.1234,43.234]
+
+                                for (int j = 0; j < separados.length; j++) {
+                                    boolean bandePunto = true;
+                                    String actual = separados[j]; // 14.324
+                                    String[] caracter = actual.split("");
+                                    for (int k = 0; k < caracter.length; k++) {
+                                        String carAct = caracter[k];
+                                        if (".".equals(carAct)) {
+                                            if (bandePunto) {
+                                                bandePunto = false;
+                                            }else{
+                                                System.out.println("ERROR3. Se esperaba un valor tipo mazapan");
+                                                txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor tipo mazapan \n");
+                                                return false;
+                                            }
+                                        }else if (!numeros.contains(carAct)) {
+                                            System.out.println("ERROR4. Se esperaba un valor tipo mazapan");
+                                            txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor tipo mazapan \n");
+                                            return false;
+                                        }
+                                    }
+                                }
+                                
+                                for (int j = 0; j < detalleVariables.size(); j++) {
+                                    String[] aEliminar = detalleVariables.get(j).toString().split("¿");
+                                    if (aEliminar[0].equals("mazapan") && aEliminar[1].equals(ins[0])) {
+                                        detalleVariables.remove(j);
+                                        detalleVariables.add(aEliminar[0]+"¿"+ins[0]+"¿"+ins[2]);
+                                    }
+                                }
+                                
+                            }
+                            break;
+                        case "Skwinkle":
+                            // skVar = "gsdj"
+                            // skVar = skVar2
+                            
+                            if (revisarVariable(ins[2])) {
+                                for (int j = 0; j < detalleVariables.size(); j++) {
+                                    String[] datos = detalleVariables.get(j).toString().split("¿");
+                                    if (ins[2].equals(datos[1])) {
+                                        if (datos[0].equals("Skwinkle") && datos.length > 2 ) {
+                                            for (int k = 0; k < detalleVariables.size(); k++) {//Eliminar el anterior de la tabla
+                                                String[] aEliminar = detalleVariables.get(k).toString().split("¿");
+                                                if (aEliminar[0].equals("Skwinkle") && aEliminar[1].equals(ins[0])) {
+                                                    detalleVariables.remove(k);
+                                                }
+                                            }
+                                            detalleVariables.add(datos[0]+"¿"+ins[0]+"¿"+datos[2]);
+                                        }else{
+                                            System.out.println("ERROR1. Se esperaba un valor de tipo Skwinkle.");
+                                            txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor de tipo Skwinkle. \n");
+                                            return false;
+                                        }
+                                    }
+                                }
+                            }else{
+                                
+                                String val = instrucciones.get(i).toString();
+                                val = val.substring(ins[0].length()+3);
+                                System.out.println("val = " + val);
+                                
+                                if("\"".equals(String.valueOf(val.charAt(0))) && "\"".equals(String.valueOf(val.charAt(val.length()-1)))){
+                                    
+                                    for (int j = 0; j < detalleVariables.size(); j++) {
+                                        String[] aEliminar = detalleVariables.get(j).toString().split("¿");
+                                        if (aEliminar[0].equals("Skwinkle") && aEliminar[1].equals(ins[0])) {
+                                            detalleVariables.remove(j);
+                                            detalleVariables.add(aEliminar[0]+"¿"+ins[0]+"¿"+val);
+                                        }
+                                    }
+                                    
+                                }else{
+                                    System.out.println("ERROR2. Se esperaba un valor de tipo Skwinkle.");
+                                    txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor de tipo Skwinkle. \n");
+                                    return false;
+                                }
+                                
+                            }
+                            
+                            
+                            break;
+                        case "hersheys":
+                            break;
+                    }
+                }
+            }
             
             
             
