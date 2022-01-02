@@ -740,6 +740,7 @@ public class Compiler extends javax.swing.JFrame {
                                 if (i - 1 > 0) {
                                     if (palabras.get(i - 1).equals("SINO")) {
                                         System.out.println("**** SENTENCIA SI DEL SINO ****");
+                                        llaves.remove(0);
                                     } else {
                                         System.out.println("**** SENTENCIA SI ****");
                                     }
@@ -1160,9 +1161,11 @@ public class Compiler extends javax.swing.JFrame {
     
     public boolean analizarSemantico(){
 //   [bolsita Ejemplo {, rellerindo rNum1 = 3, rellerindo rNum2 = 8, SI(rNum1 MAYOR rNum2){, Ticket: "Es mayor" _ rNum1 , SINO{, Ticket: "Es mayor" _ rNum2 ]
+        
         for (int i = 0; i < instrucciones.size(); i++) {
             
             // DECLARACIÖN CON O SIN ASINGACIÓN
+            String[] car = instrucciones.get(i).toString().split("");
             String[] ins = instrucciones.get(i).toString().split(" ");
             if (tipoDato.contains(ins[0])) {
                 //ES DECLARACIÓN
@@ -1209,7 +1212,7 @@ public class Compiler extends javax.swing.JFrame {
                                 if (ins[3].equals("VERDADERO") || ins[3].equals("FALSO")) {
                                     System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;; DECLARACIÓN DUVALIN CORRECTA ;;;;;;;;;;;;;;;;;;;;;;;;;;;");
                                     detalleVariables.add(ins[0]+"¿"+ins[1]+"¿"+ins[3]);
-                                    System.out.println("ins[3] = " + ins[3]);
+                                    //System.out.println("ins[3] = " + ins[3]);
                                 }else if (revisarVariable(ins[3])) {
                                     boolean encontrado = false;
                                     for (int j = 0; j < detalleVariables.size(); j++) {
@@ -1550,7 +1553,7 @@ public class Compiler extends javax.swing.JFrame {
                                                 detalleVariables.remove(k);
                                             }
                                         }
-                                        
+                                        System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;; ASIGNACIÓN DUVALIN CORRECTA ;;;;;;;;;;;;;;;;;;;;;;;;;;;");
                                         detalleVariables.add(datos[0]+"¿"+datos[1]+"¿"+ins[2]);
                                     }
                                 }
@@ -1566,6 +1569,7 @@ public class Compiler extends javax.swing.JFrame {
                                                 }
                                             }
                                             detalleVariables.add(datos[0]+"¿"+ins[0]+"¿"+datos[2]);
+                                            System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;; ASIGNACIÓN DUVALIN CORRECTA ;;;;;;;;;;;;;;;;;;;;;;;;;;;");
                                         }else{
                                             System.out.println("ERROR1. Se esperaba un valor VERDADERO o FALSO.");
                                             txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor VERDADERO o FALSO. \n");
@@ -1594,6 +1598,7 @@ public class Compiler extends javax.swing.JFrame {
                                                 }
                                             }
                                             detalleVariables.add(datos[0]+"¿"+ins[0]+"¿"+datos[2]);
+                                            System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;; ASIGNACIÓN CHICLE CORRECTA ;;;;;;;;;;;;;;;;;;;;;;;;;;;");
                                         }else{
                                             System.out.println("ERROR1. Se esperaba un valor de tipo chicle.");
                                             txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor de tipo chicle. \n");
@@ -1609,6 +1614,7 @@ public class Compiler extends javax.swing.JFrame {
                                         if (aEliminar[0].equals("chicle") && aEliminar[1].equals(ins[0])) {
                                             detalleVariables.remove(j);
                                             detalleVariables.add(aEliminar[0]+"¿"+ins[0]+"¿"+ins[2]);
+                                            System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;; ASIGNACIÓN CHICLE CORRECTA ;;;;;;;;;;;;;;;;;;;;;;;;;;;");
                                         }
                                     }
                                 }else{
@@ -1639,6 +1645,7 @@ public class Compiler extends javax.swing.JFrame {
                                                 }
                                             }
                                             detalleVariables.add(datos[0]+"¿"+ins[0]+"¿"+datos[2]);
+                                            System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;; ASIGNACIÓN RELLERINDO CORRECTA ;;;;;;;;;;;;;;;;;;;;;;;;;;;");
                                         }else{
                                             System.out.println("ERROR1. Se esperaba un valor de tipo rellerindo.");
                                             txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor de tipo rellerindo. \n");
@@ -1669,6 +1676,7 @@ public class Compiler extends javax.swing.JFrame {
                                     if (aEliminar[0].equals("rellerindo") && aEliminar[1].equals(ins[0])) {
                                         detalleVariables.remove(j);
                                         detalleVariables.add(aEliminar[0]+"¿"+ins[0]+"¿"+ins[2]);
+                                        System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;; ASIGNACIÓN RELLERINDO CORRECTA ;;;;;;;;;;;;;;;;;;;;;;;;;;;");
                                     }
                                 }
                                 
@@ -1692,6 +1700,7 @@ public class Compiler extends javax.swing.JFrame {
                                                 }
                                             }
                                             detalleVariables.add(datos[0]+"¿"+ins[0]+"¿"+datos[2]);
+                                            System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;; ASIGNACIÓN MAZAPAN CORRECTA ;;;;;;;;;;;;;;;;;;;;;;;;;;;");
                                         }else{
                                             System.out.println("ERROR1. Se esperaba un valor de tipo mazapan.");
                                             txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor de tipo mazapan. \n");
@@ -1735,6 +1744,7 @@ public class Compiler extends javax.swing.JFrame {
                                     if (aEliminar[0].equals("mazapan") && aEliminar[1].equals(ins[0])) {
                                         detalleVariables.remove(j);
                                         detalleVariables.add(aEliminar[0]+"¿"+ins[0]+"¿"+ins[2]);
+                                        System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;; ASIGNACIÓN MAZAPAN CORRECTA ;;;;;;;;;;;;;;;;;;;;;;;;;;;");
                                     }
                                 }
                                 
@@ -1756,6 +1766,7 @@ public class Compiler extends javax.swing.JFrame {
                                                 }
                                             }
                                             detalleVariables.add(datos[0]+"¿"+ins[0]+"¿"+datos[2]);
+                                            System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;; ASIGNACIÓN SKWINKLE CORRECTA ;;;;;;;;;;;;;;;;;;;;;;;;;;;");
                                         }else{
                                             System.out.println("ERROR1. Se esperaba un valor de tipo Skwinkle.");
                                             txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor de tipo Skwinkle. \n");
@@ -1776,6 +1787,7 @@ public class Compiler extends javax.swing.JFrame {
                                         if (aEliminar[0].equals("Skwinkle") && aEliminar[1].equals(ins[0])) {
                                             detalleVariables.remove(j);
                                             detalleVariables.add(aEliminar[0]+"¿"+ins[0]+"¿"+val);
+                                            System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;; ASIGNACIÓN SKWINKLE CORRECTA ;;;;;;;;;;;;;;;;;;;;;;;;;;;");
                                         }
                                     }
                                     
@@ -1784,17 +1796,347 @@ public class Compiler extends javax.swing.JFrame {
                                     txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor de tipo Skwinkle. \n");
                                     return false;
                                 }
-                                
                             }
-                            
-                            
                             break;
                         case "hersheys":
                             break;
                     }
                 }
+            } // SI
+            else if ("S".equals(car[0]) && "I".equals(car[1]) && "(".equals(car[2])) {
+                
+                if (compara.contains(ins[1])) {
+                    String var1 = ins[0].substring(3);
+                    String var2 = ins[2].substring(0,ins[2].length()-2);
+                    int c = 0;
+                    boolean v1 = false;
+                    boolean v2 = false;
+                    for (int j = 0; j < var1.length(); j++) {
+                        if (!numeros.contains(String.valueOf(var1.charAt(j)))) {
+                            v1 = true;
+                        }
+                    }
+                    for (int j = 0; j < var2.length(); j++) {
+                        if (!numeros.contains(String.valueOf(var2.charAt(j)))) {
+                            v2 = true;
+                        }
+                    }
+                    
+                    if (v1 && v2) {
+                        for (int j = 0; j < detalleVariables.size(); j++) {
+                            String[] encontrado = detalleVariables.get(j).toString().split("¿");
+                            if (encontrado[1].equals(var1) && (encontrado[0].equals("rellerindo") || encontrado[0].equals("mazapan"))) {
+                                if (encontrado.length == 3) {
+                                    c++;
+                                }else{
+                                    System.out.println("Error1. Sentencia SI inválida.");
+                                    System.out.println("La variable "+var1+" no se ha inicializado.");
+                                    txaConsola.setText("Error. Sentencia SI inválida.\nLa variable "+var1+" no se ha inicializado.");
+                                    return false;
+                                }
+                            }
+                            if (encontrado[1].equals(var2) && (encontrado[0].equals("rellerindo") || encontrado[0].equals("mazapan"))) {
+                                if (encontrado.length == 3) {
+                                    c++;
+                                }else{
+                                    System.out.println("Error2. Sentencia SI inválida.");
+                                    System.out.println("La variable "+var2+" no se ha inicializado.");
+                                    txaConsola.setText("Error. Sentencia SI inválida.\nLa variable "+var2+" no se ha inicializado.");
+                                    return false;
+                                }
+                            }
+                        }
+
+                        if (c == 2) {
+                            System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;; SENTENCIA SI CORRECTA ;;;;;;;;;;;;;;;;;;;;;;;;;;;");
+                        }else{
+                            System.out.println("Error3. Sentencia SI inválida.");
+                            System.out.println("Se esperaban variables tipo rellerindo.");
+                            txaConsola.setText("Error. Sentencia SI inválida.\nSe esperaban variables tipo rellerindo.");
+                            return false;
+                        }
+                    }else{
+                        if (v1 && !v2) { //v1 es variable
+                            for (int j = 0; j < detalleVariables.size(); j++) {
+                                String[] encontrado = detalleVariables.get(j).toString().split("¿");
+                                if (encontrado[1].equals(var1) && (encontrado[0].equals("rellerindo") || encontrado[0].equals("mazapan"))) {
+                                    if (encontrado.length == 3) {
+                                        c++;
+                                    }else{
+                                        System.out.println("Error1. Sentencia SI inválida.");
+                                        System.out.println("La variable "+var1+" no se ha inicializado.");
+                                        txaConsola.setText("Error. Sentencia SI inválida.\nLa variable "+var1+" no se ha inicializado.");
+                                        return false;
+                                    }
+                                }
+                            }
+                            if (c == 1) {
+                                System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;; SENTENCIA SI CORRECTA ;;;;;;;;;;;;;;;;;;;;;;;;;;;");
+                            }else{
+                                System.out.println("Error3. Sentencia SI inválida.");
+                                System.out.println("Se esperaban variables tipo rellerindo.");
+                                txaConsola.setText("Error. Sentencia SI inválida.\nSe esperaban variables tipo rellerindo.");
+                                return false;
+                            }
+                        }else if(!v1 && v2){ //v2 es variable
+                            for (int j = 0; j < detalleVariables.size(); j++) {
+                                String[] encontrado = detalleVariables.get(j).toString().split("¿");
+                                if (encontrado[1].equals(var2) && (encontrado[0].equals("rellerindo") || encontrado[0].equals("mazapan"))) {
+                                    if (encontrado.length == 3) {
+                                        c++;
+                                    }else{
+                                        System.out.println("Error1. Sentencia SI inválida.");
+                                        System.out.println("La variable "+var2+" no se ha inicializado.");
+                                        txaConsola.setText("Error. Sentencia SI inválida.\nLa variable "+var2+" no se ha inicializado.");
+                                        return false;
+                                    }
+                                }
+                            }
+                            if (c == 1) {
+                                System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;; SENTENCIA SI CORRECTA ;;;;;;;;;;;;;;;;;;;;;;;;;;;");
+                            }else{
+                                System.out.println("Error3. Sentencia SI inválida.");
+                                System.out.println("Se esperaban variables tipo rellerindo.");
+                                txaConsola.setText("Error. Sentencia SI inválida.\nSe esperaban variables tipo rellerindo.");
+                                return false;
+                            }
+                        }else{
+                            System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;; SENTENCIA SI CORRECTA ;;;;;;;;;;;;;;;;;;;;;;;;;;;");
+                        }
+                    }
+                    
+                }else{
+                    
+                }
+                
             }
-            
+            /*
+                
+        
+                DO WHILE
+                    HAZ { instucciones } MIENTRAS ( Var,num,cade opCond Var,num,cade )
+                
+            */
+            else if (instrucciones.get(i).toString().length() > 7) {
+                if ("MIENTRAS".equals(instrucciones.get(i).toString().substring(0, 8))) { // MIENTRAS(hola MAIGUAL 5){
+                    if (compara.contains(ins[1])) {
+                        String var1 = ins[0].substring(9);
+                        String var2 = ins[2].substring(0,ins[2].length()-1);
+
+                        //=======================
+
+                        int c = 0;
+                        boolean v1 = false;
+                        boolean v2 = false;
+                        for (int j = 0; j < var1.length(); j++) {
+                            if (!numeros.contains(String.valueOf(var1.charAt(j)))) {
+                                v1 = true;
+                            }
+                        }
+                        for (int j = 0; j < var2.length(); j++) {
+                            if (!numeros.contains(String.valueOf(var2.charAt(j)))) {
+                                v2 = true;
+                            }
+                        }
+
+                        if (v1 && v2) {
+                            for (int j = 0; j < detalleVariables.size(); j++) {
+                                String[] encontrado = detalleVariables.get(j).toString().split("¿");
+                                if (encontrado[1].equals(var1) && (encontrado[0].equals("rellerindo") || encontrado[0].equals("mazapan"))) {
+                                    if (encontrado.length == 3) {
+                                        c++;
+                                    }else{
+                                        System.out.println("Error1. Sentencia MIENTRAS inválida.");
+                                        System.out.println("La variable "+var1+" no se ha inicializado.");
+                                        txaConsola.setText("Error. Sentencia MIENTRAS inválida.\nLa variable "+var1+" no se ha inicializado.");
+                                        return false;
+                                    }
+                                }
+                                if (encontrado[1].equals(var2) && (encontrado[0].equals("rellerindo") || encontrado[0].equals("mazapan"))) {
+                                    if (encontrado.length == 3) {
+                                        c++;
+                                    }else{
+                                        System.out.println("Error2. Sentencia MIENTRAS inválida.");
+                                        System.out.println("La variable "+var2+" no se ha inicializado.");
+                                        txaConsola.setText("Error. Sentencia MIENTRAS inválida.\nLa variable "+var2+" no se ha inicializado.");
+                                        return false;
+                                    }
+                                }
+                            }
+                            if (c == 2) {
+                                System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;; SENTENCIA MIENTRAS CORRECTA ;;;;;;;;;;;;;;;;;;;;;;;;;;;");
+                            }else{
+                                System.out.println("Error3. Sentencia MIENTRAS inválida.");
+                                System.out.println("Se esperaban variables tipo rellerindo.");
+                                txaConsola.setText("Error. Sentencia MIENTRAS inválida.\nSe esperaban variables tipo rellerindo.");
+                                return false;
+                            }
+                        }else{
+                            if (v1 && !v2) { //v1 es variable
+                                for (int j = 0; j < detalleVariables.size(); j++) {
+                                    String[] encontrado = detalleVariables.get(j).toString().split("¿");
+                                    if (encontrado[1].equals(var1) && (encontrado[0].equals("rellerindo") || encontrado[0].equals("mazapan"))) {
+                                        if (encontrado.length == 3) {
+                                            c++;
+                                        }else{
+                                            System.out.println("Error1. Sentencia MIENTRAS inválida.");
+                                            System.out.println("La variable "+var1+" no se ha inicializado.");
+                                            txaConsola.setText("Error. Sentencia MIENTRAS inválida.\nLa variable "+var1+" no se ha inicializado.");
+                                            return false;
+                                        }
+                                    }
+                                }
+                                if (c == 1) {
+                                    System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;; SENTENCIA MIENTRAS CORRECTA ;;;;;;;;;;;;;;;;;;;;;;;;;;;");
+                                }else{
+                                    System.out.println("Error3. Sentencia MIENTRAS inválida.");
+                                    System.out.println("Se esperaban variables tipo rellerindo.");
+                                    txaConsola.setText("Error. Sentencia MIENTRAS inválida.\nSe esperaban variables tipo rellerindo.");
+                                    return false;
+                                }
+                            }else if(!v1 && v2){ //v2 es variable
+                                for (int j = 0; j < detalleVariables.size(); j++) {
+                                    String[] encontrado = detalleVariables.get(j).toString().split("¿");
+                                    System.out.println("encontrado[1] = " + encontrado[1]);
+                                    System.out.println("var2 = " + var2);
+                                    if (encontrado[1].equals(var2) && (encontrado[0].equals("rellerindo") || encontrado[0].equals("mazapan"))) {
+                                        if (encontrado.length == 3) {
+                                            c++;
+                                        }else{
+                                            System.out.println("Error1. Sentencia MIENTRAS inválida.");
+                                            System.out.println("La variable "+var2+" no se ha inicializado.");
+                                            txaConsola.setText("Error. Sentencia MIENTRAS inválida.\nLa variable "+var2+" no se ha inicializado.");
+                                            return false;
+                                        }
+                                    }
+                                }
+                                System.out.println("c = " + c);
+                                if (c == 1) {
+                                    System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;; SENTENCIA MIENTRAS CORRECTA ;;;;;;;;;;;;;;;;;;;;;;;;;;;");
+                                }else{
+                                    System.out.println("Error3. Sentencia MIENTRAS inválida.");
+                                    System.out.println("Se esperaban variables tipo rellerindo.");
+                                    txaConsola.setText("Error. Sentencia MIENTRAS inválida.\nSe esperaban variables tipo rellerindo.");
+                                    return false;
+                                }
+                            }else{
+                                System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;; SENTENCIA MIENTRAS CORRECTA ;;;;;;;;;;;;;;;;;;;;;;;;;;;");
+                            }
+                        }
+                        //=======================
+
+                    }else{
+
+                    }                                                                        //                    v            v               v
+                }
+            }else if ("PARA".equals(instrucciones.get(i).toString().substring(0, 4))) {//PARA(rellerindo re1 = 0 re1 MAYOR 10 re1 = re1  +  1){
+                                                                                        //     ins[0]     1  2 3  4   5     6  7  8  9  10   11
+                String p0 = ins[0].substring(5, ins[0].length());
+                String p1 = ins[1];
+                String p2 = ins[2];
+                String p3 = ins[3];
+                String p4 = ins[4];
+                String p5 = ins[5];
+                String p6 = ins[6];
+                String p7 = ins[7];
+                String p8 = ins[8];
+                String p9 = ins[9];
+                String p10 = ins[10];
+                String p11 = ins[11].substring(0, ins[11].length()-2);
+                
+                int co = 0;
+                for (int j = 0; j < variables.size(); j++) {
+                    System.out.println("datos[1] = " + variables.get(j));
+                    System.out.println("p1 = " + p1);
+                    if (variables.get(j).equals(p1)) {
+                        co++;
+                    }
+                }
+                if (co != 1) {
+                    System.out.println("Error1. Sentencia PARA inválida.");
+                    System.out.println("La variable "+p1+" ya ha sido declarada previamente.");
+                    txaConsola.setText("Error. Sentencia PARA inválida.\nLa variable "+p1+" ya ha sido declarada previamente.");
+                    return false;
+                }
+                
+                if (revisarVariable(p3)) {
+                    for (int j = 0; j < p3.length(); j++) {
+                        if (!numeros.contains(String.valueOf(p3.charAt(j)))) {
+                            for (int k = 0; k < detalleVariables.size(); k++) {
+                                String[] datos = detalleVariables.get(k).toString().split("¿");
+                                if (datos[1].equals(p3)) {
+                                    if (!datos[0].equals("rellerindo")) {
+                                        System.out.println("Error1. Sentencia PARA inválida.");
+                                        System.out.println("Se esperaba variable tipo rellerindo.");
+                                        txaConsola.setText("Error. Sentencia PARA inválida.\nSe esperaba variable tipo rellerindo.");
+                                        return false;
+                                    }else if (datos.length != 3) {
+                                        System.out.println("Error1. Sentencia PARA inválida.");
+                                        System.out.println("No se ha inicializado la variable "+p3);
+                                        txaConsola.setText("Error. Sentencia PARA inválida.\nNo se ha inicializado la variable "+p3);
+                                        return false;
+                                    }
+                                }
+                            }
+                            break;
+                        }
+                    }
+                }
+                if (revisarVariable(p6)) {
+                    for (int j = 0; j < p6.length(); j++) {
+                        if (!numeros.contains(String.valueOf(p6.charAt(j)))) {
+                            for (int k = 0; k < detalleVariables.size(); k++) {
+                                String[] datos = detalleVariables.get(k).toString().split("¿");
+                                if (datos[1].equals(p6)) {
+                                    if (!datos[0].equals("rellerindo")) {
+                                        System.out.println("Error2. Sentencia PARA inválida.");
+                                        System.out.println("Se esperaba variable tipo rellerindo.");
+                                        txaConsola.setText("Error. Sentencia PARA inválida.\nSe esperaba variable tipo rellerindo.");
+                                        return false;
+                                    }else if (datos.length != 3) {
+                                        System.out.println("Error1. Sentencia PARA inválida.");
+                                        System.out.println("No se ha inicializado la variable "+p6);
+                                        txaConsola.setText("Error. Sentencia PARA inválida.\nNo se ha inicializado la variable "+p6);
+                                        return false;
+                                    }
+                                }
+                            }
+                            break;
+                        }
+                    }
+                }
+                if (revisarVariable(p11)) {
+                    for (int j = 0; j < p11.length(); j++) {
+                        if (!numeros.contains(String.valueOf(p11.charAt(j)))) {
+                            for (int k = 0; k < detalleVariables.size(); k++) {
+                                String[] datos = detalleVariables.get(k).toString().split("¿");
+                                if (datos[1].equals(p11)) {
+                                    if (!datos[0].equals("rellerindo")) {
+                                        System.out.println("Error3. Sentencia PARA inválida.");
+                                        System.out.println("Se esperaba variable tipo rellerindo.");
+                                        txaConsola.setText("Error. Sentencia PARA inválida.\nSe esperaba variable tipo rellerindo.");
+                                        return false;
+                                    }else if (datos.length != 3) {
+                                        System.out.println("Error1. Sentencia PARA inválida.");
+                                        System.out.println("No se ha inicializado la variable "+p11);
+                                        txaConsola.setText("Error. Sentencia PARA inválida.\nNo se ha inicializado la variable "+p11);
+                                        return false;
+                                    }
+                                }
+                            }
+                            break;
+                        }
+                    }
+                }
+                
+                
+                if ("rellerindo".equals(p0) && revisarVariable(p1) && "=".equals(p2) && numOvar(p3) && p1.equals(p4) && compara.contains(p5) && numOvar(p6)
+                        && p1.equals(p7) && "=".equals(p8) && p1.equals(p9) && log.contains(p10) && numOvar(p11.substring(0, ins[11].length()-2))) {
+                    txaConsola.setText("Sentencia PARA correcta.");
+                }
+                                                                                        
+            }
+ 
             
             
             System.out.println("instrucción "+i+"--->  "+ instrucciones.get(i));
