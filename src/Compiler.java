@@ -551,13 +551,15 @@ public class Compiler extends javax.swing.JFrame {
                 if (revisarValorVar(txt)) {
                     if (bandeClase) {
                         System.out.println("**** ASIGNACIÓN A VARIABLE ****");
-                        if (band) {
-                            
+                        if (band) { //  hola = "asfs"_sdfs
                             
                             
                             System.out.println(pal + " " + palabras.get(i + 1).toString() + " " + palabras.get(i + 2).toString() + palabras.get(i + 3).toString() + palabras.get(i + 4).toString());
                             instrucciones.add(pal + " " + palabras.get(i + 1).toString() + " " + palabras.get(i + 2).toString() + palabras.get(i + 3).toString() + palabras.get(i + 4).toString());
-                        } else {
+                        } else {//  hola = sdfs _ sdfs_ sdfs_ "asfs" 
+                            
+                            
+                            
                             System.out.println(pal + " " + palabras.get(i + 1).toString() + " " + palabras.get(i + 2).toString());
                             instrucciones.add(pal + " " + palabras.get(i + 1).toString() + " " + palabras.get(i + 2).toString());
                         }
@@ -2129,7 +2131,7 @@ public class Compiler extends javax.swing.JFrame {
                     }
                 }
                 
-                
+
                 if ("rellerindo".equals(p0) && revisarVariable(p1) && "=".equals(p2) && numOvar(p3) && p1.equals(p4) && compara.contains(p5) && numOvar(p6)
                         && p1.equals(p7) && "=".equals(p8) && p1.equals(p9) && log.contains(p10) && numOvar(p11.substring(0, ins[11].length()-2))) {
                     txaConsola.setText("Sentencia PARA correcta.");
@@ -2137,8 +2139,6 @@ public class Compiler extends javax.swing.JFrame {
                                                                                         
             }
  
-            
-            
             System.out.println("instrucción "+i+"--->  "+ instrucciones.get(i));
         }
         System.out.println("DETALLE DE VARIABLES:");
@@ -2532,6 +2532,205 @@ public class Compiler extends javax.swing.JFrame {
                 if (analizarSemantico()) {
                     txaConsola.setEditable(true);
                     System.out.println("---------------------------------------Análisis semántico correcto.");
+                    
+                    //detalleVariables
+                    //instrucciones
+                    //variables
+                    for (int i = 0; i < detalleVariables.size(); i++) {
+                        String resul = "";
+                        String[] datos = detalleVariables.get(i).toString().split("¿");
+                        if ("rellerindo".equals(datos[0]) || "mazapan".equals(datos[0])) {
+                            String valor = datos[2];
+                            boolean esOp = false;
+                            for (int j = 0; j < valor.length(); j++) {
+                                if (log.contains(String.valueOf(valor.charAt(j)))) {
+                                    esOp = true;
+                                }
+                            }
+                            if (esOp) { // 223+13-3
+                                String[] caracts = datos[2].split("");
+                                List partes = new ArrayList();
+                                String nu = "";
+                                for (int j = 0; j < caracts.length; j++) {
+                                    if (j == caracts.length-1) {
+                                        nu += caracts[j];
+                                        partes.add(nu);
+                                    }else if (numeros.contains(caracts[j]) || ".".equals(caracts[j])) {
+                                        nu += caracts[j];
+                                    }else{
+                                        partes.add(nu);
+                                        nu = "";
+                                    }
+                                }
+                                // Ya tenemos cada parte de numeros
+                                List signos = new ArrayList();
+                                for (int j = 0; j < caracts.length; j++) {
+                                    if (log.contains(caracts[j])) {
+                                        signos.add(caracts[j]);
+                                    }
+                                }
+                                // Numeros y signos en su respectiva lista
+                                /*
+                                    Jerarquia
+                                              ^
+                                             * /
+                                             + -Math.pow(n1, n2);
+                                */
+                                boolean powWhile = true;
+                                
+                                while (powWhile) {                                    
+                                    int c = 0;
+                                    for (int j = 0; j < signos.size(); j++) {
+                                        if ("^".equals(signos.get(j))) {
+                                            //System.out.println("PARTES: "+partes);
+                                            //System.out.println("SIGNOS: "+signos);
+                                            c++;
+                                            if ("rellerindo".equals(datos[0])) {
+                                                signos.remove(j);
+                                                int n1 = Integer.parseInt(partes.get(j).toString());
+                                                int n2 = Integer.parseInt(partes.get(j+1).toString());
+                                                int res = (int) Math.pow(n1, n2);
+                                                partes.remove(j+1);partes.remove(j);
+                                                partes.add(j, res);
+                                                j = signos.size();
+                                            }else{
+                                                signos.remove(j);
+                                                double n1 = Double.parseDouble(partes.get(j).toString());
+                                                double n2 = Double.parseDouble(partes.get(j+1).toString());
+                                                double res = Math.pow(n1, n2);
+                                                partes.remove(j+1);partes.remove(j);
+                                                partes.add(j, res);
+                                                j = signos.size();
+                                            }
+                                        }
+                                    }
+                                    if (c == 0) {
+                                        powWhile = false;
+                                    }
+                                }
+                                
+                                boolean mulDiv = true;
+                                
+                                while (mulDiv) {                                    
+                                    int c = 0;
+                                    for (int j = 0; j < signos.size(); j++) {
+                                        if ("*".equals(signos.get(j))) {
+                                            //System.out.println("PARTES: "+partes);
+                                            //System.out.println("SIGNOS: "+signos);
+                                            c++;
+                                            if ("rellerindo".equals(datos[0])) {
+                                                signos.remove(j);
+                                                int n1 = Integer.parseInt(partes.get(j).toString());
+                                                int n2 = Integer.parseInt(partes.get(j+1).toString());
+                                                int res = n1*n2;
+                                                partes.remove(j+1);partes.remove(j);
+                                                partes.add(j, res);
+                                                j = signos.size();
+                                            }else{
+                                                signos.remove(j);
+                                                double n1 = Double.parseDouble(partes.get(j).toString());
+                                                double n2 = Double.parseDouble(partes.get(j+1).toString());
+                                                double res = n1*n2;
+                                                partes.remove(j+1);partes.remove(j);
+                                                partes.add(j, res);
+                                                j = signos.size();
+                                            }
+                                        }else if ("/".equals(signos.get(j))) {
+                                            c++;
+                                            if ("rellerindo".equals(datos[0])) {
+                                                signos.remove(j);
+                                                int n1 = Integer.parseInt(partes.get(j).toString());
+                                                int n2 = Integer.parseInt(partes.get(j+1).toString());
+                                                int res = n1/n2;
+                                                partes.remove(j+1);partes.remove(j);
+                                                partes.add(j, res);
+                                                j = signos.size();
+                                            }else{
+                                                signos.remove(j);
+                                                double n1 = Double.parseDouble(partes.get(j).toString());
+                                                double n2 = Double.parseDouble(partes.get(j+1).toString());
+                                                double res = n1/n2;
+                                                partes.remove(j+1);partes.remove(j);
+                                                partes.add(j, res);
+                                                j = signos.size();
+                                            }
+
+                                        }
+                                    }
+                                    if (c == 0) {
+                                        mulDiv = false;
+                                    }
+                                }
+                                
+                                boolean sumRes = true;
+                                
+                                while(sumRes){
+                                    int c = 0;
+                                    for (int j = 0; j < signos.size(); j++) {
+                                        if ("+".equals(signos.get(j))) {
+                                            //System.out.println("PARTES: "+partes);
+                                            //System.out.println("SIGNOS: "+signos);
+                                            c++;
+                                            if ("rellerindo".equals(datos[0])) {
+                                                signos.remove(j);
+                                                int n1 = Integer.parseInt(partes.get(j).toString());
+                                                int n2 = Integer.parseInt(partes.get(j+1).toString());
+                                                int res = n1+n2;
+                                                partes.remove(j+1);partes.remove(j);
+                                                partes.add(j, res);
+                                                j = signos.size();
+                                            }else{
+                                                signos.remove(j);
+                                                double n1 = Double.parseDouble(partes.get(j).toString());
+                                                double n2 = Double.parseDouble(partes.get(j+1).toString());
+                                                double res = n1+n2;
+                                                partes.remove(j+1);partes.remove(j);
+                                                partes.add(j, res);
+                                                j = signos.size();
+                                            }
+                                        }else if ("-".equals(signos.get(j))) {
+                                            c++;
+                                            if ("rellerindo".equals(datos[0])) {
+                                                signos.remove(j);
+                                                int n1 = Integer.parseInt(partes.get(j).toString());
+                                                int n2 = Integer.parseInt(partes.get(j+1).toString());
+                                                int res = n1-n2;
+                                                partes.remove(j+1);partes.remove(j);
+                                                partes.add(j, res);
+                                                j = signos.size();
+                                            }else{
+                                                signos.remove(j);
+                                                double n1 = Double.parseDouble(partes.get(j).toString());
+                                                double n2 = Double.parseDouble(partes.get(j+1).toString());
+                                                double res = n1-n2;
+                                                partes.remove(j+1);partes.remove(j);
+                                                partes.add(j, res);
+                                                j = signos.size();
+                                            }
+                                        }
+                                    }
+                                    if (c == 0) {
+                                        sumRes = false;
+                                    }
+                                }
+                                
+                                
+                                resul = String.valueOf(partes.get(0));
+                            }
+                        }
+                    //System.out.println("RESU: "+resul);
+                    detalleVariables.add(0,datos[0]+"¿"+datos[1]+"¿"+resul);
+                    detalleVariables.remove(i+1);
+                    }
+                    System.out.println("NUEVA TABLA DE VARIABLES");
+                    for (int i = 0; i < detalleVariables.size(); i++) {
+                        System.out.println(detalleVariables.get(i));
+                    }
+                    
+                    
+                    
+                    
+                    
                 }else{
                     System.out.println("---------------------------------------Error en el análisis semántico.");
                 }
