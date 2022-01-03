@@ -848,6 +848,51 @@ public class Compiler extends javax.swing.JFrame {
                         return false;
                         //verificarCorchete = "ERROR";
                     }
+                }else if("(".equals(palabras.get(i + 1).toString()) && ")".equals(palabras.get(i + 3).toString())){
+                    if ("{".equals(palabras.get(i + 4).toString())) {
+                        boolean ba = false;
+                        int j;
+                        for (j = i + 4; j < palabras.size(); j++) {
+                            String palab = palabras.get(j).toString();
+                            if ("}".equals(palab)) {
+                                ba = true;
+                                break;
+                            }
+                        }
+                        if (!ba) {
+                            System.out.println("SENTENCIA IF ERRÓNEA2");
+                            System.out.println("NO SE ENCONTRÓ CIERRE DE CORCHETES2");
+                            llaves.add(0, "ERROR");
+                            return false;
+                            //verificarCorchete = "ERROR";
+                        } else{
+                            if (bandeClase) {
+                                String con = palabras.get(i + 2).toString();
+                                if (revisarVariable(con)) {
+                                    System.out.println("**** SENTENCIA SI2 ****");
+                                    System.out.println(pal + palabras.get(i + 1).toString() + " " + palabras.get(i + 2).toString() + " " + palabras.get(i + 3).toString() + " " + palabras.get(i + 4).toString()); // Se imprime hasta el "{"
+                                    instrucciones.add(pal + palabras.get(i + 1).toString() + " " + palabras.get(i + 2).toString() + " " + palabras.get(i + 3).toString() + " " + palabras.get(i + 4).toString());
+                                }else{
+                                    System.out.println("ERROR: SE ESPERABA UNA VARIABLE.2");
+                                    llaves.add(0, "ERROR");
+                                    return false;
+                                }
+                            }else {
+                                System.out.println("ERROR: INSTRUCCIÓN FUERA DE CLASE.2");
+                                llaves.add(0, "ERROR");
+                                return false;
+                                //verificarCorchete = "ERROR";
+                            }
+                        }
+                    }else{
+                        System.out.println("SENTENCIA IF ERRÓNEA2");
+                        System.out.println("REVISAR LA CONDICIÓN DEL IF2");
+                        llaves.add(0, "ERROR");
+                        return false;
+                    }
+                
+                
+                
                 } else {
                     System.out.println("SENTENCIA IF ERRÓNEA");
                     System.out.println("ERROR EN PARÉNTESIS");
@@ -1753,6 +1798,7 @@ public class Compiler extends javax.swing.JFrame {
             //                 ins0  1     2
             else if (revisarVariable(ins[0])) {
                 //saber el tipo de variable que se trata
+                
                 boolean encontrado = false;
                 String tipo = "";
                 for (int j = 0; j < detalleVariables.size(); j++) {
@@ -1887,7 +1933,8 @@ public class Compiler extends javax.swing.JFrame {
                                 }
                             }else{  // reVar = 123
                                     // reVar = reVar2
-                                
+                                String res = "";
+                                boolean ban = false;
                                 for (int j = 0; j < ins[2].length(); j++) { //235
                                     String num = String.valueOf(ins[2].charAt(j)); // 2
                                     if (log.contains(num)) {
@@ -1898,51 +1945,80 @@ public class Compiler extends javax.swing.JFrame {
                                         }
                                     }else if (!numeros.contains(num)) {
                                         //   + - * / 
-                                        String op = ins[2];
-                                        op = op.replace("+", "¿");   op = op.replace("-", "¿"); 
-                                        op = op.replace("*", "¿");     op = op.replace("/", "¿"); 
-                                        String[] sepa = op.split("¿");   // hola+1   ---  hola¿1
-                                        
-                                       
-                                        for (int k = 0; k < sepa.length; k++) {
-                                            boolean ban = false;
-                                            for (int l = 0; l < sepa[k].length(); l++) {
-                                                String aEvaluar = String.valueOf(sepa[k].charAt(l));
-                                                if (!numeros.contains(aEvaluar)) {
-                                                    ban = true;
-                                                }
-                                            }
-                                            if (ban) { // variable
-                                                System.out.println("sepa[k] = " + sepa[k]);
-                                                if (!revisarVariable(sepa[k])) {
-                                                    System.out.println("ERROR42. Se esperaba un valor tipo rellerindo");
-                                                    txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor tipo rellerindo \n");
-                                                    return false;
-                                                }else{
-                                                    for (int l = 0; l < detalleVariables.size(); l++) {
-                                                        String[] deta = detalleVariables.get(l).toString().split("¿");
-                                                        if (deta[1].equals(sepa[k])) {
-                                                            
-                                                            if (!deta[0].equals("rellerindo")) {
-                                                                System.out.println("ERROR45. Se esperaba un valor tipo rellerindo");
-                                                                txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor tipo rellerindo \n");
-                                                                return false;
-                                                            }
-                                                        }
-                                                    }
-                                                }
+                                        ban = true;
+                                        break;
+                                    }
+                                    
+                                }
+                                if (ban) {
+                                    String op = ins[2];
+                                    List signos = new ArrayList();
+
+
+                                    for (int k = 0; k < op.length(); k++) {
+                                        if (log.contains(String.valueOf(op.charAt(k)))) {
+                                            signos.add(String.valueOf(op.charAt(k)));
+                                        }
+                                    }
+                                    
+                                    op = op.replace("+", "¿");   op = op.replace("-", "¿"); 
+                                    op = op.replace("*", "¿");     op = op.replace("/", "¿"); 
+                                    String[] sepa = op.split("¿");   // hola+1   ---  hola¿1
+                                    
+
+                                    for (int k = 0; k < sepa.length; k++) { // hola, 1
+                                        boolean band = false;
+                                        for (int l = 0; l < sepa[k].length(); l++) {
+                                            String aEvaluar = String.valueOf(sepa[k].charAt(l));
+                                            if (!numeros.contains(aEvaluar)) {
+                                                band = true;
+                                                break;
                                             }
                                         }
-                                        
-                                        
+                                        if (band) { // variable
+                                            if (!revisarVariable(sepa[k])) {
+                                                System.out.println("ERROR42. Se esperaba un valor tipo rellerindo");
+                                                txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor tipo rellerindo \n");
+                                                return false;
+                                            }else{
+                                                for (int l = 0; l < detalleVariables.size(); l++) {
+                                                    String[] deta = detalleVariables.get(l).toString().split("¿");
+                                                    if (deta[1].equals(sepa[k])) {
+                                                        if (!deta[0].equals("rellerindo")) {
+                                                            System.out.println("ERROR45. Se esperaba un valor tipo rellerindo");
+                                                            txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor tipo rellerindo \n");
+                                                            return false;
+                                                        }else{
+                                                            res += deta[2];
+                                                            System.out.println("res = " + res);
+                                                            break;
+                                                        }
+                                                    }
+
+                                                }
+                                            }
+                                            if (signos.size() > 0) {
+                                                res += signos.get(0);
+                                                signos.remove(0);
+                                            }                                            
+                                        }else{
+                                            res += sepa[k];
+                                            if (signos.size() > 0) {
+                                                res += signos.get(0);
+                                                signos.remove(0);
+                                            }  
+                                        }
+
                                     }
+
+                                    
                                 }
                                 
                                 for (int j = 0; j < detalleVariables.size(); j++) {
                                     String[] aEliminar = detalleVariables.get(j).toString().split("¿");
                                     if (aEliminar[0].equals("rellerindo") && aEliminar[1].equals(ins[0])) {
                                         detalleVariables.remove(j);
-                                        detalleVariables.add(aEliminar[0]+"¿"+ins[0]+"¿"+ins[2]);
+                                        detalleVariables.add(aEliminar[0]+"¿"+ins[0]+"¿"+res);
                                         System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;; ASIGNACIÓN RELLERINDO CORRECTA ;;;;;;;;;;;;;;;;;;;;;;;;;;;");
                                     }
                                 }
@@ -2173,7 +2249,19 @@ public class Compiler extends javax.swing.JFrame {
                     }
                     
                 }else{
-                    
+                    String var = ins[1];
+                    for (int j = 0; j < detalleVariables.size(); j++) {
+                        String[] det = detalleVariables.get(j).toString().split("¿");
+                        if (det[1].equals(var)) {
+                            if (!"duvalin".equals(det[0])) {
+                                System.out.println("Error3. Sentencia SI inválida.");
+                                System.out.println("Se esperaba variable tipo duvalin.");
+                                txaConsola.setText("Error. Sentencia SI inválida.\nSe esperaba variable tipo duvalin.");
+                                return false;
+                            }
+                            break;
+                        }
+                    }
                 }
                 
             }
@@ -2802,211 +2890,8 @@ public class Compiler extends javax.swing.JFrame {
                     //detalleVariables
                     //instrucciones
                     //variables
-                    String letras = "qwertyuiopñlkjhgfdsazxcvbnmQWERTYUIOPÑLKJHGFDSAZXCVBNM";
-                    for (int i = 0; i < detalleVariables.size(); i++) {
-                        String resul = "";
-                        String[] datos = detalleVariables.get(i).toString().split("¿");
-                        if (("rellerindo".equals(datos[0]) || "mazapan".equals(datos[0])) && datos.length == 3) {
-                            String valor = datos[2];
-                            boolean esOp = false;
-                            for (int j = 0; j < valor.length(); j++) {
-                                if (log.contains(String.valueOf(valor.charAt(j)))) {
-                                    esOp = true;
-                                }
-                            }
-                            if (esOp) { // 223+13-3
-                                String[] caracts = datos[2].split("");
-                                List partes = new ArrayList();
-                                String nu = "";
-                                for (int j = 0; j < caracts.length; j++) {
-                                    if (j == caracts.length-1) {
-                                        nu += caracts[j];
-                                        partes.add(nu);
-                                    }else if (numeros.contains(caracts[j]) || ".".equals(caracts[j]) || letras.contains(caracts[j])) {
-                                        nu += caracts[j];
-                                    }else{
-                                        boolean ban = false;
-                                        for (int k = 0; k < caracts.length; k++) {
-                                            if (!numeros.contains(caracts[k])) {
-                                                ban = true;
-                                            }
-                                        }
-                                        if (ban) { // es variable
-                                            if (!revisarVariable(nu)) {
-                                                txaConsola.setText(txaConsola.getText()+"Error. Se esperaba una variable en la operación.");
-                                            }
-                                        }
-                                        partes.add(nu);
-                                        nu = "";
-                                    }
-                                }
-                                // Ya tenemos cada parte de numeros
-                                List signos = new ArrayList();
-                                for (int j = 0; j < caracts.length; j++) {
-                                    if (log.contains(caracts[j])) {
-                                        signos.add(caracts[j]);
-                                    }
-                                }
-                                // Numeros y signos en su respectiva lista
-                                /*
-                                    Jerarquia
-                                              ^
-                                             * /
-                                             + -Math.pow(n1, n2);
-                                */
-                                boolean powWhile = true;
-                                
-                                while (powWhile) {                                    
-                                    int c = 0;
-                                    for (int j = 0; j < signos.size(); j++) {
-                                        if ("^".equals(signos.get(j))) {
-                                            //System.out.println("PARTES: "+partes);
-                                            //System.out.println("SIGNOS: "+signos);
-                                            c++;
-                                            if ("rellerindo".equals(datos[0])) {
-                                                signos.remove(j);
-                                                int n1 = Integer.parseInt(partes.get(j).toString());
-                                                int n2 = Integer.parseInt(partes.get(j+1).toString());
-                                                int res = (int) Math.pow(n1, n2);
-                                                partes.remove(j+1);partes.remove(j);
-                                                partes.add(j, res);
-                                                j = signos.size();
-                                            }else{
-                                                signos.remove(j);
-                                                double n1 = Double.parseDouble(partes.get(j).toString());
-                                                double n2 = Double.parseDouble(partes.get(j+1).toString());
-                                                double res = Math.pow(n1, n2);
-                                                partes.remove(j+1);partes.remove(j);
-                                                partes.add(j, res);
-                                                j = signos.size();
-                                            }
-                                        }
-                                    }
-                                    if (c == 0) {
-                                        powWhile = false;
-                                    }
-                                }
-                                
-                                boolean mulDiv = true;
-                                
-                                while (mulDiv) {                                    
-                                    int c = 0;
-                                    for (int j = 0; j < signos.size(); j++) {
-                                        if ("*".equals(signos.get(j))) {
-                                            //System.out.println("PARTES: "+partes);
-                                            //System.out.println("SIGNOS: "+signos);
-                                            c++;
-                                            if ("rellerindo".equals(datos[0])) {
-                                                signos.remove(j);
-                                                int n1 = Integer.parseInt(partes.get(j).toString());
-                                                int n2 = Integer.parseInt(partes.get(j+1).toString());
-                                                int res = n1*n2;
-                                                partes.remove(j+1);partes.remove(j);
-                                                partes.add(j, res);
-                                                j = signos.size();
-                                            }else{
-                                                signos.remove(j);
-                                                double n1 = Double.parseDouble(partes.get(j).toString());
-                                                double n2 = Double.parseDouble(partes.get(j+1).toString());
-                                                double res = n1*n2;
-                                                partes.remove(j+1);partes.remove(j);
-                                                partes.add(j, res);
-                                                j = signos.size();
-                                            }
-                                        }else if ("/".equals(signos.get(j))) {
-                                            c++;
-                                            if ("rellerindo".equals(datos[0])) {
-                                                signos.remove(j);
-                                                int n1 = Integer.parseInt(partes.get(j).toString());
-                                                int n2 = Integer.parseInt(partes.get(j+1).toString());
-                                                int res = n1/n2;
-                                                partes.remove(j+1);partes.remove(j);
-                                                partes.add(j, res);
-                                                j = signos.size();
-                                            }else{
-                                                signos.remove(j);
-                                                double n1 = Double.parseDouble(partes.get(j).toString());
-                                                double n2 = Double.parseDouble(partes.get(j+1).toString());
-                                                double res = n1/n2;
-                                                partes.remove(j+1);partes.remove(j);
-                                                partes.add(j, res);
-                                                j = signos.size();
-                                            }
-
-                                        }
-                                    }
-                                    if (c == 0) {
-                                        mulDiv = false;
-                                    }
-                                }
-                                
-                                boolean sumRes = true;
-                                
-                                while(sumRes){
-                                    int c = 0;
-                                    for (int j = 0; j < signos.size(); j++) {
-                                        if ("+".equals(signos.get(j))) {
-                                            //System.out.println("PARTES: "+partes);
-                                            //System.out.println("SIGNOS: "+signos);
-                                            c++;
-                                            if ("rellerindo".equals(datos[0])) {
-                                                signos.remove(j);
-                                                
-                                                int n1 = Integer.parseInt(partes.get(j).toString());
-                                                int n2 = Integer.parseInt(partes.get(j+1).toString());
-                                                int res = n1+n2;
-                                                partes.remove(j+1);partes.remove(j);
-                                                partes.add(j, res);
-                                                j = signos.size();
-                                            }else{
-                                                signos.remove(j);
-                                                double n1 = Double.parseDouble(partes.get(j).toString());
-                                                double n2 = Double.parseDouble(partes.get(j+1).toString());
-                                                double res = n1+n2;
-                                                partes.remove(j+1);partes.remove(j);
-                                                partes.add(j, res);
-                                                j = signos.size();
-                                            }
-                                        }else if ("-".equals(signos.get(j))) {
-                                            c++;
-                                            if ("rellerindo".equals(datos[0])) {
-                                                signos.remove(j);
-                                                int n1 = Integer.parseInt(partes.get(j).toString());
-                                                int n2 = Integer.parseInt(partes.get(j+1).toString());
-                                                int res = n1-n2;
-                                                partes.remove(j+1);partes.remove(j);
-                                                partes.add(j, res);
-                                                j = signos.size();
-                                            }else{
-                                                signos.remove(j);
-                                                double n1 = Double.parseDouble(partes.get(j).toString());
-                                                double n2 = Double.parseDouble(partes.get(j+1).toString());
-                                                double res = n1-n2;
-                                                partes.remove(j+1);partes.remove(j);
-                                                partes.add(j, res);
-                                                j = signos.size();
-                                            }
-                                        }
-                                    }
-                                    if (c == 0) {
-                                        sumRes = false;
-                                    }
-                                }
-                                
-                                
-                                resul = String.valueOf(partes.get(0));
-                                detalleVariables.add(0,datos[0]+"¿"+datos[1]+"¿"+resul);
-                                detalleVariables.remove(i+1);
-                            }
-                        }
-                    //System.out.println("RESU: "+resul);
                     
-                    }
-                    System.out.println("NUEVA TABLA DE VARIABLES");
-                    for (int i = 0; i < detalleVariables.size(); i++) {
-                        System.out.println(detalleVariables.get(i));
-                    }
-                    
+                    //simplificarValores();
                     
                     
                     System.out.println("========================== REALIZACIÓN DE INSTRUCCIONES ==========================");
@@ -3017,11 +2902,6 @@ public class Compiler extends javax.swing.JFrame {
                             i = j;
                         }
                     }
-                    
-                    
-                    
-                    
-                    
                     
                     
                     
@@ -3038,8 +2918,214 @@ public class Compiler extends javax.swing.JFrame {
         }
 
     }//GEN-LAST:event_btnCompilarActionPerformed
-    
+    public void simplificarValores(){
+        String letras = "qwertyuiopñlkjhgfdsazxcvbnmQWERTYUIOPÑLKJHGFDSAZXCVBNM";
+        for (int i = 0; i < detalleVariables.size(); i++) {
+            String resul = "";
+            String[] datos = detalleVariables.get(i).toString().split("¿");
+            if (("rellerindo".equals(datos[0]) || "mazapan".equals(datos[0])) && datos.length == 3) {
+                String valor = datos[2];
+                boolean esOp = false;
+                for (int j = 0; j < valor.length(); j++) {
+                    if (log.contains(String.valueOf(valor.charAt(j)))) {
+                        esOp = true;
+                    }
+                }
+                if (esOp) { // 223+13-3
+                    String[] caracts = datos[2].split("");
+                    List partes = new ArrayList();
+                    String nu = "";
+                    for (int j = 0; j < caracts.length; j++) {
+                        if (j == caracts.length-1) {
+                            nu += caracts[j];
+                            partes.add(nu);
+                        }else if (numeros.contains(caracts[j]) || ".".equals(caracts[j]) || letras.contains(caracts[j])) {
+                            nu += caracts[j];
+                        }else{
+                            boolean ban = false;
+                            for (int k = 0; k < caracts.length; k++) {
+                                if (!numeros.contains(caracts[k])) {
+                                    ban = true;
+                                }
+                            }
+                            //if (ban) { // es variable
+                              //  if (!revisarVariable(nu)) {
+                                //    txaConsola.setText(txaConsola.getText()+"Error. Se esperaba una variable en la operación.");
+                                //}
+                            //}
+                            partes.add(nu);
+                            nu = "";
+                        }
+                    }
+                    // Ya tenemos cada parte de numeros
+                    List signos = new ArrayList();
+                    for (int j = 0; j < caracts.length; j++) {
+                        if (log.contains(caracts[j])) {
+                            signos.add(caracts[j]);
+                        }
+                    }
+                    // Numeros y signos en su respectiva lista
+                    /*
+                        Jerarquia
+                                  ^
+                                 * /
+                                 + -Math.pow(n1, n2);
+                    */
+                    boolean powWhile = true;
+
+                    while (powWhile) {                                    
+                        int c = 0;
+                        for (int j = 0; j < signos.size(); j++) {
+                            if ("^".equals(signos.get(j))) {
+                                //System.out.println("PARTES: "+partes);
+                                //System.out.println("SIGNOS: "+signos);
+                                c++;
+                                if ("rellerindo".equals(datos[0])) {
+                                    signos.remove(j);
+                                    int n1 = Integer.parseInt(partes.get(j).toString());
+                                    int n2 = Integer.parseInt(partes.get(j+1).toString());
+                                    int res = (int) Math.pow(n1, n2);
+                                    partes.remove(j+1);partes.remove(j);
+                                    partes.add(j, res);
+                                    j = signos.size();
+                                }else{
+                                    signos.remove(j);
+                                    double n1 = Double.parseDouble(partes.get(j).toString());
+                                    double n2 = Double.parseDouble(partes.get(j+1).toString());
+                                    double res = Math.pow(n1, n2);
+                                    partes.remove(j+1);partes.remove(j);
+                                    partes.add(j, res);
+                                    j = signos.size();
+                                }
+                            }
+                        }
+                        if (c == 0) {
+                            powWhile = false;
+                        }
+                    }
+
+                    boolean mulDiv = true;
+
+                    while (mulDiv) {                                    
+                        int c = 0;
+                        for (int j = 0; j < signos.size(); j++) {
+                            if ("*".equals(signos.get(j))) {
+                                //System.out.println("PARTES: "+partes);
+                                //System.out.println("SIGNOS: "+signos);
+                                c++;
+                                if ("rellerindo".equals(datos[0])) {
+                                    signos.remove(j);
+                                    int n1 = Integer.parseInt(partes.get(j).toString());
+                                    int n2 = Integer.parseInt(partes.get(j+1).toString());
+                                    int res = n1*n2;
+                                    partes.remove(j+1);partes.remove(j);
+                                    partes.add(j, res);
+                                    j = signos.size();
+                                }else{
+                                    signos.remove(j);
+                                    double n1 = Double.parseDouble(partes.get(j).toString());
+                                    double n2 = Double.parseDouble(partes.get(j+1).toString());
+                                    double res = n1*n2;
+                                    partes.remove(j+1);partes.remove(j);
+                                    partes.add(j, res);
+                                    j = signos.size();
+                                }
+                            }else if ("/".equals(signos.get(j))) {
+                                c++;
+                                if ("rellerindo".equals(datos[0])) {
+                                    signos.remove(j);
+                                    int n1 = Integer.parseInt(partes.get(j).toString());
+                                    int n2 = Integer.parseInt(partes.get(j+1).toString());
+                                    int res = n1/n2;
+                                    partes.remove(j+1);partes.remove(j);
+                                    partes.add(j, res);
+                                    j = signos.size();
+                                }else{
+                                    signos.remove(j);
+                                    double n1 = Double.parseDouble(partes.get(j).toString());
+                                    double n2 = Double.parseDouble(partes.get(j+1).toString());
+                                    double res = n1/n2;
+                                    partes.remove(j+1);partes.remove(j);
+                                    partes.add(j, res);
+                                    j = signos.size();
+                                }
+
+                            }
+                        }
+                        if (c == 0) {
+                            mulDiv = false;
+                        }
+                    }
+
+                    boolean sumRes = true;
+
+                    while(sumRes){
+                        int c = 0;
+                        for (int j = 0; j < signos.size(); j++) {
+                            if ("+".equals(signos.get(j))) {
+                                //System.out.println("PARTES: "+partes);
+                                //System.out.println("SIGNOS: "+signos);
+                                c++;
+                                if ("rellerindo".equals(datos[0])) {
+                                    signos.remove(j);
+
+                                    int n1 = Integer.parseInt(partes.get(j).toString());
+                                    int n2 = Integer.parseInt(partes.get(j+1).toString());
+                                    int res = n1+n2;
+                                    partes.remove(j+1);partes.remove(j);
+                                    partes.add(j, res);
+                                    j = signos.size();
+                                }else{
+                                    signos.remove(j);
+                                    double n1 = Double.parseDouble(partes.get(j).toString());
+                                    double n2 = Double.parseDouble(partes.get(j+1).toString());
+                                    double res = n1+n2;
+                                    partes.remove(j+1);partes.remove(j);
+                                    partes.add(j, res);
+                                    j = signos.size();
+                                }
+                            }else if ("-".equals(signos.get(j))) {
+                                c++;
+                                if ("rellerindo".equals(datos[0])) {
+                                    signos.remove(j);
+                                    int n1 = Integer.parseInt(partes.get(j).toString());
+                                    int n2 = Integer.parseInt(partes.get(j+1).toString());
+                                    int res = n1-n2;
+                                    partes.remove(j+1);partes.remove(j);
+                                    partes.add(j, res);
+                                    j = signos.size();
+                                }else{
+                                    signos.remove(j);
+                                    double n1 = Double.parseDouble(partes.get(j).toString());
+                                    double n2 = Double.parseDouble(partes.get(j+1).toString());
+                                    double res = n1-n2;
+                                    partes.remove(j+1);partes.remove(j);
+                                    partes.add(j, res);
+                                    j = signos.size();
+                                }
+                            }
+                        }
+                        if (c == 0) {
+                            sumRes = false;
+                        }
+                    }
+
+
+                    resul = String.valueOf(partes.get(0));
+                    detalleVariables.add(0,datos[0]+"¿"+datos[1]+"¿"+resul);
+                    detalleVariables.remove(i+1);
+                }
+            }
+        //System.out.println("RESU: "+resul);
+
+        }
+        System.out.println("NUEVA TABLA DE VARIABLES");
+        for (int i = 0; i < detalleVariables.size(); i++) {
+            System.out.println(detalleVariables.get(i));
+        }
+    }
     public int evaluarInstrucciones(String ins, int id){
+        //simplificarValores();
         int indx = 0;
                     //   PARA
         if (ins.length() > 4 && "PARA".equals(ins.substring(0, 4))) {
@@ -3362,8 +3448,384 @@ public class Compiler extends javax.swing.JFrame {
                     break;
                 }
             }
+                // ASIGNACIÓN
+        }else if (revisarVariable(ins.split(" ")[0]) && "=".equals(ins.split(" ")[1])) {
             
+            //String valor = ins.split(" ")[2];
             
+            boolean encontrado = false;
+            String tipo = "";
+            for (int j = 0; j < detalleVariables.size(); j++) {
+                String[] datos = detalleVariables.get(j).toString().split("¿");
+                if (ins.split(" ")[0].equals(datos[1])) {
+                    encontrado = true;
+                    tipo = datos[0];
+                }
+            }
+            if (!encontrado) {
+                System.out.println("ERROR1. No se encontró la variable: "+ins.split(" ")[0]);
+                txaConsola.setText(txaConsola.getText()+"ERROR. No se encontró la variable: "+ins.split(" ")[0] +"\n");
+                return 9999;
+            }else{
+                switch(tipo){
+                    case "duvalin":
+                        if (ins.split(" ")[2].equals("FALSO") || ins.split(" ")[2].equals("VERDADERO")) {
+                            for (int j = 0; j < detalleVariables.size(); j++) {
+                                String[] datos = detalleVariables.get(j).toString().split("¿");
+                                if (ins.split(" ")[0].equals(datos[1])) {
+
+                                    for (int k = 0; k < detalleVariables.size(); k++) {//Eliminar el anterior de la tabla
+                                        String[] aEliminar = detalleVariables.get(k).toString().split("¿");
+                                        if (aEliminar[0].equals("duvalin") && aEliminar[1].equals(ins.split(" ")[0])) {
+                                            detalleVariables.remove(k);
+                                        }
+                                    }
+                                    System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;; ASIGNACIÓN DUVALIN CORRECTA ;;;;;;;;;;;;;;;;;;;;;;;;;;;");
+                                    detalleVariables.add(datos[0]+"¿"+datos[1]+"¿"+ins.split(" ")[2]);
+                                }
+                            }
+                        }else if(revisarVariable(ins.split(" ")[2])){
+                            for (int j = 0; j < detalleVariables.size(); j++) {
+                                String[] datos = detalleVariables.get(j).toString().split("¿");
+                                if (ins.split(" ")[2].equals(datos[1])) {
+                                    if (datos[0].equals("duvalin") && datos.length > 2 ) {
+                                        for (int k = 0; k < detalleVariables.size(); k++) {//Eliminar el anterior de la tabla
+                                            String[] aEliminar = detalleVariables.get(k).toString().split("¿");
+                                            if (aEliminar[0].equals("duvalin") && aEliminar[1].equals(ins.split(" ")[0])) {
+                                                detalleVariables.remove(k);
+                                            }
+                                        }
+                                        detalleVariables.add(datos[0]+"¿"+ins.split(" ")[0]+"¿"+datos[2]);
+                                        System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;; ASIGNACIÓN DUVALIN CORRECTA ;;;;;;;;;;;;;;;;;;;;;;;;;;;");
+                                    }else{
+                                        System.out.println("ERROR1. Se esperaba un valor VERDADERO o FALSO.");
+                                        txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor VERDADERO o FALSO. \n");
+                                        return 9999;
+                                    }
+                                }
+                            }
+                        }else{
+                            System.out.println("ERROR1. Se esperaba un valor VERDADERO o FALSO.");
+                            txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor VERDADERO o FALSO. \n");
+                            return 9999;
+                        }
+                        break;
+                    case "chicle":
+                        // chVar = "9"
+                        // chVar = chVar2
+                        if(revisarVariable(ins.split(" ")[2])){
+                            for (int j = 0; j < detalleVariables.size(); j++) {
+                                String[] datos = detalleVariables.get(j).toString().split("¿");
+                                if (ins.split(" ")[2].equals(datos[1])) {
+                                    if (datos[0].equals("chicle") && datos.length > 2 ) {
+                                        for (int k = 0; k < detalleVariables.size(); k++) {//Eliminar el anterior de la tabla
+                                            String[] aEliminar = detalleVariables.get(k).toString().split("¿");
+                                            if (aEliminar[0].equals("chicle") && aEliminar[1].equals(ins.split(" ")[0])) {
+                                                detalleVariables.remove(k);
+                                            }
+                                        }
+                                        detalleVariables.add(datos[0]+"¿"+ins.split(" ")[0]+"¿"+datos[2]);
+                                        System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;; ASIGNACIÓN CHICLE CORRECTA ;;;;;;;;;;;;;;;;;;;;;;;;;;;");
+                                    }else{
+                                        System.out.println("ERROR1. Se esperaba un valor de tipo chicle.");
+                                        txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor de tipo chicle. \n");
+                                        return 9999;
+                                    }
+                                }
+                            }
+                        }else if(ins.split(" ")[2].length() == 3){
+
+                            if ("\"".equals(String.valueOf(ins.split(" ")[2].charAt(0))) && "\"".equals(String.valueOf(ins.split(" ")[2].charAt(2)))) {
+                                for (int j = 0; j < detalleVariables.size(); j++) {
+                                    String[] aEliminar = detalleVariables.get(j).toString().split("¿");
+                                    if (aEliminar[0].equals("chicle") && aEliminar[1].equals(ins.split(" ")[0])) {
+                                        detalleVariables.remove(j);
+                                        detalleVariables.add(aEliminar[0]+"¿"+ins.split(" ")[0]+"¿"+ins.split(" ")[2]);
+                                        System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;; ASIGNACIÓN CHICLE CORRECTA ;;;;;;;;;;;;;;;;;;;;;;;;;;;");
+                                    }
+                                }
+                            }else{
+                                System.out.println("ERROR2. Se esperaba un valor de tipo chicle.");
+                                txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor de tipo chicle. \n");
+                                return 9999;
+                            }
+                        }else{
+                            System.out.println("ERROR3. Se esperaba un valor de tipo chicle.");
+                            txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor de tipo chicle. \n");
+                            return 9999;
+                        }
+
+                        break;
+                    case "rellerindo":
+                        // reVar = 123
+                        // reVar = reVar2
+
+                        if (revisarVariable(ins.split(" ")[2])) {
+                            for (int j = 0; j < detalleVariables.size(); j++) {
+                                String[] datos = detalleVariables.get(j).toString().split("¿");
+                                if (ins.split(" ")[2].equals(datos[1])) {
+                                    if (datos[0].equals("rellerindo") && datos.length > 2 ) {
+                                        for (int k = 0; k < detalleVariables.size(); k++) {//Eliminar el anterior de la tabla
+                                            String[] aEliminar = detalleVariables.get(k).toString().split("¿");
+                                            if (aEliminar[0].equals("rellerindo") && aEliminar[1].equals(ins.split(" ")[0])) {
+                                                detalleVariables.remove(k);
+                                            }
+                                        }
+                                        detalleVariables.add(datos[0]+"¿"+ins.split(" ")[0]+"¿"+datos[2]);
+                                        System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;; ASIGNACIÓN RELLERINDO CORRECTA ;;;;;;;;;;;;;;;;;;;;;;;;;;;");
+                                    }else{
+                                        System.out.println("ERROR1. Se esperaba un valor de tipo rellerindo.");
+                                        txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor de tipo rellerindo. \n");
+                                        return 9999;
+                                    }
+                                }
+                            }
+                        }else{  // reVar = 123
+                                // reVar = reVar2
+                            String res = "";
+                            boolean ban = false;
+                            for (int j = 0; j < ins.split(" ")[2].length(); j++) { //235
+                                String num = String.valueOf(ins.split(" ")[2].charAt(j)); // 2
+                                if (log.contains(num)) {
+                                    if (j==ins.split(" ")[2].length()-1) {
+                                        System.out.println("ERROR2. Se esperaba un valor tipo rellerindo");
+                                        txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor tipo rellerindo \n");
+                                        return 9999;
+                                    }
+                                }else if (!numeros.contains(num)) {
+                                    //   + - * / 
+                                    ban = true;
+                                    break;
+                                }
+
+                            }
+                            if (ban) {
+                                String op = ins.split(" ")[2];
+                                List signos = new ArrayList();
+
+
+                                for (int k = 0; k < op.length(); k++) {
+                                    if (log.contains(String.valueOf(op.charAt(k)))) {
+                                        signos.add(String.valueOf(op.charAt(k)));
+                                    }
+                                }
+
+                                op = op.replace("+", "¿");   op = op.replace("-", "¿"); 
+                                op = op.replace("*", "¿");     op = op.replace("/", "¿"); 
+                                String[] sepa = op.split("¿");   // hola+1   ---  hola¿1
+
+
+                                for (int k = 0; k < sepa.length; k++) { // hola, 1
+                                    boolean band = false;
+                                    for (int l = 0; l < sepa[k].length(); l++) {
+                                        String aEvaluar = String.valueOf(sepa[k].charAt(l));
+                                        if (!numeros.contains(aEvaluar)) {
+                                            band = true;
+                                            break;
+                                        }
+                                    }
+                                    if (band) { // variable
+                                        if (!revisarVariable(sepa[k])) {
+                                            System.out.println("ERROR42. Se esperaba un valor tipo rellerindo");
+                                            txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor tipo rellerindo \n");
+                                            return 9999;
+                                        }else{
+                                            for (int l = 0; l < detalleVariables.size(); l++) {
+                                                String[] deta = detalleVariables.get(l).toString().split("¿");
+                                                if (deta[1].equals(sepa[k])) {
+                                                    if (!deta[0].equals("rellerindo")) {
+                                                        System.out.println("ERROR45. Se esperaba un valor tipo rellerindo");
+                                                        txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor tipo rellerindo \n");
+                                                        return 9999;
+                                                    }else{
+                                                        res += deta[2];
+                                                        System.out.println("res = " + res);
+                                                        break;
+                                                    }
+                                                }
+
+                                            }
+                                        }
+                                        if (signos.size() > 0) {
+                                            res += signos.get(0);
+                                            signos.remove(0);
+                                        }                                            
+                                    }else{
+                                        res += sepa[k];
+                                        if (signos.size() > 0) {
+                                            res += signos.get(0);
+                                            signos.remove(0);
+                                        }  
+                                    }
+
+                                }
+
+
+                            }
+
+                            for (int j = 0; j < detalleVariables.size(); j++) {
+                                String[] aEliminar = detalleVariables.get(j).toString().split("¿");
+                                if (aEliminar[0].equals("rellerindo") && aEliminar[1].equals(ins.split(" ")[0])) {
+                                    detalleVariables.remove(j);
+                                    detalleVariables.add(aEliminar[0]+"¿"+ins.split(" ")[0]+"¿"+res);
+                                    System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;; ASIGNACIÓN RELLERINDO CORRECTA ;;;;;;;;;;;;;;;;;;;;;;;;;;;");
+                                }
+                            }
+                            simplificarValores();
+
+                        }
+
+                        break;
+                    case "mazapan":
+                        // maVar = 123.123
+                        // maVar = maVar2
+
+                        if (revisarVariable(ins.split(" ")[2])) {
+                            for (int j = 0; j < detalleVariables.size(); j++) {
+                                String[] datos = detalleVariables.get(j).toString().split("¿");
+                                if (ins.split(" ")[2].equals(datos[1])) {
+                                    if (datos[0].equals("mazapan") && datos.length > 2 ) {
+                                        for (int k = 0; k < detalleVariables.size(); k++) {//Eliminar el anterior de la tabla
+                                            String[] aEliminar = detalleVariables.get(k).toString().split("¿");
+                                            if (aEliminar[0].equals("mazapan") && aEliminar[1].equals(ins.split(" ")[0])) {
+                                                detalleVariables.remove(k);
+                                            }
+                                        }
+                                        detalleVariables.add(datos[0]+"¿"+ins.split(" ")[0]+"¿"+datos[2]);
+                                        System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;; ASIGNACIÓN MAZAPAN CORRECTA ;;;;;;;;;;;;;;;;;;;;;;;;;;;");
+                                    }else{
+                                        System.out.println("ERROR1. Se esperaba un valor de tipo mazapan.");
+                                        txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor de tipo mazapan. \n");
+                                        return 9999;
+                                    }
+                                }
+                            }
+                        }else{
+
+                            String valor = ins.split(" ")[2]; // 14.324+243.1234-43.234 --- [14.324,243.1234,43.234]
+                                    // "+-*/%^";
+                            valor = valor.replace("+"," ");valor = valor.replace("-"," ");valor = valor.replace("+"," ");
+                            valor = valor.replace("/"," ");valor = valor.replace("%"," ");valor = valor.replace("^"," ");
+
+                            String[] separados = valor.split(" "); // [14.324,243.1234,43.234]
+
+                            for (int j = 0; j < separados.length; j++) {
+                                boolean bandePunto = true;
+                                String actual = separados[j]; // 14.324
+                                String[] caracter = actual.split("");
+                                for (int k = 0; k < caracter.length; k++) {
+                                    String carAct = caracter[k];
+                                    if (".".equals(carAct)) {
+                                        if (bandePunto) {
+                                            bandePunto = false;
+                                        }else{
+                                            System.out.println("ERROR3. Se esperaba un valor tipo mazapan");
+                                            txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor tipo mazapan \n");
+                                            return 9999;
+                                        }
+                                    }else if (!numeros.contains(carAct)) {
+                                        System.out.println("ERROR4. Se esperaba un valor tipo mazapan");
+                                        txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor tipo mazapan \n");
+                                        return 9999;
+                                    }
+                                }
+                            }
+
+                            for (int j = 0; j < detalleVariables.size(); j++) {
+                                String[] aEliminar = detalleVariables.get(j).toString().split("¿");
+                                if (aEliminar[0].equals("mazapan") && aEliminar[1].equals(ins.split(" ")[0])) {
+                                    detalleVariables.remove(j);
+                                    detalleVariables.add(aEliminar[0]+"¿"+ins.split(" ")[0]+"¿"+ins.split(" ")[2]);
+                                    System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;; ASIGNACIÓN MAZAPAN CORRECTA ;;;;;;;;;;;;;;;;;;;;;;;;;;;");
+                                }
+                            }
+
+                        }
+                        break;
+                    case "Skwinkle":
+                        // skVar = "gsdj"
+                        // skVar = skVar2
+
+                        if (revisarVariable(ins.split(" ")[2])) {
+                            for (int j = 0; j < detalleVariables.size(); j++) {
+                                String[] datos = detalleVariables.get(j).toString().split("¿");
+                                if (ins.split(" ")[2].equals(datos[1])) {
+                                    if (datos[0].equals("Skwinkle") && datos.length > 2 ) {
+                                        for (int k = 0; k < detalleVariables.size(); k++) {//Eliminar el anterior de la tabla
+                                            String[] aEliminar = detalleVariables.get(k).toString().split("¿");
+                                            if (aEliminar[0].equals("Skwinkle") && aEliminar[1].equals(ins.split(" ")[0])) {
+                                                detalleVariables.remove(k);
+                                            }
+                                        }
+                                        detalleVariables.add(datos[0]+"¿"+ins.split(" ")[0]+"¿"+datos[2]);
+                                        System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;; ASIGNACIÓN SKWINKLE CORRECTA ;;;;;;;;;;;;;;;;;;;;;;;;;;;");
+                                    }else{
+                                        System.out.println("ERROR1. Se esperaba un valor de tipo Skwinkle.");
+                                        txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor de tipo Skwinkle. \n");
+                                        return 9999;
+                                    }
+                                }
+                            }
+                        }else{
+
+                            String val = ins;
+                            val = val.substring(ins.split(" ")[0].length()+3);
+                            System.out.println("val = " + val);
+
+                            if("\"".equals(String.valueOf(val.charAt(0))) && "\"".equals(String.valueOf(val.charAt(val.length()-1)))){
+
+                                for (int j = 0; j < detalleVariables.size(); j++) {
+                                    String[] aEliminar = detalleVariables.get(j).toString().split("¿");
+                                    if (aEliminar[0].equals("Skwinkle") && aEliminar[1].equals(ins.split(" ")[0])) {
+                                        detalleVariables.remove(j);
+                                        detalleVariables.add(aEliminar[0]+"¿"+ins.split(" ")[0]+"¿"+val);
+                                        System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;; ASIGNACIÓN SKWINKLE CORRECTA ;;;;;;;;;;;;;;;;;;;;;;;;;;;");
+                                    }
+                                }
+
+                            }else{
+                                System.out.println("ERROR2. Se esperaba un valor de tipo Skwinkle.");
+                                txaConsola.setText(txaConsola.getText()+"ERROR. Se esperaba un valor de tipo Skwinkle. \n");
+                                return 9999;
+                            }
+                        }
+                        break;
+                    case "hersheys":
+                        break;
+                }
+            }
+            
+        }else if ("SI(".equals(ins.split(" ")[0])) {
+            String var = ins.split(" ")[1];
+            List insTemp = new ArrayList();
+            boolean si = false, encontrado = false;
+            for (int i = 0; i < detalleVariables.size(); i++) {
+                String[] dats = detalleVariables.get(i).toString().split("¿");
+                if (dats[1].equals(var) && dats.length == 3) {
+                    for (int j = id+1; j < instrucciones.size(); j++) {
+                        insTemp.add(instrucciones.get(j));
+                        if ("}SI".equals(instrucciones.get(j))) {
+                            if (dats[2].equals("VERDADERO")) {
+                                si = true;
+                            }
+                            encontrado = true;
+                            break;
+                        }
+                    }
+                    if (!encontrado) {
+                        txaConsola.setText(txaConsola.getText()+"Error en variable del if.");
+                        return 99999;
+                    }
+                    break;
+                }
+            }
+            if (si) {
+                System.out.println("ENTRA POR VERDADERO");
+                for (int i = 0; i < insTemp.size(); i++) {
+                    evaluarInstrucciones(insTemp.get(i).toString(), id);
+                }
+            }
+            indx = id + insTemp.size();
         }
         return indx;
     }
