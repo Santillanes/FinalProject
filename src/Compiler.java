@@ -3840,7 +3840,7 @@ public class Compiler extends javax.swing.JFrame {
                     for (int j = idx+1; j < instrucciones.size(); j++) {
                         
                         if ("}SI".equals(instrucciones.get(j))) {
-                            if (dats[2].equals("VERDADERO")) {
+                            if (dats[2].equals("VERDADERO") || dats[2].equals("\"VERDADERO\"")) {
                                 si = true;
                             }
                             encontrado = true;
@@ -3865,7 +3865,7 @@ public class Compiler extends javax.swing.JFrame {
                     evaluarInstrucciones(insTemp.get(i).toString(), id, false);
                 }
             }
-            indx = id + insTemp.size()-1;
+            indx = id + insTemp.size();
         }else if ("SI(".equals(ins.split(" ")[0]) && banP) {
             List lista = new ArrayList();
             for (int i = 0; i < instrucciones.size(); i++) {
@@ -3889,7 +3889,7 @@ public class Compiler extends javax.swing.JFrame {
             for (int i = 0; i < detalleVariables.size(); i++) {
                 String[] det = detalleVariables.get(i).toString().split("¿");
                 if (det[1].equals(var)) {
-                    if (det[2].equals("VERDADERO")) {
+                    if (det[2].equals("VERDADERO") || det[2].equals("\"VERDADERO\"")) {
                         esSI = true;
                     }
                     break;
