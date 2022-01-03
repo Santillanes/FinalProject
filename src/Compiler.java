@@ -2899,7 +2899,7 @@ public class Compiler extends javax.swing.JFrame {
                     System.out.println("========================== REALIZACIÓN DE INSTRUCCIONES ==========================");
                     for (int i = 0; i < instrucciones.size(); i++) {
                         
-                        int j = evaluarInstrucciones(instrucciones.get(i).toString(), i);
+                        int j = evaluarInstrucciones(instrucciones.get(i).toString(), i, false);
                         if (j != 0) {
                             i = j;
                         }
@@ -3126,8 +3126,9 @@ public class Compiler extends javax.swing.JFrame {
             System.out.println(detalleVariables.get(i));
         }
     }
-    public int evaluarInstrucciones(String ins, int id){
+    public int evaluarInstrucciones(String ins, int id, boolean banPARA){
         //simplificarValores();
+        boolean banP = banPARA;
         int indx = 0;
                     //   PARA
         if (ins.length() > 4 && "PARA".equals(ins.substring(0, 4))) {
@@ -3185,18 +3186,18 @@ public class Compiler extends javax.swing.JFrame {
             System.out.println("insTemp PARA = " + insTemp);
             boolean borrar = false;
             for (int i = 0; i < insTemp.size(); i++) {
-                
-                if ((insTemp.get(i).toString()).contains("SI(")) {
-                    System.out.println("INICIA SI DENTRO DE PARA");
-                    borrar = true;
-                }
-                
                 if (borrar) {
                     System.out.println("Se elimina: "+insTemp.get(i));
                     insTemp.remove(i);
                 }
-                if ("}SI".equals(instrucciones.get(i))) {
+                if ((insTemp.get(i).toString()).contains("SI(")) {
+                    System.out.println("INICIA SI DENTRO DE PARA");
+                    borrar = true;
+                    banP = true;
+                }
+                if ("}SI".equals(insTemp.get(i))) {
                     borrar = false;
+                    insTemp.remove(i);
                 }
             }
             System.out.println("insTemp PARA = " + insTemp);
@@ -3225,7 +3226,7 @@ public class Compiler extends javax.swing.JFrame {
                     }else{
                         detalleVariables.add(partes[0].substring(5)+"¿"+partes[1]+"¿"+j);
                     }
-                    int a = evaluarInstrucciones(insTemp.get(k).toString(), id);
+                    int a = evaluarInstrucciones(insTemp.get(k).toString(), id, banP);
                     if (a != 0) {
                         j = a;
                     }
@@ -3820,7 +3821,7 @@ public class Compiler extends javax.swing.JFrame {
                 }
             }
             
-        }else if ("SI(".equals(ins.split(" ")[0])) {
+        }else if ("SI(".equals(ins.split(" ")[0]) && !banP) {
             String var = ins.split(" ")[1];
             List insTemp = new ArrayList();
             boolean si = false, encontrado = false;
@@ -3861,10 +3862,48 @@ public class Compiler extends javax.swing.JFrame {
                 System.out.println("ENTRA POR VERDADERO");
                     System.out.println("insTemp = " + insTemp);
                 for (int i = 0; i < insTemp.size(); i++) {
-                    evaluarInstrucciones(insTemp.get(i).toString(), id);
+                    evaluarInstrucciones(insTemp.get(i).toString(), id, false);
                 }
             }
             indx = id + insTemp.size()-1;
+        }else if ("SI(".equals(ins.split(" ")[0]) && banP) {
+            List lista = new ArrayList();
+            for (int i = 0; i < instrucciones.size(); i++) {
+                if (ins.equals(instrucciones.get(i))) {
+                    for (int j = i+1; j < instrucciones.size(); j++) {
+                        if (!"}SI".equals(instrucciones.get(j))) {
+                            lista.add(instrucciones.get(j));
+                        }else{
+                            j = instrucciones.size();
+                        }
+                    }
+                    break;
+                }
+            }
+            
+            System.out.println("LISTA DE INSTRUCCIONES DEL SI DENTRO DEL PARA: "+lista);
+            
+            String var = ins.split(" ")[1];
+            boolean esSI = false;
+            
+            for (int i = 0; i < detalleVariables.size(); i++) {
+                String[] det = detalleVariables.get(i).toString().split("¿");
+                if (det[1].equals(var)) {
+                    if (det[2].equals("VERDADERO")) {
+                        esSI = true;
+                    }
+                    break;
+                }
+            }
+            
+            if (esSI) {
+                System.out.println("ENTRA POR VERDADERO2");
+                    System.out.println("lista = " + lista);
+                for (int i = 0; i < lista.size(); i++) {
+                    evaluarInstrucciones(lista.get(i).toString(), id, false);
+                }
+            }
+            
         }
         return indx;
     }
