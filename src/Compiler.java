@@ -353,6 +353,8 @@ public class Compiler extends javax.swing.JFrame {
                         palabras.add(":)");
                         System.out.println("Fin comentario: :)");
                     }else if(letra.equals("(") && bandeObtener){
+                        bandeObtener = false;
+                        System.out.println("ENTRA");
                         i += contaObtener;
                     }else {
                         palabras.add(letra);
@@ -894,7 +896,7 @@ public class Compiler extends javax.swing.JFrame {
                 
                 
                 } else {
-                    System.out.println("SENTENCIA IF ERRÓNEA");
+                    System.out.println("SENTENCIA SI ERRÓNEA");
                     System.out.println("ERROR EN PARÉNTESIS");
                     llaves.add(0, "ERROR");
                     return false;
@@ -3169,12 +3171,35 @@ public class Compiler extends javax.swing.JFrame {
             for (int j = id+1; j < instrucciones.size(); j++) {
                 if ("}PARA".equals(instrucciones.get(j))) {
                     break;
+                }else if("SI(".equals(ins.split(" ")[0])){
+                    for (int i = j; i < instrucciones.size(); i++) {
+                        if ("}SI".equals(instrucciones.get(j))) {
+                            j = i;
+                            i = instrucciones.size();
+                        }
+                    }
                 }else{
                     insTemp.add(instrucciones.get(j));
                 }
             }
-            
-            System.out.println("insTemp = " + insTemp);
+            System.out.println("insTemp PARA = " + insTemp);
+            boolean borrar = false;
+            for (int i = 0; i < insTemp.size(); i++) {
+                
+                if ((insTemp.get(i).toString()).contains("SI(")) {
+                    System.out.println("INICIA SI DENTRO DE PARA");
+                    borrar = true;
+                }
+                
+                if (borrar) {
+                    System.out.println("Se elimina: "+insTemp.get(i));
+                    insTemp.remove(i);
+                }
+                if ("}SI".equals(instrucciones.get(i))) {
+                    borrar = false;
+                }
+            }
+            System.out.println("insTemp PARA = " + insTemp);
 
             System.out.println("--- EN PARA ---");
             for (int j = 0; j < repeticiones; j++) {
@@ -3802,14 +3827,27 @@ public class Compiler extends javax.swing.JFrame {
             for (int i = 0; i < detalleVariables.size(); i++) {
                 String[] dats = detalleVariables.get(i).toString().split("¿");
                 if (dats[1].equals(var) && dats.length == 3) {
-                    for (int j = id+1; j < instrucciones.size(); j++) {
-                        insTemp.add(instrucciones.get(j));
+                    int idx = 0;
+                    for (int j = 0; j < instrucciones.size(); j++) {
+                        String[] inst = instrucciones.get(j).toString().split(" ");
+                        if ("SI(".equals(inst[0])){
+                            idx = j;
+                            System.out.println(instrucciones.get(idx));
+                            break;
+                        }
+                    }
+                    for (int j = idx+1; j < instrucciones.size(); j++) {
+                        
                         if ("}SI".equals(instrucciones.get(j))) {
                             if (dats[2].equals("VERDADERO")) {
                                 si = true;
                             }
                             encontrado = true;
                             break;
+                        }else if (ins.length() > 4 && "PARA".equals(ins.substring(0, 4)) || "}PARA".equals(instrucciones.get(j))) {
+                            
+                        }else{
+                            insTemp.add(instrucciones.get(j));
                         }
                     }
                     if (!encontrado) {
@@ -3821,11 +3859,12 @@ public class Compiler extends javax.swing.JFrame {
             }
             if (si) {
                 System.out.println("ENTRA POR VERDADERO");
+                    System.out.println("insTemp = " + insTemp);
                 for (int i = 0; i < insTemp.size(); i++) {
                     evaluarInstrucciones(insTemp.get(i).toString(), id);
                 }
             }
-            indx = id + insTemp.size();
+            indx = id + insTemp.size()-1;
         }
         return indx;
     }
